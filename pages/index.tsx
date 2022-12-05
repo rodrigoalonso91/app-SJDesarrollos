@@ -28,6 +28,7 @@ export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any
 				<span>{"is auditor? " + user.isAuditor}</span>
 				<span>{"is proprietor? " + user.isProprietor}</span>
 
+				<a href="/api/auth/logout">CLICK HERE TO LOG OUT</a>
 				<button onClick={createNeighborhood}>CREATE NEW NEIGHBORHOOD</button>
 
 				{neighborhoods.map(neighborhood =>
