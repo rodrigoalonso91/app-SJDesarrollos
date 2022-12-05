@@ -6,7 +6,7 @@ export async function getNeighborhoods(): Promise<ReadonlyArray<any>> {
 		.collection("NEIGHBORHOODS")
 		.find(
 			//{ $or: [{ created_by: username }, { visibility: { $ne: "private" } }] },
-			//{ created_by: username },
+			{},
 			{
 				projection: { name: 1, lots: 1 }
 			}

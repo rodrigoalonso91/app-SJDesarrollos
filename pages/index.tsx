@@ -1,11 +1,9 @@
 import {withPageAuthRequired} from "@auth0/nextjs-auth0"
 import Head from "next/head"
 import {useEffect} from "react"
-import getUser from "../src/GetUser"
 import {getNeighborhoods} from "../src/GetNeighborhoods"
 import useUserData from "../src/UseUserData"
 import styles from "../styles/Home.module.css"
-import {useUser} from "@auth0/nextjs-auth0"
 
 export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any> }) {
 	const user = useUserData()
@@ -30,10 +28,10 @@ export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any
 				<span>{"is auditor? " + user.isAuditor}</span>
 				<span>{"is proprietor? " + user.isProprietor}</span>
 
-				<button>CREATE NEW NEIGHBORHOOD</button>
+				<button onClick={createNeighborhood}>CREATE NEW NEIGHBORHOOD</button>
 
 				{neighborhoods.map(neighborhood =>
-					<button>{neighborhood.name}</button>
+					<button onClick={() => deleteNeighborhoodOfId(neighborhood.id)}>{neighborhood.name}</button>
 				)}
 			</main>
 		</div>
@@ -46,3 +44,12 @@ export const getServerSideProps = withPageAuthRequired({
 		return {props: {neighborhoods}}
 	}
 })
+
+
+async function createNeighborhood() {
+	await fetch(`/api/neighborhoods`, { method: "POST" })
+}
+
+async function deleteNeighborhoodOfId(id: string) {
+	await fetch(`/api/neighborhoods/${id}`, { method: "DELETE" })
+}
