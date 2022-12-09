@@ -7,8 +7,8 @@ import styles from "../styles/Home.module.css"
 import { Navbar } from "./components";
 
 export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any> }) {
+
 	const user = useUserData()
-	console.log({user});
 
 	useEffect(() => {
 		console.log("este log se ejecuta en el browser")
@@ -18,7 +18,7 @@ export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any
 
 	return (
 		<>
-			<Navbar />
+			<Navbar nickname={user.nickname}/>
 			<div className={styles.container}>
 			<Head>
 				<title>Create Next App</title>
