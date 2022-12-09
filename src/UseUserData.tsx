@@ -2,7 +2,6 @@ import { useUser } from "@auth0/nextjs-auth0"
 
 export default function useUserData() {
 	const { user } = useUser()
-	console.log({user})
 	const roles = (user?.[ROLES_PROPERTY_NAME] as ReadonlyArray<string>) || []
 
 	const isAdmin = roles.includes(UserRole.Admin)
