@@ -8,6 +8,7 @@ import {useUser} from "@auth0/nextjs-auth0"
 import { Navbar } from "./components"
 
 export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any> }) {
+	
 	const {user} = useUser()
 
 	useEffect(() => {
@@ -17,6 +18,7 @@ export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any
 	return (
 		<>
 			<Navbar nickname={user?.nickname} />
+			<h1>Barrios</h1>
 			<div>{user?.email || "fome"}</div>
 		</>
 	)
