@@ -5,6 +5,7 @@ import getUser from "../src/GetUser"
 import {getNeighborhoods} from "../src/GetNeighborhoods"
 import styles from "../styles/Home.module.css"
 import {useUser} from "@auth0/nextjs-auth0"
+import { Navbar } from "./components"
 
 export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any> }) {
 	const {user} = useUser()
@@ -14,7 +15,10 @@ export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any
 	}, [])
 
 	return (
-		<div>{user?.email || "fome"}</div>
+		<>
+			<Navbar nickname={user?.nickname} />
+			<div>{user?.email || "fome"}</div>
+		</>
 	)
 
 	return (

@@ -18,8 +18,14 @@ export const Navbar = ({nickname}) => {
                 </div>
 
                 <div className='nav-item nav-link'>
-                    Grid
+                    Grilla
                 </div>
+
+                <a className='nav-item nav-link'
+                    href='/neighborhoods'
+                >
+                    Barrios
+                </a>
 
             </div>
         </div>
@@ -27,7 +33,6 @@ export const Navbar = ({nickname}) => {
         <div className="navbar-collapse collapse w-100 order-3 dual-collapse2 d-flex justify-content-end">
             <ul className="navbar-nav ml-auto">
 
-                
                 <span className='nav-item nav-link text-primary'>
                     {
                         nickname
@@ -37,8 +42,10 @@ export const Navbar = ({nickname}) => {
                 <a href="/api/auth/logout" className='nav-item nav-link btn'>
                     Logout
                 </a>
+
             </ul>
         </div>
+        
     </nav>
   )
 }
