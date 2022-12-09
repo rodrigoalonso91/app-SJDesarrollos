@@ -7,7 +7,7 @@ export const NavbarItem = ({text, href}) => {
 
     const getClassName = () => {
 
-        const isActive = router.pathname === href;
+        const isActive = router.asPath === href;
         const content = `nav-item nav-link ${isActive ? 'active' : ''}`
         return content.trim();
     };
