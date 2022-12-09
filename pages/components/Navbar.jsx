@@ -32,11 +32,9 @@ export const Navbar = () => {
                         Rodrigo Alonso
                     </span>
 
-                    <button 
-                        className='nav-item nav-link btn'
-                    >
+                    <a href="/api/auth/logout" className='nav-item nav-link btn'>
                         Logout
-                    </button>
+                    </a>
                 </ul>
             </div>
     </nav>
