@@ -8,12 +8,17 @@ export default function useUserData() {
 	const isAuditor = roles.includes(UserRole.Auditor)
 	const isProprietor = roles.includes(UserRole.Proprietor)
 
-	return {isAdmin, isAuditor, isProprietor, isLoggedIn: true, email: user?.email, nickname: user?.nickname}
-
+	return { 
+		isAdmin, 
+		isAuditor, 
+		isProprietor, 
+		isLoggedIn: true, 
+		email: user?.email, 
+		nickname: user?.nickname
+	}
 }
 
 export const ROLES_PROPERTY_NAME = `${process.env.NEXT_PUBLIC_WEB_DOMAIN}/roles`
-
 
 export enum UserRole {
 	Admin = "Admin",
