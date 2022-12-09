@@ -6,7 +6,7 @@ import {getNeighborhoods} from "../src/GetNeighborhoods"
 import styles from "../styles/Home.module.css"
 import {useUser} from "@auth0/nextjs-auth0"
 
-export default function Home({neigborhoods}: { neigborhoods: ReadonlyArray<any> }) {
+export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any> }) {
 	const {user} = useUser()
 
 	useEffect(() => {
@@ -28,7 +28,7 @@ export default function Home({neigborhoods}: { neigborhoods: ReadonlyArray<any> 
 			<main className={styles.main}>
 				<button>CREATE NEW NEIGHBORHOOD</button>
 
-				{neigborhoods.map(neighborhood =>
+				{neighborhoods.map(neighborhood =>
 					<button>{neighborhood.name}</button>
 				)}
 			</main>
