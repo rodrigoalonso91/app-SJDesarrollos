@@ -1,4 +1,4 @@
-import { Navbar } from "./components"
+import { Navbar } from "../src/web/components"
 import useUserData from "../src/UseUserData"
 
 export const Master = () => {

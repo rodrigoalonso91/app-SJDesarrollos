@@ -4,7 +4,7 @@ import {useEffect} from "react"
 import {getNeighborhoods} from "../src/GetNeighborhoods"
 import useUserData from "../src/UseUserData"
 import styles from "../styles/Home.module.css"
-import { Navbar } from "./components";
+import { Navbar } from "../src/web/components";
 
 export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any> }) {
 

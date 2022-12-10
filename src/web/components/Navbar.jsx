@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { NavbarItem } from '../components'
+import { NavbarItem } from './index'
 import 'bootstrap/dist/css/bootstrap.css'
 
 export const Navbar = ({nickname}) => {
