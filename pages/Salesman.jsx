@@ -1,18 +1,9 @@
 import { Navbar } from '../src/web/components'
 import useUserData from "../src/UseUserData"
-import DataGrid from 'react-data-grid';
-import 'react-data-grid/lib/styles.css';
-import { useState } from 'react';
+import { useMemo } from 'react';
+import MaterialReactTable from 'material-react-table';
 
-const testColumns = [
-    { key: 'id', name: 'ID' },
-    { key: 'firstname', name: 'Nombre' },
-    { key: 'lastname', name: 'Apellido' },
-    { key: 'phone', name: 'Teléfono' },
-    { key: 'email', name: 'Email' },
-]
-
-const testRows = [
+const data = [
     { id: 0, firstname: 'Tony', lastname: 'Stark', phone: '123456', email: 'tony@email.com' },
     { id: 1, firstname: 'Steven', lastname: 'Strange', phone: '123456', email: 'steven@email.com' },
     { id: 2, firstname: 'Thor', lastname: 'Odinson', phone: '123456', email: 'thor@email.com' },
@@ -22,16 +13,19 @@ const testRows = [
 export const Salesman = () => {
 
     const user = useUserData();
-    const [rows, setRows] = useState(testRows);
 
-    const handleClick = () => {
+    const columns = useMemo(
+        () => [
+          { header: 'ID', accessorKey: 'id' },
+          { header: 'Nombre', accessorKey: 'firstname'},
+          { header: 'Apellido', accessorKey: 'lastname'},
+          { header: 'Teléfono', accessorKey: 'phone'},
+          { header: 'Email', accessorKey: 'email'}
+        ],
+        [],
+    );
 
-        const newrow = [
-            ...rows,
-            { id: rows.length, firstname: 'Rodrigo', lastname: 'Alonso', telefono: '123456', email: 'rodrigo@email.com' }
-        ];
-        setRows(newrow);
-    };
+    const handleClick = () => alert('Not implemented');
 
     return (
         <>
@@ -45,7 +39,14 @@ export const Salesman = () => {
                     + Vendedor</button>
             </div>
 
-            <DataGrid columns={testColumns} rows={rows} rowHeight={ () => 30 }/>
+            <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableRowSelection
+                enableColumnOrdering
+                enableGlobalFilter={false} //turn off a feature
+            />
+
         </>
     )
 }

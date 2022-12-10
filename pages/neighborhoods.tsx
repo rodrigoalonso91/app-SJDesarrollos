@@ -19,7 +19,7 @@ export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any
 		<>
 			<Navbar nickname={user?.nickname} />
 			<h1>Barrios</h1>
-			<div>{user?.email || "fome"}</div>
+			<div>{user?.email || "wea"}</div>
 		</>
 	)
 
