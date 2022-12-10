@@ -28,9 +28,9 @@ export const Navbar = ({nickname}) => {
                         }
                     </span>
 
-                    <a href="/api/auth/logout" className='nav-item nav-link btn'>
+                    <Link href="/api/auth/logout" className='nav-item nav-link btn'>
                         Logout
-                    </a>
+                    </Link>
 
                 </ul>
             </div>

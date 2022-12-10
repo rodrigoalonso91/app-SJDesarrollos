@@ -34,8 +34,8 @@ export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any
 			<main className={styles.main}>
 				<button>CREATE NEW NEIGHBORHOOD</button>
 
-				{neighborhoods.map(neighborhood =>
-					<button>{neighborhood.name}</button>
+				{neighborhoods.map(({id, name}) =>
+					<button key={id}>{name}</button>
 				)}
 			</main>
 		</div>

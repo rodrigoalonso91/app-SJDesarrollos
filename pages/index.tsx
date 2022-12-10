@@ -34,8 +34,8 @@ export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any
 
 					<button onClick={createNeighborhood}>CREATE NEW NEIGHBORHOOD</button>
 
-					{neighborhoods.map(neighborhood =>
-						<button onClick={() => deleteNeighborhoodOfId(neighborhood.id)}>{neighborhood.name}</button>
+					{neighborhoods.map(({id, name}) =>
+						<button key={id} onClick={() => deleteNeighborhoodOfId(id)}>{	name}</button>
 					)}
 				</main>
 			</div>
