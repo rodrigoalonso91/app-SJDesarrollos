@@ -1,22 +1,16 @@
-import { Navbar } from '../src/web/components'
-import useUserData from "../src/UseUserData"
+import { withPageAuthRequired } from "@auth0/nextjs-auth0"
+import { Navbar } from '../../src/web/components'
+import useUserData from "../../src/UseUserData"
 import { useMemo } from 'react';
 import MaterialReactTable from 'material-react-table';
+import { getSalesmen } from '../../src/GetSalesmen'
 
-const data = [
-    { id: 0, firstname: 'Tony', lastname: 'Stark', phone: '123456', email: 'tony@email.com' },
-    { id: 1, firstname: 'Steven', lastname: 'Strange', phone: '123456', email: 'steven@email.com' },
-    { id: 2, firstname: 'Thor', lastname: 'Odinson', phone: '123456', email: 'thor@email.com' },
-    { id: 3, firstname: 'Petter', lastname: 'Parker', phone: '123456', email: 'petter@email.com' },
-];
-
-export const Salesman = () => {
+export const Salesmen = ({ salesmen }) => {
 
     const user = useUserData();
 
     const columns = useMemo(
         () => [
-          { header: 'ID', accessorKey: 'id' },
           { header: 'Nombre', accessorKey: 'firstname'},
           { header: 'Apellido', accessorKey: 'lastname'},
           { header: 'Teléfono', accessorKey: 'phone'},
@@ -25,7 +19,15 @@ export const Salesman = () => {
         [],
     );
 
-    const handleClick = () => alert('Not implemented');
+    const handleClick = async () => {
+
+        await fetch(`/api/salesmens`, { method: "POST", body: JSON.stringify({
+            firstname: 'Rodrigo',
+            lastname: 'Alonso',
+            phone: '123456',
+            email: 'rodrigo@email.com'
+        })})
+    };
 
     return (
         <>
@@ -41,14 +43,23 @@ export const Salesman = () => {
 
             <MaterialReactTable
                 columns={columns}
-                data={data}
+                data={salesmen}
                 enableRowSelection
                 enableColumnOrdering
                 enableGlobalFilter={false} //turn off a feature
             />
-
         </>
     )
 }
 
-export default Salesman
+export const getServerSideProps = withPageAuthRequired({
+    getServerSideProps: async () => {
+
+        const salesmen = await getSalesmen();
+        return {
+            props: { salesmen }
+        }
+    }
+})
+
+export default Salesmen
