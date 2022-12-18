@@ -1,5 +1,5 @@
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0"
-import { createSalesmen, getSalesmen } from "../../../src/"
+import { createSalesmen, getSalesmen } from "../../../src"
 import type { NextApiRequest, NextApiResponse } from "next"
 
 export default withApiAuthRequired(
@@ -12,10 +12,10 @@ async (req: NextApiRequest, res: NextApiResponse) => {
 		if (!req.query.path)
 			switch (req.method) {
 				case "GET":
-					const salesmens = await getSalesmen()
-					return res.status(200).json(salesmens)
+					const salesmen = await getSalesmen()
+					return res.status(200).json(salesmen)
 				case "POST":
-					const id = await createSalesmen(JSON.parse(req.body))
+					await createSalesmen(JSON.parse(req.body))
 					return res.status(201).end()
 				default:
 					return res.status(405).end()

@@ -15,7 +15,7 @@ export const Navbar = ({nickname}) => {
                 <div className="navbar-nav">
                     <NavbarItem href="/Master" text="Master" />
                     <NavbarItem href="/Neighborhoods" text="Barrios" />
-                    <NavbarItem href="/Salesman" text="Vendedores" />
+                    <NavbarItem href="/Salesmen" text="Vendedores" />
                 </div>
             </div>
 
