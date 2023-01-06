@@ -1,13 +1,12 @@
 import {Line} from "./types/Line"
-import {LineType} from "./types/LineType"
-import {TypedLine} from "./types/TypedLine"
+import {Lines} from "./types/Lines"
 
 const PATH_START = "<path"
 const PATH_END = "/>"
 
-export default function transformXmlToLines(xml: string): Array<TypedLine> {
+export default function transformXmlToLines(xml: string): Lines {
 	let offset = 0
-	const lines: Array<TypedLine> = []
+	const lines: Lines = {lot: [], block: []}
 
 	while (true) {
 		const start = xml.indexOf(PATH_START, offset)
@@ -28,10 +27,12 @@ export default function transformXmlToLines(xml: string): Array<TypedLine> {
 		const line: Line = [{x: origin[0], y: origin[1]}, {x: destination[0], y: destination[1]}]
 
 		if (stroke === "green")
-			lines.push({line, type: LineType.Block})
+			lines.block.push(line)
 		else if (stroke === "red")
-			lines.push({line, type: LineType.Lot})
+			lines.lot.push(line)
 	}
+
+
 
 	return lines
 }
