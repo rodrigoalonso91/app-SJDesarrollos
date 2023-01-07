@@ -1,9 +1,10 @@
-import { withPageAuthRequired } from "@auth0/nextjs-auth0"
-import { Navbar } from '../../src/web/components'
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import useUserData from "../../src/UseUserData"
+import { SalesmenGrid } from "../../src/web/components/salesmen/SalesmenGrid";
 import { useMemo } from 'react';
-import MaterialReactTable from 'material-react-table';
+import { Navbar } from '../../src/web/components'
 import { getSalesmen } from '../../src/GetSalesmen'
+
 
 export const Salesmen = ({ salesmen }) => {
 
@@ -19,35 +20,10 @@ export const Salesmen = ({ salesmen }) => {
         [],
     );
 
-    const handleClick = async () => {
-
-        await fetch(`/api/salesmens`, { method: "POST", body: JSON.stringify({
-            firstname: 'Rodrigo',
-            lastname: 'Alonso',
-            phone: '123456',
-            email: 'rodrigo@email.com'
-        })})
-    };
-
     return (
         <>
             <Navbar nickname={ user.nickname }/>
-
-            <div className="contairner d-flex flex-row-reverse align-items-center">
-                <button
-                  className='btn btn-primary mb-3 me-3'
-                  onClick={handleClick}
-                >
-                    + Vendedor</button>
-            </div>
-
-            <MaterialReactTable
-                columns={columns}
-                data={salesmen}
-                enableRowSelection
-                enableColumnOrdering
-                enableGlobalFilter={false} //turn off a feature
-            />
+            <SalesmenGrid columns={columns} salesmen={salesmen}/>
         </>
     )
 }
@@ -62,4 +38,4 @@ export const getServerSideProps = withPageAuthRequired({
     }
 })
 
-export default Salesmen
+export default Salesmen;
