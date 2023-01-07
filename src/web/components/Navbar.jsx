@@ -14,7 +14,7 @@ export const Navbar = ({nickname}) => {
             <div className="navbar-collapse">
                 <div className="navbar-nav">
                     <NavbarItem href="/Master" text="Master" />
-                    <NavbarItem href="/Neighborhoods" text="Barrios" />
+                    <NavbarItem href="/neighborhoods" text="Barrios" />
                     <NavbarItem href="/Salesman" text="Vendedores" />
                 </div>
             </div>
