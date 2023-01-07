@@ -1,12 +1,16 @@
 import { Button, Grid, TextField, Typography } from "@mui/material";
+import { useField } from "../../../hooks";
 
 export const SalesForm = () => {
 
+    const firstname = useField({type: 'text'});
+    const lastname = useField({type: 'text'});
+    const phone = useField({type: 'text'});
+    const email = useField({type: 'text'});
+
     const handleAddSalesman = () => {
-
+        // TODO: lógica para agregar un vendedor...
     }
-
-
 
     return (
 
@@ -41,6 +45,7 @@ export const SalesForm = () => {
                                 type="text"
                                 placeholder="Ej: Juan"
                                 fullWidth
+                                {...firstname}
                             />
                         </Grid>
 
@@ -50,6 +55,7 @@ export const SalesForm = () => {
                                 type="text"
                                 placeholder="Ej: Garcia"
                                 fullWidth
+                                {...lastname}
                             />
                         </Grid>
 
@@ -59,6 +65,7 @@ export const SalesForm = () => {
                                 type="text"
                                 placeholder="Ej: 1171348080"
                                 fullWidth
+                                {...phone}
                             />
                         </Grid>
 
@@ -68,6 +75,7 @@ export const SalesForm = () => {
                                 type="email"
                                 placeholder="Ej: JuanGarcia@gmail.com"
                                 fullWidth
+                                {...email}
                             />
                         </Grid>
 
