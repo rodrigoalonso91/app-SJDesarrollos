@@ -8,8 +8,14 @@ export const SalesForm = () => {
     const phone = useField({type: 'text'});
     const email = useField({type: 'text'});
 
-    const handleAddSalesman = () => {
-        // TODO: lógica para agregar un vendedor...
+    const handleAddSalesman = async () => {
+
+        await fetch(`api/salesmen`, { method: "POST", body: JSON.stringify({
+            firstname: firstname.value,
+            lastname: lastname.value,
+            phone: phone.value,
+            email: email.value
+        })})
     }
 
     return (
@@ -82,7 +88,7 @@ export const SalesForm = () => {
                         <Grid container spacing={ 2 } sx={{ mb: 2, mt: 1 }} >
 
                             <Grid item xs={ 12 } sm={ 6 } >
-                                <Button variant="contained" fullWidth onClick={handleAddSalesman} >
+                                <Button variant="contained" fullWidth onClick={ handleAddSalesman } >
                                     Crear
                                 </Button>
                             </Grid>

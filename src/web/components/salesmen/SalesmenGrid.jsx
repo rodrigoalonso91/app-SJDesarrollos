@@ -4,16 +4,6 @@ import { SalesForm } from './SalesForm';
 
 export const SalesmenGrid = ({columns, salesmen}) => {
 
-        // const handleClick = async () => {
-
-    //     await fetch(`/api/salesmens`, { method: "POST", body: JSON.stringify({
-    //         firstname: 'Rodrigo',
-    //         lastname: 'Alonso',
-    //         phone: '123456',
-    //         email: 'rodrigo@email.com'
-    //     })})
-    // };
-
     const [isFormActive, setIsFormActive] = useState(false)
 
     const handleClick = () => {
