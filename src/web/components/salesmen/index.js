@@ -1,2 +1,2 @@
 export * from './SalesmenGrid'
-export * from './SalesForm'
+export * from './AddSalesmanForm'

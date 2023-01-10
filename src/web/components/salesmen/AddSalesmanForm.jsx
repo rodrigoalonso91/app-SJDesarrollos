@@ -1,12 +1,30 @@
 import { Button, Grid, TextField, Typography } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { useField } from "../../../hooks";
+import { displayForm } from "../../../store/form";
 
-export const SalesForm = () => {
+export const AddSalesmanForm = () => {
 
-    const handleAddSalesman = () => {
+    const firstname = useField({type: 'text'});
+    const lastname = useField({type: 'text'});
+    const phone = useField({type: 'text'});
+    const email = useField({type: 'text'});
 
+    const dispatch = useDispatch();
+
+    const handleAddSalesman = async () => {
+
+        await fetch(`api/salesmen`, { method: "POST", body: JSON.stringify({
+            firstname: firstname.value,
+            lastname: lastname.value,
+            phone: phone.value,
+            email: email.value
+        })})
     }
 
-
+    const handleClickOnCancel = () => {
+        dispatch( displayForm(false) )
+    }
 
     return (
 
@@ -41,6 +59,7 @@ export const SalesForm = () => {
                                 type="text"
                                 placeholder="Ej: Juan"
                                 fullWidth
+                                {...firstname}
                             />
                         </Grid>
 
@@ -50,6 +69,7 @@ export const SalesForm = () => {
                                 type="text"
                                 placeholder="Ej: Garcia"
                                 fullWidth
+                                {...lastname}
                             />
                         </Grid>
 
@@ -59,6 +79,7 @@ export const SalesForm = () => {
                                 type="text"
                                 placeholder="Ej: 1171348080"
                                 fullWidth
+                                {...phone}
                             />
                         </Grid>
 
@@ -68,19 +89,20 @@ export const SalesForm = () => {
                                 type="email"
                                 placeholder="Ej: JuanGarcia@gmail.com"
                                 fullWidth
+                                {...email}
                             />
                         </Grid>
 
                         <Grid container spacing={ 2 } sx={{ mb: 2, mt: 1 }} >
 
                             <Grid item xs={ 12 } sm={ 6 } >
-                                <Button variant="contained" fullWidth onClick={handleAddSalesman} >
+                                <Button variant="contained" fullWidth onClick={ handleAddSalesman } >
                                     Crear
                                 </Button>
                             </Grid>
 
                             <Grid item xs={ 12 } sm={ 6 } >
-                                <Button variant="contained" fullWidth >
+                                <Button variant="contained" fullWidth onClick={ handleClickOnCancel } >
                                     <Typography>Cancelar</Typography>
                                 </Button>
                             </Grid>

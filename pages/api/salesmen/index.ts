@@ -3,13 +3,15 @@ import { createSalesmen, getSalesmen } from "../../../src"
 import type { NextApiRequest, NextApiResponse } from "next"
 
 export default withApiAuthRequired(
-async (req: NextApiRequest, res: NextApiResponse) => {
+	async (req: NextApiRequest, res: NextApiResponse) => {
 
 		const session = await getSession(req, res)
 		if (!session) return res.status(401).end()
+
 		const username = session.user.email
 
-		if (!req.query.path)
+		if (!req.query.path) {
+			
 			switch (req.method) {
 				case "GET":
 					const salesmen = await getSalesmen()
@@ -20,5 +22,6 @@ async (req: NextApiRequest, res: NextApiResponse) => {
 				default:
 					return res.status(405).end()
 			}
+		}
 	}
 )
