@@ -1,3 +1,3 @@
-import {Line} from "./Line"
+import {SimpleLine} from "./SimpleLine"
 
-export type Lines = { block: Array<Line>, lot: Array<Line> }
+export type Lines = { block: Array<SimpleLine>, lot: Array<SimpleLine> }

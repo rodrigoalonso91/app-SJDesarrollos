@@ -1,4 +1,4 @@
-import {Line} from "./types/Line"
+import {SimpleLine} from "./types/SimpleLine"
 import {Lines} from "./types/Lines"
 
 const PATH_START = "<path"
@@ -15,16 +15,16 @@ export default function transformXmlToLines(xml: string): Lines {
 		offset = end + PATH_END.length
 
 		const element = xml.substring(start, end)
-		const d = getAttribute(element, "d")
+		const d = getAttribute(element, "d").replace("Z", "")
 		const stroke = getAttribute(element, "stroke")
 
 		//We ignore Z occurrences since the converter seems to generate them needlessly
-		if (d.includes("Z")) continue
+		//if (d.includes("Z")) continue
 
 		const parts = d.split("L")
 		const origin = parts[0].replace("M", "").split(" ")
 		const destination = parts[1].split(" ")
-		const line: Line = [{x: origin[0], y: origin[1]}, {x: destination[0], y: destination[1]}]
+		const line: SimpleLine = [{x: Number(origin[0]), y: Number(origin[1])}, {x: Number(destination[0]), y: Number(destination[1])}]
 
 		if (stroke === "green")
 			lines.block.push(line)

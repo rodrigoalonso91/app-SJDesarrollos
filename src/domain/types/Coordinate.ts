@@ -1,1 +1,1 @@
-export type Coordinate = { x: string, y: string }
+export type Coordinate = { x: number, y: number }
