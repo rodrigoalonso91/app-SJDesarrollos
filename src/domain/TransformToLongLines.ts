@@ -1,3 +1,4 @@
+import {Coordinate} from "./types/Coordinate"
 import {Line} from "./types/Line"
 import {SimpleLine} from "./types/SimpleLine"
 import {Perimeter} from "./types/Perimeter"
@@ -51,8 +52,7 @@ function transformLinesToLongs(perimeters: Array<Array<Line>>, simples: Array<Si
 
 				if (found.length === 0) {
 				 break
-				}
-				else if (found.length === 1) {
+				} else if (found.length === 1) {
 					long.push(getOtherEnd(found[0], current))
 				} else {
 					const additions = found.map(line => getOtherEnd(line, current))
@@ -71,35 +71,25 @@ function transformLinesToLongs(perimeters: Array<Array<Line>>, simples: Array<Si
 }
 
 function wea(blocks: Array<{ perimeter: Array<Line>, longs: Array<Line> }>) {
-			//console.log(JSON.stringify(blocks[0].longs))
 	const block_lots = blocks.map(block => {
 		const perimeter = [...block.perimeter]
 		const results: Array<Array<Line>> = []
 		//TODO contemplate edge cases
-		while (true) {
+		while (perimeter.length > 0) {
 			const inners = [...block.longs]//TODO Maybe template this
-			const external = perimeter.shift()
-			if (external === undefined) break
-			const innerA = inners.find(x => lineTouchesCoordinate(x, first(external)))!
-			const innerB = inners.find(x => lineTouchesCoordinate(x, last(external)))!
-			if (linesTouch(innerB, innerA)) {
-			 results.push([innerA, innerB, external])
-			 console.log(3)
-			}	else {
-				const closer = inners.find(x => linesTouch(x, innerA) && linesTouch(x, innerB))!
-			console.log("external", external)
-			console.log("a", innerA)
-			console.log("b", innerB)
-			console.log("closer", closer)
-				results.push([innerA, innerB, external, closer])
-			 console.log(4)
-			}
+			const external = perimeter.shift()!
+			const start = inners.find(x => lineTouchesCoordinate(x, first(external)))!
+
+			const result = fome([external, start], last(external), inners)
+			if (result !== null)
+				results.push(result)
+			console.log(result !== null ? "win" : "loose")
 		}
 		return results
 	})
 
 	const results =  block_lots.map(lots => {
-		return lots.filter(x => x.length === 3).map(lot => {
+		return lots.map(lot => {
 			let remaining = [...lot]
 		//console.log(lot)
 			const chain = [...remaining.shift()!]
@@ -118,4 +108,16 @@ function wea(blocks: Array<{ perimeter: Array<Line>, longs: Array<Line> }>) {
 	})
 
 	return results.map(lots => lots.filter(lot => lot.every(coordinate => coordinate !== undefined)))
+}
+
+function fome(path: Array<Line>, destination: Coordinate, options: Array<Line>): Array<Line> | null {
+	const current = last(path)
+	if(lineTouchesCoordinate(current, destination)) return path
+	const touching = options.filter(x => linesTouch(current, x))
+	const remaining = options.filter(x => !touching.includes(x))
+	for (const line of touching) {
+		const result = fome([...path, line], destination, remaining)
+		if (result !== null) return result
+	}
+	return null
 }
