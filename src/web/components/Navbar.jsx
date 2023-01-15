@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { NavbarItem } from './index'
 import 'bootstrap/dist/css/bootstrap.css'
+import Image from 'next/image'
 
 export const Navbar = ({nickname}) => {
 
@@ -8,7 +9,7 @@ export const Navbar = ({nickname}) => {
         <nav className="navbar navbar-expand-sm navbar-dark bg-dark p-2 mb-3">
 
             <Link className="navbar-brand" href='/'>
-                Behrens
+                <Image src='/logos/SJ-Logo-Wh.png' width={150} height={70}/>
             </Link>
 
             <div className="navbar-collapse">
