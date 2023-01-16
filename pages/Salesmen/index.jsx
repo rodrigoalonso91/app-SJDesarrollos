@@ -37,7 +37,6 @@ export const Salesmen = ({ salesmen }) => {
                 ? <AddSalesmanForm />
                 : <SalesmenGrid columns={columns}salesmen={salesmen} />
             }
-            
         </>
     )
 }

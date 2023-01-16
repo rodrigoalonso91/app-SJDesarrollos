@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useRouter } from "next/router";
 
-export const NavbarItem = ({text, href}) => {
+export const NavbarItem = ({text, href, handleOnClick}) => {
 
     const router = useRouter();
 
@@ -13,7 +13,7 @@ export const NavbarItem = ({text, href}) => {
     };
 
     return (
-        <Link href={href} className={getClassName()}>
+        <Link href={href} className={getClassName()} onClick={handleOnClick} >
             {text}
         </Link>
     )
