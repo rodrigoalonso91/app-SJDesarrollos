@@ -18,13 +18,12 @@ export const Salesmen = ({ salesmen }) => {
     
     const { isFormActivated } = useSelector( state => state.isActivatedForm );
     
-
     const columns = useMemo(
         () => [
-          { header: 'Nombre', accessorKey: 'firstname'},
-          { header: 'Apellido', accessorKey: 'lastname'},
-          { header: 'Teléfono', accessorKey: 'phone'},
-          { header: 'Email', accessorKey: 'email'}
+          { header: 'Nombre', accessorKey: 'firstname' },
+          { header: 'Apellido', accessorKey: 'lastname' },
+          { header: 'Teléfono', accessorKey: 'phone' },
+          { header: 'Email', accessorKey: 'email' }
         ],
         [],
     );
@@ -36,7 +35,7 @@ export const Salesmen = ({ salesmen }) => {
             {
                 isFormActivated
                 ? <AddSalesmanForm />
-                : <SalesmenGrid columns={columns} salesmen={salesmen}/>
+                : <SalesmenGrid columns={columns}salesmen={salesmen} />
             }
             
         </>
