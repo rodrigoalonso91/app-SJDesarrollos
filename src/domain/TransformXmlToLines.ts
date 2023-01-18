@@ -1,12 +1,14 @@
-import {SimpleLine} from "./types/SimpleLine"
-import {Lines} from "./types/Lines"
+import {Segment} from "./types/Segment"
+import {CategorizedSegments} from "./types/CategorizedSegments"
 
 const PATH_START = "<path"
 const PATH_END = "/>"
+const BLOCK_BORDER_COLOR = "fuchsia"
+const LOT_BORDER_COLOR = "red"
 
-export default function transformXmlToLines(xml: string): Lines {
+export default function transformXmlToLines(xml: string): CategorizedSegments {
 	let offset = 0
-	const lines: Lines = {lot: [], block: []}
+	const lines: CategorizedSegments = {lot: [], block: []}
 
 	while (true) {
 		const start = xml.indexOf(PATH_START, offset)
@@ -15,28 +17,24 @@ export default function transformXmlToLines(xml: string): Lines {
 		offset = end + PATH_END.length
 
 		const element = xml.substring(start, end)
+
 		const d = getAttribute(element, "d").replace("Z", "")
-		const stroke = getAttribute(element, "stroke")
-
-		//We ignore Z occurrences since the converter seems to generate them needlessly
-		//if (d.includes("Z")) continue
-
 		const parts = d.split("L")
 		const origin = parts[0].replace("M", "").split(" ")
 		const destination = parts[1].split(" ")
-		const line: SimpleLine = [{x: Number(origin[0]), y: Number(origin[1])}, {x: Number(destination[0]), y: Number(destination[1])}]
+		const line: Segment = [coordinate(origin), coordinate(destination)]
 
-		if (stroke === "green")
+		const stroke = getAttribute(element, "stroke")
+		if (stroke === BLOCK_BORDER_COLOR)
 			lines.block.push(line)
-		else if (stroke === "red")
+		else if (stroke === LOT_BORDER_COLOR)
 			lines.lot.push(line)
 	}
-
-
 
 	return lines
 }
 
+const coordinate = (array: Array<string>) => ({x: Number(array[0]), y: Number(array[1])})
 
 function getAttribute(element: string, attribute: string) {
 		const matcher = `${attribute}="`

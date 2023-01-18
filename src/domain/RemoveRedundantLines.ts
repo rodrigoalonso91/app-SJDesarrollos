@@ -1,23 +1,24 @@
-import {SimpleLine} from "./types/SimpleLine"
-import {Lines} from "./types/Lines"
+import {Segment} from "./types/Segment"
+import {CategorizedSegments} from "./types/CategorizedSegments"
 import {coordinatesAreEqual} from "./utils/LineUtils"
 
-export default function removeRedundantLines(lines: Lines): Lines {
-	const block = removeRedundant(removeGhostLines(lines.block))
-	const lot = removeContainedInOtherList(removeRedundant(removeGhostLines(lines.lot)), block)
+export default function removeRedundantLines(lines: CategorizedSegments): CategorizedSegments {
+	const block = withoutRepeated(withoutZeroLengthLines(lines.block))
+	const lot = withoutContainedInOtherList(withoutRepeated(withoutZeroLengthLines(lines.lot)), block)
 	return {block, lot}
 }
 
-const removeRedundant = (lines: Array<SimpleLine>): Array<SimpleLine> =>
-	lines.reduce(removeRedundantLinesReducer, [] as Array<SimpleLine>)
-const removeGhostLines = (lines: Array<SimpleLine>): Array<SimpleLine> =>
+const withoutRepeated = (lines: Array<Segment>): Array<Segment> =>
+	lines.reduce(removeRedundantLinesReducer, [] as Array<Segment>)
+
+const withoutZeroLengthLines = (lines: Array<Segment>): Array<Segment> =>
 	lines.filter(line => !coordinatesAreEqual(line[0], line[1]))
-const removeContainedInOtherList = (lines: Array<SimpleLine>, others: Array<SimpleLine>): Array<SimpleLine> =>
+
+const withoutContainedInOtherList = (lines: Array<Segment>, others: Array<Segment>): Array<Segment> =>
 	lines.filter(line => others.every(other => !linesAreEqual(line, other)))
 
-function removeRedundantLinesReducer(lines: Array<SimpleLine>, lineCandidate: SimpleLine): Array<SimpleLine> {
-	return lines.some(line => linesAreEqual(lineCandidate, line)) ? lines : [...lines, lineCandidate]
-}
+const removeRedundantLinesReducer = (lines: Array<Segment>, lineCandidate: Segment): Array<Segment> =>
+	lines.some(line => linesAreEqual(lineCandidate, line)) ? lines : [...lines, lineCandidate]
 
-const linesAreEqual = (lineA: SimpleLine, lineB: SimpleLine) =>
+const linesAreEqual = (lineA: Segment, lineB: Segment) =>
 	lineA.every(a => lineB.some(b => coordinatesAreEqual(a, b)))

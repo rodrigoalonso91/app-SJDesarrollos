@@ -1,6 +1,6 @@
 import {Coordinate} from "../types/Coordinate"
 import {Line} from "../types/Line"
-import {SimpleLine} from "../types/SimpleLine"
+import {Segment} from "../types/Segment"
 
 export function lineTouchesCoordinate(line: Line, coordinate: Coordinate) {
 	return lineToSimpleLine(line).some(x => coordinatesAreEqual(x, coordinate))
@@ -12,7 +12,7 @@ export function linesTouch(lineA: Line, lineB: Line) {
 	return simpleA.some(a => simpleB.some(b => coordinatesAreEqual(a, b)))
 }
 
-export function getOtherEnd(line: SimpleLine, coordinate: Coordinate) {
+export function getOtherEnd(line: Segment, coordinate: Coordinate) {
 	const results = line.filter(x => !coordinatesAreEqual(x, coordinate))
 	if (results.length === 0) throw Error(`This line has two equal coordinates: ${JSON.stringify(coordinate)}`)
 	if (results.length === 2) throw Error(`This line (${JSON.stringify(line)}) does not have coordinate ${JSON.stringify(coordinate)}`)
