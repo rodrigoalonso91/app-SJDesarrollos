@@ -1,9 +1,9 @@
-import transformLinesToLotSides from "./TransformLinesToLotSides"
+import transformSegmentsToLotSides from "./TransformSegmentsToLotSides"
 import {Coordinate} from "./types/Coordinate"
 import {Line} from "./types/Line"
 import {coordinatesAreEqual, first, last, linesTouch, lineTouchesCoordinate} from "./utils/LineUtils"
 
-export default function transformToLots(sides: ReturnType<typeof transformLinesToLotSides>) {
+export default function transformSidesToLots(sides: ReturnType<typeof transformSegmentsToLotSides>) {
 	return sides.map(createBlockLots).map(orderLines)
 }
 

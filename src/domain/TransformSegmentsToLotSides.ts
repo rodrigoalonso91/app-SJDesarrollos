@@ -4,27 +4,27 @@ import {Perimeter} from "./types/Perimeter"
 import {Segment} from "./types/Segment"
 import {coordinatesAreEqual, first, getOtherEnd, last, lineTouchesCoordinate} from "./utils/LineUtils"
 
-export default function transformLinesToLotSides(lines: CategorizedSegments) {
-	const blocks = transformLinesToBlocks(lines.block)
-	const externals = transformToLotExternalSides(blocks, lines.lot)
-	return transformToLotSides(externals, [...lines.lot])
+export default function transformSegmentsToLotSides(segments: CategorizedSegments) {
+	const blocks = transformSegmentsToBlocks(segments.block)
+	const externals = transformToLotExternalSides(blocks, segments.lot)
+	return transformToLotSides(externals, [...segments.lot])
 }
 
-function transformLinesToBlocks(lines: Array<Segment>) {
+function transformSegmentsToBlocks(segments: Array<Segment>) {
 	const perimeters: Array<Perimeter> = []
-	lines = [...lines]
-	while (lines.length > 0) {
-		const [first, second] = lines.pop()!
+	segments = [...segments]
+	while (segments.length > 0) {
+		const [first, second] = segments.pop()!
 		const perimeter = [first, second]
 
 		while (true) {
 			const last = perimeter[perimeter.length - 1]
-			const touching = lines.filter(line => lineTouchesCoordinate(line, last))
+			const touching = segments.filter(segment => lineTouchesCoordinate(segment, last))
 			if (touching.length > 1) throw Error(`found more than one touching border: ${JSON.stringify(touching)}`)
 			if (touching.length === 0) throw Error(`perimeter could not be completed due to lack of lines`)
-			const line = touching[0]
-			lines = lines.filter(x => x !== line)
-			const next = getOtherEnd(line, last)
+			const segment = touching[0]
+			segments = segments.filter(x => x !== segment)
+			const next = getOtherEnd(segment, last)
 			if (coordinatesAreEqual(next, first)) break
 			else perimeter.push(next)
 		}

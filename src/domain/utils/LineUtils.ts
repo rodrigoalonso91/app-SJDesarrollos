@@ -12,10 +12,10 @@ export function linesTouch(lineA: Line, lineB: Line) {
 	return simpleA.some(a => simpleB.some(b => coordinatesAreEqual(a, b)))
 }
 
-export function getOtherEnd(line: Segment, coordinate: Coordinate) {
-	const results = line.filter(x => !coordinatesAreEqual(x, coordinate))
+export function getOtherEnd(segment: Segment, coordinate: Coordinate) {
+	const results = segment.filter(x => !coordinatesAreEqual(x, coordinate))
 	if (results.length === 0) throw Error(`This line has two equal coordinates: ${JSON.stringify(coordinate)}`)
-	if (results.length === 2) throw Error(`This line (${JSON.stringify(line)}) does not have coordinate ${JSON.stringify(coordinate)}`)
+	if (results.length === 2) throw Error(`This line (${JSON.stringify(segment)}) does not have coordinate ${JSON.stringify(coordinate)}`)
 	return results[0]
 }
 
@@ -26,4 +26,4 @@ export const first = <T>(array: Array<T>): T => array[0]
 
 export const last = <T>(array: Array<T>): T => array[array.length - 1]
 
-const lineToSimpleLine = (line: Line) => [first(line), last(line)]
+const lineToSimpleLine = (line: Line): Segment => [first(line), last(line)]
