@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
-import {useEffect, useState} from "react";
+import useUserData from "../../src/UseUserData";
+import { Navbar } from "../../src/web/components";
 
 
 const Neighborhoods = dynamic(() => import("../../src/web/components/Neighborhood"), {
@@ -7,5 +8,13 @@ const Neighborhoods = dynamic(() => import("../../src/web/components/Neighborhoo
 });
 
 export default function NeighborhoodsScreen() {
-  return <Neighborhoods/>
+
+  const user = useUserData()
+  
+  return (
+    <>
+      <Navbar nickname={user.nickname}/>
+      <Neighborhoods/>
+    </>
+  )
 }
