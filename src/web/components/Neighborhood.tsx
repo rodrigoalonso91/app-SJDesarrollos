@@ -1,78 +1,85 @@
-import Konva from "konva"
-import React from "react"
-import {Layer, Rect, Shape, Stage, Text} from "react-konva"
+import React, {ChangeEvent, useEffect, useState} from "react"
+import {Layer, Shape, Stage} from "react-konva"
+import transformXmlToNeighborhoods from "../../domain/TransformXmlToNeighborhoods"
 import {Coordinate} from "../../domain/types/Coordinate"
+import {Line} from "../../domain/types/Line"
 
-class ColoredRect extends React.Component {
-	state = {
-		color: "green"
-	}
-	handleClick = () => {
-		this.setState({
-			color: Konva.Util.getRandomColor()
-		})
-	}
 
-	render() {
-		return (
-			<Rect
-				x={20}
-				y={20}
-				width={50}
-				height={50}
-				fill={this.state.color}
-				shadowBlur={5}
-				onClick={this.handleClick}
-			/>
-		)
-	}
-}
+export default function Neighborhood() {
+	const [wea, setWea] = useState<string | null>(null)
+	const [fome, setFome] = useState<ReturnType<typeof transformXmlToNeighborhoods> | null>(null)
+	useEffect(() => {
+		if (wea)
+			console.log(wea)
+		if (wea)
+			setFome(transformXmlToNeighborhoods(wea))
+	}, [wea])
 
-//TODO perimeter is actually blocks
-export default function Neighborhood({perimeter}: { perimeter: Array<Array<Coordinate>> }) {
+		useEffect(() => {
+	}, [fome])
+
 	// Stage is a div container
 	// Layer is actual canvas element (so you may have several canvases in the stage)
 	// And then we have canvas shapes inside the Layer
 	return (
-		<Stage width={window.innerWidth} height={window.innerHeight}>
-			<Layer>
-				<Text text="Try click on rect"/>
-				<ColoredRect/>
+		<>
+			<input type="file" onChange={(e) => onFileUpload(e, setWea)}/>
+			<Stage width={window.innerWidth} height={window.innerHeight}>
+				<Layer>
+					{fome && fome.map((block, i) =>
+						<Block key={i} lots={block}/>
+					)}
+				</Layer>
+			</Stage>
+		</>
 
-				{perimeter.map((block, i) =>
-					<Shape
-						key={i}
-						sceneFunc={(context, shape) => {
-							context.beginPath()
-							const [start, ...coordinates] = block
-							context.moveTo(start.x, start.y)
-							coordinates.forEach(({x, y}) => context.lineTo(x, y))
-							context.closePath()
-							context.fillStrokeShape(shape)
-						}}
-						fill="#00D2FF"
-						stroke="black"
-						strokeWidth={4}
-					/>
-				)}
-
-			</Layer>
-		</Stage>
 	)
 }
 
-/*
-<Shape
-    sceneFunc={(context, shape) => {
-        context.beginPath();
-        context.moveTo(20, 50);
-        context.lineTo(220, 80);
-        context.quadraticCurveTo(150, 100, 260, 170);
-        context.closePath();
-        // (!) Konva specific method, it is very important
-        context.fillStrokeShape(shape);
-    }}
-    fill="#00D2FF"
-    stroke="black"
-    strokeWidth={4}
-/>*/
+function Block({lots}: { lots: Array<Line> }) {
+	return (
+		<>
+			{lots.map((coordinates, i) =>
+				<Lot
+					key={i}
+					coordinates={coordinates}
+				/>
+			)}
+		</>
+	)
+}
+
+function Lot({coordinates: wea}: { coordinates: Array<Coordinate> }) {
+	return (
+		<Shape
+			sceneFunc={(context, shape) => {
+				context.beginPath()
+				const [start, ...coordinates] = wea
+				context.moveTo(start.x, start.y)
+				coordinates.forEach(({x, y}) => context.lineTo(x, y))
+				context.closePath()
+				context.fillStrokeShape(shape)
+			}}
+			fill="#00D2FF"
+			stroke="black"
+			strokeWidth={1}
+		/>
+	)
+}
+
+async function onFileUpload(e: ChangeEvent<HTMLInputElement>, callback: (value: string) => void) {
+	if (!e.target.files) return
+	const file = e.target.files[0]
+	const result = await encode(file)
+	callback(result)
+}
+
+async function encode(file: File): Promise<string> {
+	const promise = new Promise<string>((resolve, reject) => {
+		const reader = new FileReader()
+		reader.onload = (ev) => resolve(ev.target!.result as string)
+		reader.onerror = reject
+		reader.readAsText(file, "UTF-8")
+	})
+	return await promise
+}
