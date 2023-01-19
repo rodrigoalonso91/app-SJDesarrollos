@@ -13,7 +13,7 @@ export const NavbarItem = ({text, href, handleOnClick}) => {
     };
 
     return (
-        <Link href={href} className={getClassName()} onClick={handleOnClick} >
+        <Link href={href} className={getClassName()} onClick={ router.asPath === href ? undefined : handleOnClick } >
             {text}
         </Link>
     )

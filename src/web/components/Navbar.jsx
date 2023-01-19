@@ -10,6 +10,7 @@ export const Navbar = ({ nickname }) => {
     const [open, setOpen] = useState(false)
 
     const handleClick = () => {
+
         setOpen(!open)
     }
 
@@ -48,7 +49,7 @@ export const Navbar = ({ nickname }) => {
 
             </nav>
 
-            <Backdrop open={open}>
+            <Backdrop style={{zIndex: 100}} open={open}>
                 <CircularProgress color="inherit" />
             </Backdrop>
         </>
