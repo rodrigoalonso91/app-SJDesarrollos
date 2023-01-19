@@ -2,8 +2,11 @@ import { useDispatch } from 'react-redux';
 import MaterialReactTable from 'material-react-table';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { displayForm } from './../../../store/form'
+import { useState } from 'react';
 
 export const SalesmenGrid = ({columns, salesmen}) => {
+
+    const [salesmenData, setSalesmenData] = useState(salesmen)
 
     const dispatch = useDispatch();
 
@@ -23,16 +26,23 @@ export const SalesmenGrid = ({columns, salesmen}) => {
                     id,
                     values: {...values}
                 }
-            ), 
+            ),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
 
-        exitEditingMode();
-    };
+        const data = salesmenData.map( salesman =>
+            salesman.id === id 
+            ? {id,...values} 
+            : salesman 
+        )
 
-    
+        exitEditingMode();
+        
+        setSalesmenData(data);
+
+    };
 
     return (
         <>
@@ -48,7 +58,7 @@ export const SalesmenGrid = ({columns, salesmen}) => {
 
             <MaterialReactTable
                 columns={columns}
-                data={salesmen}
+                data={salesmenData}
                 enableColumnOrdering={false}
                 enableGlobalFilter={false} //turn off a feature
                 enableEditing
