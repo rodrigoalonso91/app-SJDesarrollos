@@ -1,4 +1,5 @@
 import { PersonAdd } from '@mui/icons-material';
+import { Typography } from '@mui/material';
 import MaterialReactTable from 'material-react-table';
 import { useCallback } from 'react';
 import { useState } from 'react';
@@ -22,9 +23,9 @@ export const CustomGrid = ({ collection, columns, data }) => {
 
         const record = {
             id,
-            values: {...values}
+            values: { ...values }
         }
-        
+
         await updateRowOnDatabase(collection, record);
 
         const data = tableData.map(data =>
@@ -49,7 +50,7 @@ export const CustomGrid = ({ collection, columns, data }) => {
             tableData.splice(row.index, 1);
             setTableData([...tableData]);
         },
-    [tableData]
+        [tableData]
     );
 
     return (
@@ -57,30 +58,41 @@ export const CustomGrid = ({ collection, columns, data }) => {
             <div className="contairner d-flex flex-row-reverse align-items-center">
                 <button
                     className='btn btn-primary mb-3 me-3'
-                    onClick={ handleClick }
+                    onClick={handleClick}
                 >
                     <PersonAdd sx={{ mr: '10px' }} />
                     Agregar
                 </button>
             </div>
 
-            <MaterialReactTable
+            <div style={{ padding: 15}} >
+                <MaterialReactTable
 
-                columns={columns}
-                data={tableData}
-                initialState={{ columnVisibility: { id: false } }}
+                    style={{boxShadow: '3px 4.5px 9.5px 3.5px #dddddd'}}
+                    columns={columns}
+                    data={tableData}
+                    initialState={{ columnVisibility: { id: false } }}
 
-                enableColumnOrdering={false}
-                enableGlobalFilter={false} //turn off a feature
-                enableEditing
-                editingMode="modal"
+                    enableColumnOrdering={false}
+                    enableGlobalFilter={false} //turn off a feature
+                    enableEditing
+                    editingMode="modal"
 
-                onEditingRowSave={ handleSaveRowEdits }
+                    onEditingRowSave={handleSaveRowEdits}
 
-                renderRowActions={({ row, table }) => (
-                    <BasicEditActions row={row} table={table} handleDeleteRow={ handleDeleteRow } />
-                )}
-            />
+                    renderTopToolbarCustomActions={() => (
+                        <Typography variant='h5' >
+                            {
+                                collection === 'clients' ? 'Clientes' : 'Vendedores'
+                            }
+                        </Typography>
+                    )}
+
+                    renderRowActions={({ row, table }) => (
+                        <BasicEditActions row={row} table={table} handleDeleteRow={handleDeleteRow} />
+                    )}
+                />
+            </div>
         </>
     )
 }
