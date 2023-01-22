@@ -6,12 +6,12 @@ export const BasicEditActions = ({ row, table, handleDeleteRow }) => {
 
     return (
         <Box sx={{ display: 'flex', gap: '1rem' }} >
-            <Tooltip arrow placement="left" title="Edit" >
+            <Tooltip arrow placement="left" title="Editar" >
                 <IconButton onClick={() => table.setEditingRow(row)} >
                     <Edit />
                 </IconButton>
             </Tooltip>
-            <Tooltip arrow placement="right" title="Delete">
+            <Tooltip arrow placement="right" title="Borrar">
                 <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                     <Delete />
                 </IconButton>

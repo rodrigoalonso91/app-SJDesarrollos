@@ -1,8 +1,11 @@
 import { PersonAdd } from '@mui/icons-material';
 import MaterialReactTable from 'material-react-table';
+import { useCallback } from 'react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import deleteRowOnDatabase from '../../../helpers/deleteRowOnDatabase';
 import updateRowOnDatabase from '../../../helpers/updateRowOnDatabase';
+import { displayForm } from '../../../store/form';
 import { BasicEditActions } from '../table/BasicEditActions';
 
 
@@ -35,6 +38,20 @@ export const CustomGrid = ({ collection, columns, data }) => {
         setTableData(data);
     };
 
+    const handleDeleteRow = useCallback(
+        async (row) => {
+
+            const { firstname, lastname, id } = row.original;
+
+            if (!confirm(`Desea eliminar a ${firstname} ${lastname}?`)) return;
+
+            await deleteRowOnDatabase(collection, id);
+            tableData.splice(row.index, 1);
+            setTableData([...tableData]);
+        },
+    [tableData]
+    );
+
     return (
         <>
             <div className="contairner d-flex flex-row-reverse align-items-center">
@@ -60,9 +77,9 @@ export const CustomGrid = ({ collection, columns, data }) => {
 
                 onEditingRowSave={ handleSaveRowEdits }
 
-                // renderRowActions={({ row, table }) => (
-                //     <BasicEditActions row={row} table={table} handleDeleteRow={ handleDeleteRow } />
-                // )}
+                renderRowActions={({ row, table }) => (
+                    <BasicEditActions row={row} table={table} handleDeleteRow={ handleDeleteRow } />
+                )}
             />
         </>
     )
