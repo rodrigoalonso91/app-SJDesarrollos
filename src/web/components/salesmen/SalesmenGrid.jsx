@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 export const SalesmenGrid = ({columns, salesmen}) => {
 
-    const [salesmenData, setSalesmenData] = useState(salesmen)
+    const [tableData, setTableData] = useState(salesmen)
 
     const dispatch = useDispatch();
 
@@ -32,7 +32,7 @@ export const SalesmenGrid = ({columns, salesmen}) => {
             }
         })
 
-        const data = salesmenData.map( salesman =>
+        const data = tableData.map( salesman =>
             salesman.id === id 
             ? {id,...values} 
             : salesman 
@@ -40,7 +40,7 @@ export const SalesmenGrid = ({columns, salesmen}) => {
 
         exitEditingMode();
         
-        setSalesmenData(data);
+        setTableData(data);
 
     };
 
@@ -58,7 +58,7 @@ export const SalesmenGrid = ({columns, salesmen}) => {
 
             <MaterialReactTable
                 columns={columns}
-                data={salesmenData}
+                data={tableData}
                 enableColumnOrdering={false}
                 enableGlobalFilter={false} //turn off a feature
                 enableEditing
