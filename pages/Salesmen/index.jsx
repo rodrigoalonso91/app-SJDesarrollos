@@ -1,12 +1,12 @@
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import useUserData from "../../src/UseUserData"
-import { SalesmenGrid } from "../../src/web/components/salesmen/SalesmenGrid";
 import { useEffect, useMemo } from 'react';
-import { Navbar } from '../../src/web/components'
 import { getSalesmen } from '../../src/GetSalesmen'
 import { useDispatch, useSelector } from 'react-redux';
-import { AddSalesmanForm } from './../../src/web/components/salesmen'
+import { Navbar } from '../../src/web/components'
+import { CustomGrid } from '../../src/web/components/layout';
 import { displayForm } from '../../src/store/form';
+import { AddSalesmanForm } from './../../src/web/components/salesmen'
 
 
 export const Salesmen = ({ salesmen }) => {
@@ -31,11 +31,10 @@ export const Salesmen = ({ salesmen }) => {
     return (
         <>
             <Navbar nickname={ user.nickname }/>
-
             {
                 isFormActivated
                 ? <AddSalesmanForm />
-                : <SalesmenGrid columns={columns} salesmen={salesmen} />
+                : <CustomGrid collection="salesmen" columns={columns} data={salesmen} />
             }
         </>
     )

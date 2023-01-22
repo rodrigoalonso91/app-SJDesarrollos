@@ -1,6 +1,7 @@
 import React from 'react'
 import useUserData from '../../src/UseUserData';
 import { Navbar } from '../../src/web/components'
+import { CustomGrid } from '../../src/web/components/layout/CustomGrid';
 
 export const Clients = () => {
 
