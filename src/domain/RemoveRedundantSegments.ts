@@ -1,6 +1,6 @@
 import {Segment} from "./types/Segment"
 import {CategorizedSegments} from "./types/CategorizedSegments"
-import {coordinatesAreEqual} from "./utils/LineUtils"
+import {coordinatesAreRoughlyEqual} from "./utils/LineUtils"
 
 export default function removeRedundantSegments(segments: CategorizedSegments): CategorizedSegments {
 	const block = withoutRepeated(withoutZeroLengthSegments(segments.block))
@@ -9,7 +9,7 @@ export default function removeRedundantSegments(segments: CategorizedSegments): 
 }
 
 const withoutZeroLengthSegments = (segments: Array<Segment>): Array<Segment> =>
-	segments.filter(segment => !coordinatesAreEqual(segment[0], segment[1]))
+	segments.filter(segment => !coordinatesAreRoughlyEqual(segment[0], segment[1]))
 
 const withoutContainedInOtherList = (segments: Array<Segment>, others: Array<Segment>): Array<Segment> =>
 	segments.filter(segment => others.every(other => !segmentsAreEqual(segment, other)))
@@ -21,4 +21,4 @@ const withoutRepeatedReducer = (segments: Array<Segment>, candidate: Segment): A
 	segments.some(segment => segmentsAreEqual(candidate, segment)) ? segments : [...segments, candidate]
 
 const segmentsAreEqual = (segmentA: Segment, segmentB: Segment) =>
-	segmentA.every(a => segmentB.some(b => coordinatesAreEqual(a, b)))
+	segmentA.every(a => segmentB.some(b => coordinatesAreRoughlyEqual(a, b)))

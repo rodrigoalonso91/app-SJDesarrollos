@@ -2,7 +2,7 @@ import {Line} from "./types/Line"
 import {CategorizedSegments} from "./types/CategorizedSegments"
 import {Perimeter} from "./types/Perimeter"
 import {Segment} from "./types/Segment"
-import {coordinatesAreEqual, first, getOtherEnd, last, lineTouchesCoordinate} from "./utils/LineUtils"
+import {coordinatesAreRoughlyEqual, first, getOtherEnd, last, lineTouchesCoordinate} from "./utils/LineUtils"
 
 export default function transformSegmentsToLotSides(segments: CategorizedSegments) {
 	const blocks = transformSegmentsToBlocks(segments.block)
@@ -25,7 +25,7 @@ function transformSegmentsToBlocks(segments: Array<Segment>) {
 			const segment = touching[0]
 			segments = segments.filter(x => x !== segment)
 			const next = getOtherEnd(segment, last)
-			if (coordinatesAreEqual(next, first)) break
+			if (coordinatesAreRoughlyEqual(next, first)) break
 			else perimeter.push(next)
 		}
 
@@ -75,6 +75,7 @@ function transformToLotSides(perimeters: Array<Array<Line>>, simples: Array<Segm
 	})
 }
 
+//TODO rename
 function xuxa({line, simples}: { line: Line, simples: Array<Segment>}): Array<Line> {
 	const current = last(line)
 	const found = simples.filter(simple => lineTouchesCoordinate(simple, current))
