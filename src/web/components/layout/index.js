@@ -1,1 +1,2 @@
-export * from '../layout/CustomGrid';
+export * from './CustomGrid';
+export * from './CustomModal'

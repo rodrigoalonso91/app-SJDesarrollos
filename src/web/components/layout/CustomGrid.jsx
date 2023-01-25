@@ -3,16 +3,20 @@ import { Typography } from '@mui/material';
 import MaterialReactTable from 'material-react-table';
 import { useCallback } from 'react';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import deleteRowOnDatabase from '../../../helpers/deleteRowOnDatabase';
 import updateRowOnDatabase from '../../../helpers/updateRowOnDatabase';
 import { displayForm } from '../../../store/form';
 import { BasicEditActions } from '../table/BasicEditActions';
+import { CustomModal } from './CustomModal';
+import { AddForm } from '../AddForm'
 
 
 export const CustomGrid = ({ collection, columns, data }) => {
 
-    const [tableData, setTableData] = useState(data)
+    const [tableData, setTableData] = useState(data);
+
+    const { isFormActivated } = useSelector(state => state.isActivatedForm);
 
     const dispatch = useDispatch();
     const handleClick = () => { dispatch(displayForm(true)) }
@@ -65,10 +69,10 @@ export const CustomGrid = ({ collection, columns, data }) => {
                 </button>
             </div>
 
-            <div style={{ padding: 15}} >
+            <div style={{ padding: 15 }} >
                 <MaterialReactTable
 
-                    style={{boxShadow: '3px 4.5px 9.5px 3.5px #dddddd'}}
+                    style={{ boxShadow: '3px 4.5px 9.5px 3.5px #dddddd' }}
                     columns={columns}
                     data={tableData}
                     initialState={{ columnVisibility: { id: false } }}
@@ -78,12 +82,16 @@ export const CustomGrid = ({ collection, columns, data }) => {
                     enableEditing
                     editingMode="modal"
 
+                    positionActionsColumn="first"
+
                     onEditingRowSave={handleSaveRowEdits}
 
                     renderTopToolbarCustomActions={() => (
-                        <Typography variant='h5' >
+                        <Typography sx={{ ml: 1 }} variant='h5' >
                             {
-                                collection === 'clients' ? 'Clientes' : 'Vendedores'
+                                collection === 'clients'
+                                    ? 'Clientes'
+                                    : 'Vendedores'
                             }
                         </Typography>
                     )}
@@ -93,6 +101,14 @@ export const CustomGrid = ({ collection, columns, data }) => {
                     )}
                 />
             </div>
+
+            {
+                isFormActivated && 
+                <CustomModal>
+                    <AddForm collection={collection} data={tableData} setData={setTableData} />
+                </CustomModal>
+            }
+
         </>
     )
 }
