@@ -2,6 +2,7 @@ import splitSegmentOnIntersections from "../domain/SplitSegmentOnIntersections"
 import {Coordinate} from "../domain/types/Coordinate"
 import {Segment} from "../domain/types/Segment"
 
+const SEGMENT: Segment = [{x: 1, y: 1}, {x: 4, y: 1}]
 describe("SplitSegmentOnIntersections should", () => {
 	let results: Array<Segment> = []
 
@@ -9,8 +10,16 @@ describe("SplitSegmentOnIntersections should", () => {
 		results = []
 	})
 
-	it("return same segment if no segment intersects it", () => {
-		splitSegment([NON_INTERSECTING])
+	it("return same segment if a non parallel does not intersect it", () => {
+		const SPLITTER: Segment = [{x: 2, y: 2}, {x: 3, y: 3}]
+		splitSegment([SPLITTER])
+
+		expectResultsToBe([SEGMENT])
+	})
+
+	it("return same segment if a parallel does not intersect it", () => {
+		const SPLITTER: Segment = [{x: 2, y: 2}, {x: 3, y: 2}]
+		splitSegment([SPLITTER])
 
 		expectResultsToBe([SEGMENT])
 	})
@@ -22,13 +31,15 @@ describe("SplitSegmentOnIntersections should", () => {
 	})
 
 	it("return same segment if a non parallel shares an end", () => {
-		splitSegment([SHARING_END_NON_PARALLEL])
+		const SPLITTER: Segment = [{x: 4, y: 1}, {x: 4, y: 2}]
+		splitSegment([SPLITTER])
 
 		expectResultsToBe([SEGMENT])
 	})
 
 	it("return same segment if a parallel contains no end but shares one", () => {
-		splitSegment([SHARING_END_PARALLEL])
+		const SPLITTER: Segment = [{x: 4, y: 1}, {x: 5, y: 1}]
+		splitSegment([SPLITTER])
 
 		expectResultsToBe([SEGMENT])
 	})
@@ -72,6 +83,24 @@ describe("SplitSegmentOnIntersections should", () => {
 		expectResultsToBe([PART_1, PART_2, PART_3])
 	})
 
+	it("return split segment if a non parallel segment intersects it", () => {
+		const SPLITTER: Segment = [{x: 1, y: 0}, {x: 3, y: 2}]
+		splitSegment([SPLITTER])
+
+		const PART_1: Segment = [{x: 1, y: 1}, {x: 2, y: 1}]
+		const PART_2: Segment = [{x: 2, y: 1}, {x: 4, y: 1}]
+		expectResultsToBe([PART_1, PART_2])
+	})
+
+	it("return split segment if a non parallel segment ends on it", () => {
+		const SPLITTER: Segment = [{x: 2, y: 1}, {x: 3, y: 2}]
+		splitSegment([SPLITTER])
+
+		const PART_1: Segment = [{x: 1, y: 1}, {x: 2, y: 1}]
+		const PART_2: Segment = [{x: 2, y: 1}, {x: 4, y: 1}]
+		expectResultsToBe([PART_1, PART_2])
+	})
+
 	function splitSegment(splitters: Array<Segment>) {
 		results = splitSegmentOnIntersections(SEGMENT, splitters)
 	}
@@ -88,11 +117,6 @@ describe("SplitSegmentOnIntersections should", () => {
 			`)
 	}
 })
-
-const SEGMENT: Segment = [{x: 1, y: 1}, {x: 4, y: 1}]
-const NON_INTERSECTING: Segment = [{x: 2, y: 2}, {x: 3, y: 3}]
-const SHARING_END_NON_PARALLEL: Segment = [{x: 4, y: 1}, {x: 4, y: 2}]
-const SHARING_END_PARALLEL: Segment = [{x: 4, y: 1}, {x: 5, y: 1}]
 
 const segmentsAreEqual = (segmentA: Segment, segmentB: Segment) =>
 	segmentA.every(a => segmentB.some(b => coordinatesAreEqual(a, b)))
