@@ -11,6 +11,10 @@ import { BasicEditActions } from '../table/BasicEditActions';
 import { CustomModal } from './CustomModal';
 import { AddForm } from '../AddForm'
 
+const esCollections = {
+    salesmen: 'Vendedores',
+    clients: 'Clientes'
+};
 
 export const CustomGrid = ({ collection, columns, data }) => {
 
@@ -88,11 +92,7 @@ export const CustomGrid = ({ collection, columns, data }) => {
 
                     renderTopToolbarCustomActions={() => (
                         <Typography sx={{ ml: 1 }} variant='h5' >
-                            {
-                                collection === 'clients'
-                                    ? 'Clientes'
-                                    : 'Vendedores'
-                            }
+                            {esCollections[collection]}
                         </Typography>
                     )}
 
@@ -104,7 +104,7 @@ export const CustomGrid = ({ collection, columns, data }) => {
 
             {
                 isFormActivated && 
-                <CustomModal>
+                <CustomModal headerText={ `Agregar ${esCollections[collection]}` }>
                     <AddForm collection={collection} data={tableData} setData={setTableData} />
                 </CustomModal>
             }
