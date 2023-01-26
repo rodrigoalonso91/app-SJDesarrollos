@@ -10,8 +10,15 @@ describe("SplitSegmentOnIntersections should", () => {
 		results = []
 	})
 
-	it("return same segment if a non parallel does not intersect it", () => {
-		const SPLITTER: Segment = [{x: 2, y: 2}, {x: 3, y: 3}]
+	it("return same segment if a non parallel does not intersect it nor would if made a line", () => {
+		const SPLITTER: Segment = [{x: 0, y: 1}, {x: 1, y: 2}]
+		splitSegment([SPLITTER])
+
+		expectResultsToBe([SEGMENT])
+	})
+
+	it("return same segment if a non parallel does not intersect it but would if made a line", () => {
+		const SPLITTER: Segment = [{x: 3, y: 2}, {x: 4, y: 3}]
 		splitSegment([SPLITTER])
 
 		expectResultsToBe([SEGMENT])
@@ -31,7 +38,8 @@ describe("SplitSegmentOnIntersections should", () => {
 	})
 
 	it("return same segment if a non parallel shares an end", () => {
-		const SPLITTER: Segment = [{x: 4, y: 1}, {x: 4, y: 2}]
+		//this x is selected by hand so that it a weird scenario in which we need to check for ends
+		const SPLITTER: Segment = [{x: 4, y: 1}, {x: 0.1, y: 2}]
 		splitSegment([SPLITTER])
 
 		expectResultsToBe([SEGMENT])
@@ -100,6 +108,30 @@ describe("SplitSegmentOnIntersections should", () => {
 		const PART_2: Segment = [{x: 2, y: 1}, {x: 4, y: 1}]
 		expectResultsToBe([PART_1, PART_2])
 	})
+
+	it("return split segment cut by a vertical", () => {
+		const SPLITTER: Segment = [{x: 2, y: 1}, {x: 2, y: 3}]
+		const SEGMENT: Segment = [{x: 1, y: 2}, {x: 3, y: 2}]
+		splitSpecificSegment(SEGMENT, [SPLITTER])
+
+		const PART_1: Segment = [{x: 1, y: 2}, {x: 2, y: 2}]
+		const PART_2: Segment = [{x: 2, y: 2}, {x: 3, y: 2}]
+		expectResultsToBe([PART_1, PART_2])
+	})
+
+	it("return split segment if is vertical and cut", () => {
+		const SPLITTER: Segment = [{x: 1, y: 2}, {x: 3, y: 2}]
+		const SEGMENT: Segment = [{x: 2, y: 1}, {x: 2, y: 3}]
+		splitSpecificSegment(SEGMENT, [SPLITTER])
+
+		const PART_1: Segment = [{x: 2, y: 1}, {x: 2, y: 2}]
+		const PART_2: Segment = [{x: 2, y: 2}, {x: 2, y: 3}]
+		expectResultsToBe([PART_1, PART_2])
+	})
+
+	function splitSpecificSegment(segment: Segment, splitters: Array<Segment>) {
+		results = splitSegmentOnIntersections(segment, splitters)
+	}
 
 	function splitSegment(splitters: Array<Segment>) {
 		results = splitSegmentOnIntersections(SEGMENT, splitters)

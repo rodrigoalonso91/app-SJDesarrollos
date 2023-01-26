@@ -12,11 +12,10 @@ export function linesTouchAtTheirEnds(lineA: Line, lineB: Line) {
 	return simpleA.some(a => simpleB.some(b => coordinatesAreRoughlyEqual(a, b)))
 }
 
-export function getOtherEnd(segment: Segment, coordinate: Coordinate) {
-	const results = segment.filter(x => !coordinatesAreRoughlyEqual(x, coordinate))
-	if (results.length === 0) throw Error(`This line has two equal coordinates: ${JSON.stringify(coordinate)}`)
-	if (results.length === 2) throw Error(`This line (${JSON.stringify(segment)}) does not have coordinate ${JSON.stringify(coordinate)}`)
-	return results[0]
+export function getOtherEnd(line: Line, coordinate: Coordinate) {
+	if (coordinatesAreRoughlyEqual(first(line), coordinate)) return last(line)
+	if (coordinatesAreRoughlyEqual(last(line), coordinate)) return first(line)
+	throw Error(`This line (${JSON.stringify(line)}) does not have coordinate ${JSON.stringify(coordinate)}`)
 }
 
 export const coordinatesAreRoughlyEqual = (coordinateA: Coordinate, coordinateB: Coordinate) =>

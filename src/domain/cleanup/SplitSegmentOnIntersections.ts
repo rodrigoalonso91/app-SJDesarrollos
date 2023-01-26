@@ -1,12 +1,13 @@
 import {Coordinate} from "../types/Coordinate"
 import {Segment} from "../types/Segment"
-import {areRoughlyEqual} from "../utils/LineUtils"
+import {areRoughlyEqual, linesTouchAtTheirEnds} from "../utils/LineUtils"
 
 export default function splitSegmentOnIntersections(segment: Segment, splitters: Array<Segment>): Array<Segment> {
 	return splitters.reduce((results, splitter) =>
 			results.flatMap(segment => {
-				const {slope: segmentSlope, offset: segmentOffset} = getSegmentProperties(segment)
-				const {slope: splitterSlope, offset: splitterOffset} = getSegmentProperties(splitter)
+				const segmentSlope = getSlope(segment)
+				const splitterSlope = getSlope(splitter)
+
 				if (areRoughlyEqual(segmentSlope, splitterSlope)) {
 					const inners = splitter
 						.filter(coordinate => !isCoordinateAnEndOfSegment(segment, coordinate))
@@ -24,14 +25,14 @@ export default function splitSegmentOnIntersections(segment: Segment, splitters:
 							[segment[1], closerTo(segment[1], inners)]
 						]
 				} else {
-					const x = (splitterOffset - segmentOffset) / (segmentSlope - splitterSlope)
-					const y = segmentSlope * x + segmentOffset
-					const coordinate = {x, y}
-					if (isCoordinateContainedInSegment(segment, coordinate))
+					const coordinate = getIntersection(segment, splitter)
+					if (linesTouchAtTheirEnds(segment, splitter)) return [segment]
+					if (isCoordinateContainedInSegment(segment, coordinate) && isCoordinateContainedInSegment(splitter, coordinate)) {
 						return [
 							[segment[0], coordinate],
 							[coordinate, segment[1]]
 						]
+					}
 				}
 				return [segment]
 			})
@@ -66,3 +67,24 @@ const coordinatesAreEqual = (coordinateA: Coordinate, coordinateB: Coordinate) =
 
 const isCoordinateAnEndOfSegment = (segment: Segment, coordinate: Coordinate) =>
 	segment.some(end => coordinatesAreEqual(end, coordinate))
+
+function getIntersection(segmentA: Segment, segmentB: Segment): Coordinate {
+	const {slope: slopeA, offset: OffsetA} = getSegmentProperties(segmentA)
+	const {slope: slopeB, offset: OffsetB} = getSegmentProperties(segmentB)
+
+	if (Math.abs(slopeA) === Infinity) {
+		const x = segmentA[0].x
+		const y = slopeB * x + OffsetB
+		return {x, y}
+	}
+
+	if (Math.abs(slopeB) === Infinity) {
+		const x = segmentB[0].x
+		const y = slopeA * x + OffsetA
+		return {x, y}
+	}
+
+	const x = (OffsetB - OffsetA) / (slopeA - slopeB)
+	const y = slopeA * x + OffsetA
+	return {x, y}
+}

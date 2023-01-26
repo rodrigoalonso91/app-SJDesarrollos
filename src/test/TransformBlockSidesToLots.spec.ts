@@ -94,8 +94,8 @@ describe("TransformBlockSidesToLots should", () => {
 		const externals = [
 			[RIGHT_1, RIGHT_0, LEFT_0, LEFT_1],
 			[LEFT_1, LEFT_2],
-			[RIGHT_1, RIGHT_2],
-			[RIGHT_2, RIGHT_3, LEFT_3, LEFT_2],
+			[LEFT_2, LEFT_3, RIGHT_3, RIGHT_2],
+			[RIGHT_2, RIGHT_1],
 		]
 		const internals = [
 			[LEFT_1, RIGHT_1],
