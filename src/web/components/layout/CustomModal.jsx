@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components'
 import { displayForm } from '../../../store/form';
 
-export const CustomModal = ({children}) => {
+export const CustomModal = ({children, headerText}) => {
 
     const dispatch = useDispatch();
 
@@ -20,7 +20,7 @@ export const CustomModal = ({children}) => {
                 <ModalContainer>
                     
                     <ModalHeader>
-                        <Typography variant="h3" sx={{fontSize: 20, color: '#1660cd'}}>Nuevo vendedor</Typography>
+                        <Typography variant="h3" sx={{fontSize: 20, color: '#1660cd'}}>{headerText}</Typography>
                     </ModalHeader>
 
                     <CloseModalButton onClick={handleClick}>
