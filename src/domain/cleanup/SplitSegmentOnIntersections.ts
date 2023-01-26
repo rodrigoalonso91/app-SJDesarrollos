@@ -1,6 +1,6 @@
-import {Coordinate} from "./types/Coordinate"
-import {Segment} from "./types/Segment"
-import {areRoughlyEqual} from "./utils/LineUtils"
+import {Coordinate} from "../types/Coordinate"
+import {Segment} from "../types/Segment"
+import {areRoughlyEqual} from "../utils/LineUtils"
 
 export default function splitSegmentOnIntersections(segment: Segment, splitters: Array<Segment>): Array<Segment> {
 	return splitters.reduce((results, splitter) =>

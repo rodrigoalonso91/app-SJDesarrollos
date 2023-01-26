@@ -61,17 +61,17 @@ function transformToLotExternalSides(perimeters: Array<Perimeter>, inners: Array
 }
 
 function transformToLotSides(perimeters: Array<Array<Line>>, simples: Array<Segment>) {
-	return perimeters.map(perimeter => {
-		const origins = perimeter.map(line => first(line))
+	return perimeters.map(externals => {
+		const origins = externals.map(line => first(line))
 
-		const longs: Array<Line> = []
+		const internals: Array<Line> = []
 		while (origins.length > 0) {
 			const origin = origins.shift()!
-			if(longs.some(long => lineTouchesCoordinate(long, origin))) continue
-			longs.push(...xuxa({line: [origin], simples}))
+			if(internals.some(long => lineTouchesCoordinate(long, origin))) continue
+			internals.push(...xuxa({line: [origin], simples}))
 		}
 
-		return {perimeter, longs: longs.filter(x => x.length > 1)}
+		return {externals, internals: internals.filter(x => x.length > 1)}
 	})
 }
 

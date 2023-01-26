@@ -1,4 +1,4 @@
-import splitSegmentOnIntersections from "../domain/SplitSegmentOnIntersections"
+import splitSegmentOnIntersections from "../domain/cleanup/SplitSegmentOnIntersections"
 import {Coordinate} from "../domain/types/Coordinate"
 import {Segment} from "../domain/types/Segment"
 

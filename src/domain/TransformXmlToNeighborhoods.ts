@@ -1,4 +1,4 @@
-import refineRawSegments from "./RefineRawSegments"
+import refineRawSegments from "./cleanup/RefineRawSegments"
 import transformSegmentsToLotSides from "./TransformSegmentsToLotSides"
 import transformSidesToLots from "./TransformSidesToLots"
 import transformXmlToLines from "./TransformXmlToLines"

@@ -1,6 +1,6 @@
 import splitSegmentOnIntersections from "./SplitSegmentOnIntersections"
-import {CategorizedSegments} from "./types/CategorizedSegments"
-import {Segment} from "./types/Segment"
+import {CategorizedSegments} from "../types/CategorizedSegments"
+import {Segment} from "../types/Segment"
 
 export default function splitIntersectingSegments(segments: CategorizedSegments): CategorizedSegments {
 	const splitters = [...segments.lot, ...segments.block]
