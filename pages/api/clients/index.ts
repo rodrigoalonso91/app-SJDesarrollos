@@ -1,6 +1,9 @@
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { NextApiRequest, NextApiResponse } from "next";
 import { addCustomer } from "../../../src";
+import { deleteCustomer } from "../../../src/DeleteCustomer";
+import { getCustomers } from "../../../src/GetCustomers";
+import { updateCustomer } from "../../../src/UpdateCustomer";
 
 export default withApiAuthRequired(
     async (req: NextApiRequest, res: NextApiResponse) => {
@@ -12,13 +15,18 @@ export default withApiAuthRequired(
 			
 			switch (req.method) {
 				case "GET":
-					console.log("GET")
+					const customers = await getCustomers()
+					return res.status(200).json(customers)
 				case "POST":
-					const customer = JSON.parse(req.body)
-					await addCustomer(customer)
+					await addCustomer(JSON.parse(req.body))
 					return res.status(201).end()
 				case "PUT":
-					console.log("PUT")
+					const { id , values } = req.body
+					await updateCustomer(values, id)
+					return res.status(201).end()
+				case "DELETE":
+					await deleteCustomer(req.body.id)
+					return res.status(201).end()
 				default:
 					return res.status(405).end()
 			}

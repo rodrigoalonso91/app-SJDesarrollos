@@ -1,5 +1,5 @@
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0"
-import { addSalesman, getSalesmen, updateSalesman } from "../../../src"
+import { addSalesman, getSalesmen, updateSalesman, deleteSalesman } from "../../../src"
 import type { NextApiRequest, NextApiResponse } from "next"
 
 export default withApiAuthRequired(
@@ -23,6 +23,9 @@ export default withApiAuthRequired(
 				case "PUT":
 					const { id , values } = req.body
 					await updateSalesman(values, id)
+					return res.status(201).end()
+				case "DELETE":
+					await deleteSalesman(req.body.id)
 					return res.status(201).end()
 				default:
 					return res.status(405).end()
