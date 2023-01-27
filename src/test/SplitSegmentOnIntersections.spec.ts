@@ -1,6 +1,7 @@
 import splitSegmentOnIntersections from "../domain/cleanup/SplitSegmentOnIntersections"
 import {Coordinate} from "../domain/types/Coordinate"
 import {Segment} from "../domain/types/Segment"
+import {coordinatesAreRoughlyEqual} from "../domain/utils/LineUtils"
 
 const SEGMENT: Segment = [{x: 1, y: 1}, {x: 4, y: 1}]
 describe("SplitSegmentOnIntersections should", () => {
@@ -129,6 +130,16 @@ describe("SplitSegmentOnIntersections should", () => {
 		expectResultsToBe([PART_1, PART_2])
 	})
 
+	it("non parallel intersects on a splitters end (specific case for approximation issue)", () => {
+		const SPLITTER: Segment = [{x: 363.93, y: 346.58}, {x: 363.93, y: 366.55}]
+		const SEGMENT: Segment = [{x: 373.92, y: 366.55}, {x: 353.95, y: 366.56}]
+		splitSpecificSegment(SEGMENT, [SPLITTER])
+
+		const PART_1: Segment = [{x: 363.93, y: 366.55}, {x: 353.95, y: 366.56}]
+		const PART_2: Segment = [{x: 373.92, y: 366.55}, {x: 363.93, y: 366.56}]
+		expectResultsToBe([PART_1, PART_2])
+	})
+
 	function splitSpecificSegment(segment: Segment, splitters: Array<Segment>) {
 		results = splitSegmentOnIntersections(segment, splitters)
 	}
@@ -138,8 +149,8 @@ describe("SplitSegmentOnIntersections should", () => {
 	}
 
 	function expectResultsToBe(expected: Array<Segment>) {
-		const missing = expected.filter(x => !results.some(y => segmentsAreEqual(x, y)))
-		const exceeding = results.filter(x => !expected.some(y => segmentsAreEqual(x, y)))
+		const missing = expected.filter(x => !results.some(y => segmentsAreRoughlyEqual(x, y)))
+		const exceeding = results.filter(x => !expected.some(y => segmentsAreRoughlyEqual(x, y)))
 		if ([...missing, ...exceeding].length)
 			throw Error(`
 				missing: ${JSON.stringify(missing)}
@@ -150,7 +161,5 @@ describe("SplitSegmentOnIntersections should", () => {
 	}
 })
 
-const segmentsAreEqual = (segmentA: Segment, segmentB: Segment) =>
-	segmentA.every(a => segmentB.some(b => coordinatesAreEqual(a, b)))
-const coordinatesAreEqual = (coordinateA: Coordinate, coordinateB: Coordinate) =>
-	coordinateA.x === coordinateB.x && coordinateA.y === coordinateB.y
+const segmentsAreRoughlyEqual = (segmentA: Segment, segmentB: Segment) =>
+	segmentA.every(a => segmentB.some(b => coordinatesAreRoughlyEqual(a, b)))

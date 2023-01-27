@@ -47,10 +47,16 @@ const getSegmentProperties = (segment: Segment) => {
 	return {slope, offset}
 }
 
+const ERROR_MARGIN = 0.1
 const isCoordinateContainedInSegment = (segment: Segment, {x, y}: Coordinate) => {
 	const [minX, maxX] = segment.map(coordinate => coordinate.x).sort()
 	const [minY, maxY] = segment.map(coordinate => coordinate.y).sort()
-	return minX <= x && x <= maxX && minY <= y && y <= maxY
+	return (
+		minX - ERROR_MARGIN <= x &&
+	 	x <= maxX + ERROR_MARGIN &&
+	 	minY - ERROR_MARGIN <= y &&
+	 	y <= maxY + ERROR_MARGIN
+	)
 }
 
 const closerTo = (coordinate: Coordinate, coordinates: Array<Coordinate>) => {
