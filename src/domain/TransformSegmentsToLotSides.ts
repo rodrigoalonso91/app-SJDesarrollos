@@ -1,6 +1,6 @@
-import {Line} from "./types/Line"
 import {CategorizedSegments} from "./types/CategorizedSegments"
-import {Perimeter} from "./types/Perimeter"
+import {Coordinate} from "./types/Coordinate"
+import {Line} from "./types/Line"
 import {Segment} from "./types/Segment"
 import {coordinatesAreRoughlyEqual, first, getOtherEnd, last, lineTouchesCoordinate} from "./utils/LineUtils"
 
@@ -10,39 +10,32 @@ export default function transformSegmentsToLotSides(segments: CategorizedSegment
 	return transformToLotSides(externals, [...segments.lot])
 }
 
-function transformSegmentsToBlocks(segments: Array<Segment>) {
-	const perimeters: Array<Perimeter> = []
+function transformSegmentsToBlocks(segments: Array<Segment>): Array<Coordinate> {
 	segments = [...segments]
-	while (segments.length > 0) {
-		const [first, second] = segments.pop()!
-		const perimeter = [first, second]
+	const [first, second] = segments.pop()!
+	const perimeter = [first, second]
 
-		while (true) {
-			const last = perimeter[perimeter.length - 1]
-			const touching = segments.filter(segment => lineTouchesCoordinate(segment, last))
-			if (touching.length > 1) throw Error(`found more than one touching border: ${JSON.stringify(touching)}`)
-			if (touching.length === 0) throw Error(`perimeter could not be completed due to lack of lines`)
-			const segment = touching[0]
-			segments = segments.filter(x => x !== segment)
-			const next = getOtherEnd(segment, last)
-			if (coordinatesAreRoughlyEqual(next, first)) break
-			else perimeter.push(next)
-		}
+	while (true) {
+		const last = perimeter[perimeter.length - 1]
+		const touching = segments.filter(segment => lineTouchesCoordinate(segment, last))
+		if (touching.length > 1) throw Error(`found more than one touching border: ${JSON.stringify(touching)}`)
+		if (touching.length === 0) throw Error(`perimeter could not be completed due to lack of lines`)
+		const segment = touching[0]
+		segments = segments.filter(x => x !== segment)
+		const next = getOtherEnd(segment, last)
 
-		perimeters.push(perimeter)
+		//TODO there should be no extra lines
+		if (coordinatesAreRoughlyEqual(next, first)) return perimeter
+		else perimeter.push(next)
 	}
-
-	return perimeters
 }
 
-function transformToLotExternalSides(perimeters: Array<Perimeter>, inners: Array<Segment>) {
-	const results: Array<Lines> = []
-	for (const perimeter of perimeters) {
+function transformToLotExternalSides(externals: Array<Coordinate>, inners: Array<Segment>): Array<Line> {
 		const firsts: Line = []
 		let current: Line = firsts
 		const longs = []
-		for (let i = 0; i < perimeter.length; i++) {
-			const coordinate = perimeter[i]
+		for (let i = 0; i < externals.length; i++) {
+			const coordinate = externals[i]
 			const touching = inners.filter(line => lineTouchesCoordinate(line, coordinate))
 
 			if (touching.length > 1) throw Error(`found more than one lot line touching a block perimeter coordinate: ${JSON.stringify(touching)}`)
@@ -55,28 +48,24 @@ function transformToLotExternalSides(perimeters: Array<Perimeter>, inners: Array
 
 		const lasts = longs[longs.length - 1]
 		longs[longs.length - 1] = [...lasts, ...firsts]
-		results.push(longs)
-	}
-	return results
+		return longs
 }
 
-function transformToLotSides(perimeters: Array<Array<Line>>, simples: Array<Segment>) {
-	return perimeters.map(externals => {
-		const origins = externals.map(line => first(line))
+function transformToLotSides(externals: Array<Line>, simples: Array<Segment>) {
+	const origins = externals.map(line => first(line))
 
-		const internals: Array<Line> = []
-		while (origins.length > 0) {
-			const origin = origins.shift()!
-			if(internals.some(long => lineTouchesCoordinate(long, origin))) continue
-			internals.push(...xuxa({line: [origin], simples}))
-		}
+	const internals: Array<Line> = []
+	while (origins.length > 0) {
+		const origin = origins.shift()!
+		if (internals.some(long => lineTouchesCoordinate(long, origin))) continue
+		internals.push(...xuxa({line: [origin], simples}))
+	}
 
-		return {externals, internals: internals.filter(x => x.length > 1)}
-	})
+	return {externals, internals: internals.filter(x => x.length > 1)}
 }
 
 //TODO rename
-function xuxa({line, simples}: { line: Line, simples: Array<Segment>}): Array<Line> {
+function xuxa({line, simples}: { line: Line, simples: Array<Segment> }): Array<Line> {
 	const current = last(line)
 	const found = simples.filter(simple => lineTouchesCoordinate(simple, current))
 
@@ -85,12 +74,10 @@ function xuxa({line, simples}: { line: Line, simples: Array<Segment>}): Array<Li
 
 	if (found.length === 1) return xuxa({line: [...line, getOtherEnd(found[0], current)], simples: remaining})
 
-		const additions = found.map(line => getOtherEnd(line, current))
+	const additions = found.map(line => getOtherEnd(line, current))
 
-		return [
-			line,
-			...additions.flatMap(addition => xuxa({line: [current, addition], simples: remaining}))
-		]
+	return [
+		line,
+		...additions.flatMap(addition => xuxa({line: [current, addition], simples: remaining}))
+	]
 }
-
-type Lines = Array<Line>
