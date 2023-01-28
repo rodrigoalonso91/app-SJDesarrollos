@@ -9,10 +9,7 @@ export const Navbar = ({ nickname }) => {
 
     const [open, setOpen] = useState(false)
 
-    const handleClick = () => {
-
-        setOpen(!open)
-    }
+    const handleClick = () => { setOpen(!open) }
 
     return (
         <>
@@ -35,9 +32,7 @@ export const Navbar = ({ nickname }) => {
                     <ul className="navbar-nav ml-auto">
 
                         <span className='nav-item nav-link text-primary'>
-                            {
-                                nickname
-                            }
+                            { nickname }
                         </span>
 
                         <Link href="/api/auth/logout" className='nav-item nav-link btn'>
