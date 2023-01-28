@@ -5,11 +5,12 @@ import {Segment} from "./types/Segment"
 import {coordinatesAreRoughlyEqual, first, getOtherEnd, last, lineTouchesCoordinate} from "./utils/LineUtils"
 
 export default function transformSegmentsToLotSides(segments: CategorizedSegments) {
-	const blocks = transformSegmentsToBlocks(segments.block)
-	const externals = transformToLotExternalSides(blocks, segments.lot)
-	return transformToLotSides(externals, [...segments.lot])
+	const blocks = transformSegmentsToBlocks(segments.externals)
+	const externals = transformToLotExternalSides(blocks, segments.internals)
+	return transformToLotSides(externals, [...segments.internals])
 }
 
+//TODO can have errors
 function transformSegmentsToBlocks(segments: Array<Segment>): Array<Coordinate> {
 	segments = [...segments]
 	const [first, second] = segments.pop()!
@@ -30,6 +31,7 @@ function transformSegmentsToBlocks(segments: Array<Segment>): Array<Coordinate> 
 	}
 }
 
+//TODO can have errors
 function transformToLotExternalSides(externals: Array<Coordinate>, inners: Array<Segment>): Array<Line> {
 		const firsts: Line = []
 		let current: Line = firsts
@@ -58,26 +60,25 @@ function transformToLotSides(externals: Array<Line>, simples: Array<Segment>) {
 	while (origins.length > 0) {
 		const origin = origins.shift()!
 		if (internals.some(long => lineTouchesCoordinate(long, origin))) continue
-		internals.push(...xuxa({line: [origin], simples}))
+		internals.push(...getLotSides({line: [origin], internals: simples}))
 	}
 
 	return {externals, internals: internals.filter(x => x.length > 1)}
 }
 
-//TODO rename
-function xuxa({line, simples}: { line: Line, simples: Array<Segment> }): Array<Line> {
+function getLotSides({line, internals}: { line: Line, internals: Array<Segment> }): Array<Line> {
 	const current = last(line)
-	const found = simples.filter(simple => lineTouchesCoordinate(simple, current))
+	const found = internals.filter(internal => lineTouchesCoordinate(internal, current))
 
 	if (found.length === 0) return [line]
-	const remaining = simples.filter(simple => !found.includes(simple))
+	const remaining = internals.filter(internal => !found.includes(internal))
 
-	if (found.length === 1) return xuxa({line: [...line, getOtherEnd(found[0], current)], simples: remaining})
+	if (found.length === 1) return getLotSides({line: [...line, getOtherEnd(found[0], current)], internals: remaining})
 
 	const additions = found.map(line => getOtherEnd(line, current))
 
 	return [
 		line,
-		...additions.flatMap(addition => xuxa({line: [current, addition], simples: remaining}))
+		...additions.flatMap(addition => getLotSides({line: [current, addition], internals: remaining}))
 	]
 }

@@ -8,7 +8,7 @@ const LOT_BORDER_COLOR = "red"
 
 export default function transformXmlToLines(xml: string): CategorizedSegments {
 	let offset = 0
-	const lines: CategorizedSegments = {lot: [], block: []}
+	const lines: CategorizedSegments = {internals: [], externals: []}
 
 	while (true) {
 		const start = xml.indexOf(PATH_START, offset)
@@ -26,9 +26,9 @@ export default function transformXmlToLines(xml: string): CategorizedSegments {
 
 		const stroke = getAttribute(element, "stroke")
 		if (stroke === BLOCK_BORDER_COLOR)
-			lines.block.push(line)
+			lines.externals.push(line)
 		else if (stroke === LOT_BORDER_COLOR)
-			lines.lot.push(line)
+			lines.internals.push(line)
 	}
 
 	return lines
