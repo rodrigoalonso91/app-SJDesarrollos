@@ -76,7 +76,7 @@ export const CustomGrid = ({ collection, columns, data }) => {
             <div style={{ padding: 15 }} >
                 <MaterialReactTable
 
-                    style={{ boxShadow: '3px 4.5px 9.5px 3.5px #dddddd' }}
+                    style={{ boxShadow: '3px 4.5px 9.5px 3.5px #000000' }}
                     columns={columns}
                     data={tableData}
                     initialState={{ columnVisibility: { id: false } }}
