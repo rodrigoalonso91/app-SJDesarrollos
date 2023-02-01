@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useEffect, useState} from "react"
-import {Layer, Shape, Stage} from "react-konva"
+import {Layer, Shape, Stage, Line as KonvaLine} from "react-konva"
 import transformXmlToNeighborhoods from "../../domain/TransformXmlToNeighborhoods"
 import {Coordinate} from "../../domain/types/Coordinate"
 import {Line} from "../../domain/types/Line"
@@ -16,7 +16,7 @@ export default function Neighborhood() {
 			setFome(transformXmlToNeighborhoods(wea))
 	}, [wea])
 
-		useEffect(() => {
+	useEffect(() => {
 	}, [fome])
 
 	// Stage is a div container
@@ -27,8 +27,13 @@ export default function Neighborhood() {
 			<input type="file" onChange={(e) => onFileUpload(e, setWea)}/>
 			<Stage width={window.innerWidth} height={window.innerHeight}>
 				<Layer>
-					{fome && fome.map((block, i) =>
+					{fome && fome.lots.map((block, i) =>
 						<Block key={i} lots={block}/>
+					)}
+					{fome && fome.errors.map((lines, i) =>
+						lines.map((line, j) =>
+							<ErrorLine key={`${i}-${j}`} coordinates={line}/>
+						)
 					)}
 				</Layer>
 			</Stage>
@@ -61,6 +66,18 @@ function Lot({coordinates: wea}: { coordinates: Array<Coordinate> }) {
 				context.closePath()
 				context.fillStrokeShape(shape)
 			}}
+			fill="#00D2FF"
+			stroke="black"
+			strokeWidth={1}
+		/>
+	)
+}
+
+function ErrorLine({coordinates: wea}: { coordinates: Array<Coordinate> }) {
+	const points = wea.flatMap(coordinate => [coordinate.x, coordinate.y])
+	return (
+		<KonvaLine
+			points={points}
 			fill="#00D2FF"
 			stroke="black"
 			strokeWidth={1}

@@ -3,9 +3,17 @@ import {Segment} from "../types/Segment"
 import {coordinatesAreRoughlyEqual} from "../utils/LineUtils"
 
 export default function removeExtraSegments(segments: CategorizedSegments): CategorizedSegments {
-	const externals = withoutRepeated(segments.externals.filter(excludeZeroLengthSegments))
+	const externals = segments.externals
+		.filter(excludeZeroLengthSegments)
+		.reduce(withoutRepeatedReducer, [] as Array<Segment>)
+
 	const excludeContainedInExternals = (segment: Segment) => excludeContainedInList(segment, externals)
-	const internals = withoutRepeated(segments.internals.filter(excludeZeroLengthSegments)).filter(excludeContainedInExternals)
+
+	const internals = segments.internals
+		.filter(excludeZeroLengthSegments)
+		.filter(excludeContainedInExternals)
+		.reduce(withoutRepeatedReducer, [] as Array<Segment>)
+
 	return {externals, internals}
 }
 
@@ -14,9 +22,6 @@ const excludeContainedInList = (segment: Segment, list: Array<Segment>) =>
 
 const excludeZeroLengthSegments = (segment: Segment): boolean =>
 	!coordinatesAreRoughlyEqual(segment[0], segment[1])
-
-const withoutRepeated = (segments: Array<Segment>): Array<Segment> =>
-	segments.reduce(withoutRepeatedReducer, [] as Array<Segment>)
 
 const withoutRepeatedReducer = (segments: Array<Segment>, candidate: Segment): Array<Segment> =>
 	segments.some(segment => segmentsAreEqual(candidate, segment)) ? segments : [...segments, candidate]
