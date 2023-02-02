@@ -1,4 +1,4 @@
-import getMongoDBClient from "./GetMongoDBClient"
+import getMongoDBClient from "../mongo/GetMongoDBClient"
 
 export async function getSalesmen(): Promise<ReadonlyArray<any>> {
 	const client = await getMongoDBClient()

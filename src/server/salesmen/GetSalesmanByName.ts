@@ -1,4 +1,4 @@
-import getMongoDBClient from "./GetMongoDBClient"
+import getMongoDBClient from "../mongo/GetMongoDBClient"
 
 export const getSalesmanByName = async (name : string) => {
 

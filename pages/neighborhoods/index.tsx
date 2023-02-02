@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import useUserData from "../../src/UseUserData";
+import useUserData from "../../src/hooks/UseUserData";
 import { Navbar } from "../../src/web/components";
 
 

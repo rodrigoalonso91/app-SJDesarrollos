@@ -1,5 +1,6 @@
 import { Navbar } from "../src/web/components"
 import useUserData from "../src/UseUserData"
+import { SJLogo } from "../src/web/components/SJLogo"
 
 export const Master = () => {
 
@@ -9,6 +10,9 @@ export const Master = () => {
         <>
             <Navbar nickname={user.nickname}/>
             <h1>Master</h1>
+            <SJLogo fill1="white" fill2="#03A293" />
+            <SJLogo fill1="black" fill2="red" />
+            <SJLogo fill1="white" fill2="blue" />
         </>
     )
 }

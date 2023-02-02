@@ -1,5 +1,5 @@
 import {ObjectId} from "mongodb"
-import getMongoDBClient from "./GetMongoDBClient"
+import getMongoDBClient from "../mongo/GetMongoDBClient"
 
 export async function updateSalesman(salesman: any, id: string) {
 	

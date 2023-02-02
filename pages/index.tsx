@@ -1,20 +1,13 @@
 import {withPageAuthRequired} from "@auth0/nextjs-auth0"
 import Head from "next/head"
-import {useEffect} from "react"
-import {getNeighborhoods} from "../src/GetNeighborhoods"
-import useUserData from "../src/UseUserData"
+import {getNeighborhoods} from "../src/server"
+import useUserData from "../src/hooks/UseUserData"
 import styles from "../styles/Home.module.css"
 import { Navbar } from "../src/web/components";
 
 export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any> }) {
 
 	const user = useUserData()
-
-	useEffect(() => {
-		console.log("este log se ejecuta en el browser")
-	}, [])
-
-	console.log("este log se ejecuta en el server")
 
 	return (
 		<>
