@@ -55,8 +55,10 @@ export const CustomGrid = ({ collection, columns, data }) => {
             if (!confirm(`Desea eliminar a ${firstname} ${lastname}?`)) return;
 
             await deleteRowOnDatabase(collection, id);
-            tableData.splice(row.index, 1);
-            setTableData([...tableData]);
+
+            const newTableData = [...tableData];
+            newTableData.splice(row.index, 1);
+            setTableData(newTableData);
         },
         [tableData]
     );
