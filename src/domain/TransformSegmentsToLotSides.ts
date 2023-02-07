@@ -9,17 +9,16 @@ export default function transformSegmentsToLotSides(segments: CategorizedSegment
 		const blocks = transformExternalsToBlocks(segments.externals)
 		const externals = transformToLotExternalSides(blocks, segments.internals)
 		const results = transformToLotSides(externals, [...segments.internals])
-		return {error: false, segments: results}
+		return {error: null, segments: results}
 	} catch (e: any) {
 		if (e.message) {
 			const error = e as Error
-			return {error: true, segments: segments}
+			return {error: error.message, segments: segments}
 		}
 		throw e
 	}
 }
 
-//TODO can have errors
 function transformExternalsToBlocks(externals: Array<Segment>): Array<Coordinate> {
 	externals = [...externals]
 	const [first, second] = externals.pop()!
@@ -28,8 +27,8 @@ function transformExternalsToBlocks(externals: Array<Segment>): Array<Coordinate
 	while (true) {
 		const last = perimeter[perimeter.length - 1]
 		const touching = externals.filter(segment => lineTouchesCoordinate(segment, last))
-		if (touching.length > 1) throw Error(`found more than one touching border: ${JSON.stringify(touching)}`)
-		if (touching.length === 0) throw Error(`perimeter could not be completed due to lack of lines`)
+		if (touching.length > 1) throw Error(`block border has more than 2 lines touching: ${JSON.stringify([...touching, last])}`)
+		if (touching.length === 0) throw Error(`block did not close`)
 		const segment = touching[0]
 		externals = externals.filter(x => x !== segment)
 		const next = getOtherEnd(segment, last)
@@ -40,7 +39,6 @@ function transformExternalsToBlocks(externals: Array<Segment>): Array<Coordinate
 	}
 }
 
-//TODO can have errors
 function transformToLotExternalSides(externals: Array<Coordinate>, inners: Array<Segment>): Array<Line> {
 	const firsts: Line = []
 	let current: Line = firsts
@@ -49,6 +47,7 @@ function transformToLotExternalSides(externals: Array<Coordinate>, inners: Array
 		const coordinate = externals[i]
 		const touching = inners.filter(line => lineTouchesCoordinate(line, coordinate))
 
+		//TODO need to contemplate 2 lines touching border
 		if (touching.length > 1) throw Error(`found more than one lot line touching a block perimeter coordinate: ${JSON.stringify(touching)}`)
 
 		current.push(coordinate)
@@ -57,7 +56,10 @@ function transformToLotExternalSides(externals: Array<Coordinate>, inners: Array
 		longs.push(current)
 	}
 
-	const lasts = longs[longs.length - 1]
+	// This contemplates blocks that only have one lot, which is itself.
+	if (longs.length === 0) return [externals]
+
+	const lasts = last(longs)
 	longs[longs.length - 1] = [...lasts, ...firsts]
 	return longs
 }

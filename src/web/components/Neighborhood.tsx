@@ -11,13 +11,31 @@ export default function Neighborhood() {
 	const [fome, setFome] = useState<ReturnType<typeof transformXmlToNeighborhoods> | null>(null)
 	useEffect(() => {
 		if (wea)
-			console.log(wea)
-		if (wea)
 			setFome(transformXmlToNeighborhoods(wea))
 	}, [wea])
+	const [errorIndex, setErrorIndex] = useState<null | number>(null)
 
-	useEffect(() => {
-	}, [fome])
+	const [stageScale, setStageScale] = useState(1)
+	const [stageX, setStageX] = useState(0)
+	const [stageY, setStageY] = useState(0)
+
+	const handleWheel = (e: any) => {
+		e.evt.preventDefault()
+
+		const scaleBy = 1.1
+		const stage = e.target.getStage()
+		const oldScale = stage.scaleX()
+		const mousePointTo = {
+			x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
+			y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale
+		}
+
+		const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy
+
+		setStageScale(newScale)
+		setStageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale)
+		setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale)
+	}
 
 	// Stage is a div container
 	// Layer is actual canvas element (so you may have several canvases in the stage)
@@ -25,14 +43,35 @@ export default function Neighborhood() {
 	return (
 		<>
 			<input type="file" onChange={(e) => onFileUpload(e, setWea)}/>
-			<Stage width={window.innerWidth} height={window.innerHeight}>
+			<div style={{display: "flex", flexDirection: "column"}}>
+				{
+					fome && fome.errors.map(({error}, i) => (
+							<span
+								onMouseEnter={() => setErrorIndex(i)}
+								onMouseLeave={() => setErrorIndex(null)}
+							>
+							{error}
+							</span>
+						)
+					)
+				}
+			</div>
+			<Stage
+				width={window.innerWidth}
+				height={window.innerHeight}
+				onWheel={handleWheel}
+				scaleX={stageScale}
+				scaleY={stageScale}
+				x={stageX}
+				y={stageY}
+			>
 				<Layer>
 					{fome && fome.lots.map((block, i) =>
 						<Block key={i} lots={block}/>
 					)}
-					{fome && fome.errors.map((lines, i) =>
+					{fome && fome.errors.map(({lines}, i) =>
 						lines.map((line, j) =>
-							<ErrorLine key={`${i}-${j}`} coordinates={line}/>
+							<ErrorLine key={`${i}-${j}`} coordinates={line} highlighted={i === errorIndex}/>
 						)
 					)}
 				</Layer>
@@ -73,13 +112,13 @@ function Lot({coordinates: wea}: { coordinates: Array<Coordinate> }) {
 	)
 }
 
-function ErrorLine({coordinates: wea}: { coordinates: Array<Coordinate> }) {
-	const points = wea.flatMap(coordinate => [coordinate.x, coordinate.y])
+function ErrorLine({coordinates, highlighted}: { coordinates: Array<Coordinate>, highlighted: boolean }) {
+	const points = coordinates.flatMap(coordinate => [coordinate.x, coordinate.y])
 	return (
 		<KonvaLine
 			points={points}
 			fill="#00D2FF"
-			stroke="black"
+			stroke={highlighted ? "red" : "black"}
 			strokeWidth={1}
 		/>
 	)
