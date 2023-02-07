@@ -64,6 +64,8 @@ export default function Neighborhood() {
 				scaleY={stageScale}
 				x={stageX}
 				y={stageY}
+				draggable={true}
+				style={{border: "solid 1px black"}}
 			>
 				<Layer>
 					{fome && fome.lots.map((block, i) =>
@@ -91,7 +93,7 @@ function Block({lots}: { lots: Array<Line> }) {
 		<>
 			{lots.map((coordinates, i) =>
 				<Lot
-					key={`${i}`}
+					key={i}
 					coordinates={coordinates}
 				/>
 			)}
