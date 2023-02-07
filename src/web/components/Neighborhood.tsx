@@ -13,7 +13,6 @@ export default function Neighborhood() {
 		if (wea)
 			setFome(transformXmlToNeighborhoods(wea))
 	}, [wea])
-	const [errorIndex, setErrorIndex] = useState<null | number>(null)
 
 	const [stageScale, setStageScale] = useState(1)
 	const [stageX, setStageX] = useState(0)
@@ -43,8 +42,9 @@ export default function Neighborhood() {
 	return (
 		<>
 			<input type="file" onChange={(e) => onFileUpload(e, setWea)}/>
+
 			<div style={{display: "flex", flexDirection: "column"}}>
-				{
+				{/*
 					fome && fome.errors.map(({error}, i) => (
 							<span
 								onMouseEnter={() => setErrorIndex(i)}
@@ -54,7 +54,7 @@ export default function Neighborhood() {
 							</span>
 						)
 					)
-				}
+				*/}
 			</div>
 			<Stage
 				width={window.innerWidth}
@@ -71,8 +71,16 @@ export default function Neighborhood() {
 					)}
 					{fome && fome.errors.map(({lines}, i) =>
 						lines.map((line, j) =>
-							<ErrorLine key={`${i}-${j}`} coordinates={line} highlighted={i === errorIndex}/>
+							<ErrorLine key={`${i}-${j}`} coordinates={line} highlighted={true}/>
 						)
+					)}
+					{fome && fome.errors.map((error, i) => {
+						if (error.faulty)
+							return error.faulty.map((line, j) =>
+								<ErrorLineCulprit key={`${i}-${j}`} coordinates={line} highlighted={true}/>
+							)
+						return null
+					}
 					)}
 				</Layer>
 			</Stage>
@@ -107,7 +115,7 @@ function Lot({coordinates: wea}: { coordinates: Array<Coordinate> }) {
 			}}
 			fill="#00D2FF"
 			stroke="black"
-			strokeWidth={1}
+			strokeWidth={0.35}
 		/>
 	)
 }
@@ -118,8 +126,20 @@ function ErrorLine({coordinates, highlighted}: { coordinates: Array<Coordinate>,
 		<KonvaLine
 			points={points}
 			fill="#00D2FF"
+			stroke={highlighted ? "green" : "black"}
+			strokeWidth={0.35}
+		/>
+	)
+}
+
+function ErrorLineCulprit({coordinates, highlighted}: { coordinates: Array<Coordinate>, highlighted: boolean }) {
+	const points = coordinates.flatMap(coordinate => [coordinate.x, coordinate.y])
+	return (
+		<KonvaLine
+			points={points}
+			fill="#00D2FF"
 			stroke={highlighted ? "red" : "black"}
-			strokeWidth={1}
+			strokeWidth={highlighted ? 0.5 : 0.35}
 		/>
 	)
 }

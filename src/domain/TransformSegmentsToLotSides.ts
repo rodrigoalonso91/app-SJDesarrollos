@@ -11,10 +11,12 @@ export default function transformSegmentsToLotSides(segments: CategorizedSegment
 		const results = transformToLotSides(externals, [...segments.internals])
 		return {error: null, segments: results}
 	} catch (e: any) {
-		if (e.message) {
-			const error = e as Error
-			return {error: error.message, segments: segments}
-		}
+		if (e instanceof MasterBuildingError)
+			return {error: e.message, segments: segments, faulty: e.errors}
+
+		if (e instanceof Error)
+			return {error: e.message, segments: segments, faulty: []}
+
 		throw e
 	}
 }
@@ -27,8 +29,8 @@ function transformExternalsToBlocks(externals: Array<Segment>): Array<Coordinate
 	while (true) {
 		const last = perimeter[perimeter.length - 1]
 		const touching = externals.filter(segment => lineTouchesCoordinate(segment, last))
-		if (touching.length > 1) throw Error(`block border has more than 2 lines touching: ${JSON.stringify([...touching, last])}`)
-		if (touching.length === 0) throw Error(`block did not close`)
+		if (touching.length > 1) throw new MasterBuildingError(`block border has more than 2 lines touching.`, [...touching, [penultimate(perimeter), last]])
+		if (touching.length === 0) throw new MasterBuildingError(`block did not close`, [[first, last]])
 		const segment = touching[0]
 		externals = externals.filter(x => x !== segment)
 		const next = getOtherEnd(segment, last)
@@ -48,7 +50,7 @@ function transformToLotExternalSides(externals: Array<Coordinate>, inners: Array
 		const touching = inners.filter(line => lineTouchesCoordinate(line, coordinate))
 
 		//TODO need to contemplate 2 lines touching border
-		if (touching.length > 1) throw Error(`found more than one lot line touching a block perimeter coordinate: ${JSON.stringify(touching)}`)
+		if (touching.length > 1) throw new MasterBuildingError(`found more than one lot line touching a block perimeter coordinate.`, touching)
 
 		current.push(coordinate)
 		if (touching.length === 0) continue
@@ -93,3 +95,14 @@ function getLotSides({line, internals}: { line: Line, internals: Array<Segment> 
 		...additions.flatMap(addition => getLotSides({line: [current, addition], internals: remaining}))
 	]
 }
+
+class MasterBuildingError extends Error {
+	errors: Array<Segment>
+
+	constructor(message: string, errors: Array<Segment>) {
+		super(message)
+		this.errors = errors
+	}
+}
+
+export const penultimate = <T>(array: Array<T>): T => array[array.length - 2]

@@ -9,7 +9,7 @@ export default function transformXmlToNeighborhoods(xml: string) {
 	const results = segments.map(transformSegmentsToLotSides)
 	const errors = results
 		.filter(x => x.error)
-		.map(x => ({ lines: [...x.segments.internals, ...x.segments.externals], error: x.error }))
+		.map(x => ({ lines: [...x.segments.internals, ...x.segments.externals], error: x.error, faulty: x.faulty }))
 	const sides = results.filter(x => x.error === null).map(x => x.segments)
 	const lots = sides.map(transformBlockSidesToLots)
 	return {lots, errors}
