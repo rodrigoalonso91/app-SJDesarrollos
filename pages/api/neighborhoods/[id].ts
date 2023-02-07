@@ -1,6 +1,6 @@
 import type {NextApiRequest, NextApiResponse} from "next"
-import deleteNeighborhoodOfId from "../../../src/DeleteNeighborhoodOfId"
-import getUser from ".././../../src/GetUser"
+import getUser from "../../../src/server/mongo/GetUser"
+import deleteNeighborhoodOfId from "../../../src/server/neighborhood/DeleteNeighborhoodOfId"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const user = await getUser({req, res})
