@@ -1,4 +1,5 @@
-import { getSalesmanByName } from "../../src/GetSalesmanByName"
+import {getSalesmanByName} from "../../src/server";
+
 
 const Salesman = ({salesman}) => {
 

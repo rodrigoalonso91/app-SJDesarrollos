@@ -1,6 +1,6 @@
 import { Navbar } from "../src/web/components"
-import useUserData from "../src/UseUserData"
 import { SJLogo } from "../src/web/components/SJLogo"
+import useUserData from "../src/hooks/UseUserData";
 
 export const Master = () => {
 
