@@ -74,13 +74,10 @@ export default function Neighborhood() {
 							<ErrorLine key={`${i}-${j}`} coordinates={line} highlighted={true}/>
 						)
 					)}
-					{fome && fome.errors.map((error, i) => {
-						if (error.faulty)
-							return error.faulty.map((line, j) =>
-								<ErrorLineCulprit key={`${i}-${j}`} coordinates={line} highlighted={true}/>
-							)
-						return null
-					}
+					{fome && fome.errors.map((error, i) =>
+						(error.faulty || []).map((line, j) =>
+							<ErrorLineCulprit key={`${i}-${j}`} coordinates={line} highlighted={true}/>
+						)
 					)}
 				</Layer>
 			</Stage>
@@ -94,7 +91,7 @@ function Block({lots}: { lots: Array<Line> }) {
 		<>
 			{lots.map((coordinates, i) =>
 				<Lot
-					key={i}
+					key={`${i}`}
 					coordinates={coordinates}
 				/>
 			)}

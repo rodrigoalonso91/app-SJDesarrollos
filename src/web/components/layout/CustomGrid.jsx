@@ -60,7 +60,7 @@ export const CustomGrid = ({ collection, columns, data }) => {
             newTableData.splice(row.index, 1);
             setTableData(newTableData);
         },
-        [tableData]
+        [tableData, collection]
     );
 
     return (
