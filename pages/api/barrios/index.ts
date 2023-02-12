@@ -1,6 +1,6 @@
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0"
 import type { NextApiRequest, NextApiResponse } from "next"
-import {createNeighborhood, getNeighborhoods} from "../../../src/server"
+import { createNeighborhood, getNeighborhoods } from "../../../src/server"
 
 export default withApiAuthRequired(
 	async (req: NextApiRequest, res: NextApiResponse) => {
@@ -16,7 +16,7 @@ export default withApiAuthRequired(
 					return res.status(200).json(neighborhoods)
 				case "POST":
 					const creation_time = new Date().toISOString()
-					const id = await createNeighborhood({name: creation_time})
+					const id = await createNeighborhood({ name: creation_time })
 					return res.status(201).end()
 				default:
 					return res.status(405).end()

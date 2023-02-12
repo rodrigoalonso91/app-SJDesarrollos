@@ -1,9 +1,12 @@
-import type {NextApiRequest, NextApiResponse} from "next"
+import type { NextApiRequest, NextApiResponse } from "next"
 import getUser from "../../../src/server/mongo/GetUser"
 import deleteNeighborhoodOfId from "../../../src/server/neighborhood/DeleteNeighborhoodOfId"
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	const user = await getUser({req, res})
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse
+) {
+	const user = await getUser({ req, res })
 	if (!user.isLoggedIn) return res.status(401).end()
 
 	const id = req.query.id!
