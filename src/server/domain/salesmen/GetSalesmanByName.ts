@@ -1,13 +1,13 @@
-import getMongoDBClient from "../mongo/GetMongoDBClient"
+import getMongoDBClient from "../../infrastructure/GetMongoDBClient"
 
-export async function getSalesmen(): Promise<ReadonlyArray<any>> {
+export const getSalesmanByName = async (name: string) => {
 	const client = await getMongoDBClient()
 	const result = await client
 		.collection("SALESMEN")
 		.find(
-			{},//here go the filters
+			{ firstname: name }, //here go the filters
 			{
-				projection: { 
+				projection: {
 					firstname: 1,
 					lastname: 1,
 					phone: 1,
@@ -20,5 +20,5 @@ export async function getSalesmen(): Promise<ReadonlyArray<any>> {
 	return result.map(({ _id, ...x }) => ({
 		id: _id.toString(),
 		...x
-	}))
+	}))[0]
 }

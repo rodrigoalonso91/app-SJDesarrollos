@@ -1,11 +1,11 @@
-import getMongoDBClient from "../mongo/GetMongoDBClient"
+import getMongoDBClient from "../../infrastructure/GetMongoDBClient"
 
 export async function getNeighborhoods(): Promise<ReadonlyArray<any>> {
 	const client = await getMongoDBClient()
 	const result = await client
 		.collection("NEIGHBORHOODS")
 		.find(
-			{},//here go the filters
+			{}, //here go the filters
 			{
 				projection: { name: 1 }
 			}

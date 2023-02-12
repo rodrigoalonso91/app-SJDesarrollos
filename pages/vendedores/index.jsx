@@ -1,5 +1,5 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
-import { getSalesmen } from "../../src/server/salesmen/GetSalesmen"
+import { getSalesmen } from "../../src/server/domain/salesmen/GetSalesmen"
 import { CustomGrid } from "../../src/web/components/layout"
 import { BASIC_COLUMS } from "../../src/web/constants/colums"
 

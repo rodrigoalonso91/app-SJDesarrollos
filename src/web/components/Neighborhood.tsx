@@ -1,17 +1,16 @@
-import React, {ChangeEvent, useEffect, useState} from "react"
-import {Layer, Shape, Stage, Line as KonvaLine} from "react-konva"
-import transformXmlToNeighborhoods from "../../domain/TransformXmlToNeighborhoods"
-import {Coordinate} from "../../domain/types/Coordinate"
-import {Line} from "../../domain/types/Line"
-
+import React, { ChangeEvent, useEffect, useState } from "react"
+import { Layer, Shape, Stage, Line as KonvaLine } from "react-konva"
+import transformXmlToNeighborhoods from "../domain/TransformXmlToNeighborhoods"
+import { Coordinate } from "../domain/types/Coordinate"
+import { Line } from "../domain/types/Line"
 
 export default function Neighborhood() {
-
 	const [wea, setWea] = useState<string | null>(null)
-	const [fome, setFome] = useState<ReturnType<typeof transformXmlToNeighborhoods> | null>(null)
+	const [fome, setFome] = useState<ReturnType<
+		typeof transformXmlToNeighborhoods
+	> | null>(null)
 	useEffect(() => {
-		if (wea)
-			setFome(transformXmlToNeighborhoods(wea))
+		if (wea) setFome(transformXmlToNeighborhoods(wea))
 	}, [wea])
 
 	const [stageScale, setStageScale] = useState(1)
@@ -32,8 +31,12 @@ export default function Neighborhood() {
 		const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy
 
 		setStageScale(newScale)
-		setStageX(-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale)
-		setStageY(-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale)
+		setStageX(
+			-(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale
+		)
+		setStageY(
+			-(mousePointTo.y - stage.getPointerPosition().y / newScale) * newScale
+		)
 	}
 
 	// Stage is a div container
@@ -41,9 +44,9 @@ export default function Neighborhood() {
 	// And then we have canvas shapes inside the Layer
 	return (
 		<>
-			<input type="file" onChange={(e) => onFileUpload(e, setWea)}/>
+			<input type="file" onChange={(e) => onFileUpload(e, setWea)} />
 
-			<div style={{display: "flex", flexDirection: "column"}}>
+			<div style={{ display: "flex", flexDirection: "column" }}>
 				{/*
 					fome && fome.errors.map(({error}, i) => (
 							<span
@@ -65,50 +68,54 @@ export default function Neighborhood() {
 				x={stageX}
 				y={stageY}
 				draggable={true}
-				style={{border: "solid 1px black"}}
+				style={{ border: "solid 1px black" }}
 			>
 				<Layer>
-					{fome && fome.lots.map((block, i) =>
-						<Block key={i} lots={block}/>
-					)}
-					{fome && fome.errors.map(({lines}, i) =>
-						lines.map((line, j) =>
-							<ErrorLine key={`${i}-${j}`} coordinates={line} highlighted={true}/>
-						)
-					)}
-					{fome && fome.errors.map((error, i) =>
-						(error.faulty || []).map((line, j) =>
-							<ErrorLineCulprit key={`${i}-${j}`} coordinates={line} highlighted={true}/>
-						)
-					)}
+					{fome && fome.lots.map((block, i) => <Block key={i} lots={block} />)}
+					{fome &&
+						fome.errors.map(({ lines }, i) =>
+							lines.map((line, j) => (
+								<ErrorLine
+									key={`${i}-${j}`}
+									coordinates={line}
+									highlighted={true}
+								/>
+							))
+						)}
+					{fome &&
+						fome.errors.map((error, i) =>
+							(error.faulty || []).map((line, j) => (
+								<ErrorLineCulprit
+									key={`${i}-${j}`}
+									coordinates={line}
+									highlighted={true}
+								/>
+							))
+						)}
 				</Layer>
 			</Stage>
 		</>
-
 	)
 }
 
-function Block({lots}: { lots: Array<Line> }) {
+function Block({ lots }: { lots: Array<Line> }) {
 	return (
 		<>
-			{lots.map((coordinates, i) =>
-				<Lot
-					key={i}
-					coordinates={coordinates}
-				/>
-			)}
+			{lots.map((coordinates, i) => (
+				<Lot key={i} coordinates={coordinates} />
+			))}
 		</>
 	)
 }
 
-function Lot({coordinates: wea}: { coordinates: Array<Coordinate> }) {
+function Lot({ coordinates: wea }: { coordinates: Array<Coordinate> }) {
 	return (
 		<Shape
 			sceneFunc={(context, shape) => {
 				context.beginPath()
 				const [start, ...coordinates] = wea
 				context.moveTo(start.x, start.y)
-				coordinates.forEach(({x, y}) => context.lineTo(x, y))
+				coordinates.forEach(({ x, y }) => context.lineTo(x, y))
 				context.closePath()
 				context.fillStrokeShape(shape)
 			}}
@@ -119,8 +126,17 @@ function Lot({coordinates: wea}: { coordinates: Array<Coordinate> }) {
 	)
 }
 
-function ErrorLine({coordinates, highlighted}: { coordinates: Array<Coordinate>, highlighted: boolean }) {
-	const points = coordinates.flatMap(coordinate => [coordinate.x, coordinate.y])
+function ErrorLine({
+	coordinates,
+	highlighted
+}: {
+	coordinates: Array<Coordinate>
+	highlighted: boolean
+}) {
+	const points = coordinates.flatMap((coordinate) => [
+		coordinate.x,
+		coordinate.y
+	])
 	return (
 		<KonvaLine
 			points={points}
@@ -131,8 +147,17 @@ function ErrorLine({coordinates, highlighted}: { coordinates: Array<Coordinate>,
 	)
 }
 
-function ErrorLineCulprit({coordinates, highlighted}: { coordinates: Array<Coordinate>, highlighted: boolean }) {
-	const points = coordinates.flatMap(coordinate => [coordinate.x, coordinate.y])
+function ErrorLineCulprit({
+	coordinates,
+	highlighted
+}: {
+	coordinates: Array<Coordinate>
+	highlighted: boolean
+}) {
+	const points = coordinates.flatMap((coordinate) => [
+		coordinate.x,
+		coordinate.y
+	])
 	return (
 		<KonvaLine
 			points={points}
@@ -143,7 +168,10 @@ function ErrorLineCulprit({coordinates, highlighted}: { coordinates: Array<Coord
 	)
 }
 
-async function onFileUpload(e: ChangeEvent<HTMLInputElement>, callback: (value: string) => void) {
+async function onFileUpload(
+	e: ChangeEvent<HTMLInputElement>,
+	callback: (value: string) => void
+) {
 	if (!e.target.files) return
 	const file = e.target.files[0]
 	const result = await encode(file)

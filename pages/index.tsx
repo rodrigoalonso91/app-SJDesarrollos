@@ -1,7 +1,7 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
 import Head from "next/head"
 import { getNeighborhoods } from "../src/server"
-import useUserData from "../src/hooks/UseUserData"
+import useUserData from "../src/web/hooks/UseUserData"
 import styles from "../styles/Home.module.css"
 
 export default function Home({

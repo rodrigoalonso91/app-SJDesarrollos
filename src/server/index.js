@@ -1,18 +1,18 @@
 // Salesmen
-export * from './salesmen/AddSalesman'
-export * from './salesmen/GetSalesmen'
-export * from './salesmen/GetSalesmanByName'
-export * from './salesmen/UpdateSalesman'
-export * from './salesmen/DeleteSalesman'
+export * from "./domain/salesmen/AddSalesman"
+export * from "./domain/salesmen/GetSalesmen"
+export * from "./domain/salesmen/GetSalesmanByName"
+export * from "./domain/salesmen/UpdateSalesman"
+export * from "./domain/salesmen/DeleteSalesman"
 
 // Customer
-export * from './customers/AddCustomer'
-export * from './customers/GetCustomers'
-export * from './customers/DeleteCustomer'
-export * from './customers/UpdateCustomer'
-export * from './customers/GetCustomerByName'
+export * from "./domain/customers/AddCustomer"
+export * from "./domain/customers/GetCustomers"
+export * from "./domain/customers/DeleteCustomer"
+export * from "./domain/customers/UpdateCustomer"
+export * from "./domain/customers/GetCustomerByName"
 
 // Neighborhood
-export * from './neighborhood/CreateNeighborhood'
-export * from './neighborhood/DeleteNeighborhoodOfId'
-export * from './neighborhood/GetNeighborhoods'
+export * from "./domain/neighborhood/CreateNeighborhood"
+export * from "./domain/neighborhood/DeleteNeighborhoodOfId"
+export * from "./domain/neighborhood/GetNeighborhoods"
