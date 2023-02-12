@@ -4,8 +4,10 @@ import 'bootstrap/dist/css/bootstrap.css'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Backdrop, CircularProgress } from '@mui/material'
+import useUserData from "../../hooks/UseUserData";
 
-export const Navbar = ({ nickname }) => {
+export const Navbar = () => {
+	const user = useUserData()
 
     const [open, setOpen] = useState(false)
 
@@ -32,7 +34,7 @@ export const Navbar = ({ nickname }) => {
                     <ul className="navbar-nav ml-auto">
 
                         <span className='nav-item nav-link text-primary'>
-                            { nickname }
+                            { user.nickname }
                         </span>
 
                         <Link href="/api/auth/logout" className='nav-item nav-link btn'>

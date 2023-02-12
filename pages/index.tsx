@@ -3,15 +3,12 @@ import Head from "next/head"
 import {getNeighborhoods} from "../src/server"
 import useUserData from "../src/hooks/UseUserData"
 import styles from "../styles/Home.module.css"
-import { Navbar } from "../src/web/components";
 
 export default function Home({neighborhoods}: { neighborhoods: ReadonlyArray<any> }) {
-
 	const user = useUserData()
 
 	return (
 		<>
-			<Navbar nickname={user.nickname}/>
 			<div className={styles.container}>
 				<Head>
 					<title>Create Next App</title>
