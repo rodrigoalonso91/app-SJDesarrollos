@@ -1,8 +1,9 @@
 import transformXmlToNeighborhoods from "@web/domain/TransformXmlToNeighborhoods"
 import { Coordinate } from "@web/domain/types/Coordinate"
 import { Line } from "@web/domain/types/Line"
+import { first } from "@web/domain/utils/LineUtils"
 import React, { ChangeEvent, useEffect, useState } from "react"
-import { Layer, Shape, Stage, Line as KonvaLine } from "react-konva"
+import { Layer, Shape, Stage, Line as KonvaLine, Text } from "react-konva"
 
 export default function Neighborhood() {
 	const [wea, setWea] = useState<string | null>(null)
@@ -108,21 +109,29 @@ function Block({ lots }: { lots: Array<Line> }) {
 	)
 }
 
-function Lot({ coordinates: wea }: { coordinates: Array<Coordinate> }) {
+function Lot({ coordinates }: { coordinates: Array<Coordinate> }) {
+	const [hovered, setHovered] = useState(false)
+	const [center] = useState(() => centerOf(coordinates))
+
 	return (
-		<Shape
-			sceneFunc={(context, shape) => {
-				context.beginPath()
-				const [start, ...coordinates] = wea
-				context.moveTo(start.x, start.y)
-				coordinates.forEach(({ x, y }) => context.lineTo(x, y))
-				context.closePath()
-				context.fillStrokeShape(shape)
-			}}
-			fill="#00D2FF"
-			stroke="black"
-			strokeWidth={0.35}
-		/>
+		<>
+			<Shape
+				onMouseEnter={() => setHovered(true)}
+				onMouseLeave={() => setHovered(false)}
+				sceneFunc={(context, shape) => {
+					context.beginPath()
+					const [start, ...remaining] = coordinates
+					context.moveTo(start.x, start.y)
+					remaining.forEach(({ x, y }) => context.lineTo(x, y))
+					context.closePath()
+					context.fillStrokeShape(shape)
+				}}
+				fill={hovered ? "green" : "lightblue"}
+				stroke="black"
+				strokeWidth={0.35}
+			/>
+			<Text x={center.x} y={center.y} text={"o"} fontSize={1} />
+		</>
 	)
 }
 
@@ -187,3 +196,26 @@ async function encode(file: File): Promise<string> {
 	})
 	return await promise
 }
+
+function centerOf(coordinates: Array<Coordinate>): Coordinate {
+	const boundaries = coordinates.reduce(
+		(boundaries, coordinate) => ({
+			minX: boundaries.minX > coordinate.x ? coordinate.x : boundaries.minX,
+			maxX: boundaries.maxX < coordinate.x ? coordinate.x : boundaries.maxX,
+			minY: boundaries.minY > coordinate.y ? coordinate.y : boundaries.minY,
+			maxY: boundaries.maxY < coordinate.y ? coordinate.y : boundaries.maxY
+		}),
+		defaultBoundary(first(coordinates))
+	)
+	return {
+		x: (boundaries.minX + boundaries.maxX) / 2,
+		y: (boundaries.minY + boundaries.maxY) / 2
+	}
+}
+
+const defaultBoundary = ({ x, y }: Coordinate) => ({
+	minX: x,
+	maxX: x,
+	minY: y,
+	maxY: y
+})
