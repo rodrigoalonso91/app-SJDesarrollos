@@ -1,5 +1,5 @@
+import getMongoDBClient from "@server/infrastructure/GetMongoDBClient"
 import { ObjectId } from "mongodb"
-import getMongoDBClient from "../../infrastructure/GetMongoDBClient"
 
 export async function updateCustomer(customer: any, id: string) {
 	const client = await getMongoDBClient()

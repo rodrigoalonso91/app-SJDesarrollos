@@ -1,6 +1,7 @@
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0"
+import { createNeighborhood } from "@server/domain/neighborhood/CreateNeighborhood"
+import { getNeighborhoods } from "@server/domain/neighborhood/GetNeighborhoods"
 import type { NextApiRequest, NextApiResponse } from "next"
-import { createNeighborhood, getNeighborhoods } from "../../../src/server"
 
 export default withApiAuthRequired(
 	async (req: NextApiRequest, res: NextApiResponse) => {

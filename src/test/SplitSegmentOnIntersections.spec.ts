@@ -1,7 +1,6 @@
-import splitSegmentOnIntersections from "../web/domain/cleanup/SplitSegmentOnIntersections"
-import { Coordinate } from "../web/domain/types/Coordinate"
-import { Segment } from "../web/domain/types/Segment"
-import { coordinatesAreRoughlyEqual } from "../web/domain/utils/LineUtils"
+import splitSegmentOnIntersections from "@web/domain/cleanup/SplitSegmentOnIntersections"
+import { Segment } from "@web/domain/types/Segment"
+import { coordinatesAreRoughlyEqual } from "@web/domain/utils/LineUtils"
 
 const SEGMENT: Segment = [
 	{ x: 1, y: 1 },

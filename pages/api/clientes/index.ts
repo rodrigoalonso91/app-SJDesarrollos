@@ -1,11 +1,9 @@
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0"
+import { addCustomer } from "@server/domain/customers/AddCustomer"
+import { deleteCustomer } from "@server/domain/customers/DeleteCustomer"
+import { getCustomers } from "@server/domain/customers/GetCustomers"
+import { updateCustomer } from "@server/domain/customers/UpdateCustomer"
 import { NextApiRequest, NextApiResponse } from "next"
-import {
-	addCustomer,
-	deleteCustomer,
-	getCustomers,
-	updateCustomer
-} from "../../../src/server"
 
 export default withApiAuthRequired(
 	async (req: NextApiRequest, res: NextApiResponse) => {

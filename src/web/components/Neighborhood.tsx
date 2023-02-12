@@ -1,8 +1,8 @@
+import transformXmlToNeighborhoods from "@web/domain/TransformXmlToNeighborhoods"
+import { Coordinate } from "@web/domain/types/Coordinate"
+import { Line } from "@web/domain/types/Line"
 import React, { ChangeEvent, useEffect, useState } from "react"
 import { Layer, Shape, Stage, Line as KonvaLine } from "react-konva"
-import transformXmlToNeighborhoods from "../domain/TransformXmlToNeighborhoods"
-import { Coordinate } from "../domain/types/Coordinate"
-import { Line } from "../domain/types/Line"
 
 export default function Neighborhood() {
 	const [wea, setWea] = useState<string | null>(null)

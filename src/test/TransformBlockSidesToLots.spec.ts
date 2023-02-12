@@ -1,6 +1,6 @@
-import transformBlockSidesToLots from "../web/domain/TransformBlockSidesToLots"
-import { Coordinate } from "../web/domain/types/Coordinate"
-import { Line } from "../web/domain/types/Line"
+import transformBlockSidesToLots from "@web/domain/TransformBlockSidesToLots"
+import { Coordinate } from "@web/domain/types/Coordinate"
+import { Line } from "@web/domain/types/Line"
 
 describe("TransformBlockSidesToLots should", () => {
 	let results: Array<Array<Coordinate>> = []

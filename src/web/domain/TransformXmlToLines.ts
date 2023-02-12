@@ -1,5 +1,5 @@
-import {Segment} from "./types/Segment"
-import {CategorizedSegments} from "./types/CategorizedSegments"
+import { CategorizedSegments } from "@web/domain/types/CategorizedSegments"
+import { Segment } from "@web/domain/types/Segment"
 
 const PATH_START = "<path"
 const PATH_END = "/>"
@@ -8,7 +8,7 @@ const LOT_BORDER_COLOR = "red"
 
 export default function transformXmlToLines(xml: string): CategorizedSegments {
 	let offset = 0
-	const lines: CategorizedSegments = {internals: [], externals: []}
+	const lines: CategorizedSegments = { internals: [], externals: [] }
 
 	while (true) {
 		const start = xml.indexOf(PATH_START, offset)
@@ -25,20 +25,21 @@ export default function transformXmlToLines(xml: string): CategorizedSegments {
 		const line: Segment = [coordinate(origin), coordinate(destination)]
 
 		const stroke = getAttribute(element, "stroke")
-		if (stroke === BLOCK_BORDER_COLOR)
-			lines.externals.push(line)
-		else if (stroke === LOT_BORDER_COLOR)
-			lines.internals.push(line)
+		if (stroke === BLOCK_BORDER_COLOR) lines.externals.push(line)
+		else if (stroke === LOT_BORDER_COLOR) lines.internals.push(line)
 	}
 
 	return lines
 }
 
-const coordinate = (array: Array<string>) => ({x: Number(array[0]), y: Number(array[1])})
+const coordinate = (array: Array<string>) => ({
+	x: Number(array[0]),
+	y: Number(array[1])
+})
 
 function getAttribute(element: string, attribute: string) {
-		const matcher = `${attribute}="`
-		const start = element.indexOf(matcher)
-		const end = element.indexOf("\"", start + matcher.length)
-		return element.substring(start + matcher.length, end)
+	const matcher = `${attribute}="`
+	const start = element.indexOf(matcher)
+	const end = element.indexOf('"', start + matcher.length)
+	return element.substring(start + matcher.length, end)
 }

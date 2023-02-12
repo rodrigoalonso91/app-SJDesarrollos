@@ -1,4 +1,4 @@
-import getMongoDBClient from "../../infrastructure/GetMongoDBClient"
+import getMongoDBClient from "@server/infrastructure/GetMongoDBClient"
 import { ObjectId } from "mongodb"
 
 export default async function deleteNeighborhoodOfId(id: string) {

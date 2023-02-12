@@ -2,8 +2,8 @@ import "../styles/globals.css"
 import { UserProvider } from "@auth0/nextjs-auth0"
 import type { AppProps } from "next/app"
 import { Provider } from "react-redux"
-import { store } from "../src/web/store/store"
-import { Navbar } from "./../src/web/components"
+import { store } from "@web/store/store"
+import { Navbar } from "@web/components"
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
