@@ -22,9 +22,9 @@ export const Navbar = ({ nickname }) => {
                 <div className="navbar-collapse">
                     <div className="navbar-nav">
                         <NavbarItem href="/Master" text="Master" handleOnClick={handleClick} />
-                        <NavbarItem href="/neighborhoods" text="Barrios" handleOnClick={handleClick} />
-                        <NavbarItem href="/Salesmen" text="Vendedores" handleOnClick={handleClick} />
-                        <NavbarItem href="/Clients" text="Clientes" handleOnClick={handleClick} />
+                        <NavbarItem href="/barrios" text="Barrios" handleOnClick={handleClick} />
+                        <NavbarItem href="/vendedores" text="Vendedores" handleOnClick={handleClick} />
+                        <NavbarItem href="/clientes" text="Clientes" handleOnClick={handleClick} />
                     </div>
                 </div>
 
