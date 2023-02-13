@@ -2,17 +2,18 @@ import transformXmlToNeighborhoods from "@web/domain/TransformXmlToNeighborhoods
 import { Coordinate } from "@web/domain/types/Coordinate"
 import { Line } from "@web/domain/types/Line"
 import { first } from "@web/domain/utils/LineUtils"
-import React, { ChangeEvent, useEffect, useState } from "react"
+import React, { ChangeEvent, useEffect, useRef, useState } from "react"
 import { Layer, Shape, Stage, Line as KonvaLine, Text } from "react-konva"
 
 export default function Neighborhood() {
-	const [wea, setWea] = useState<string | null>(null)
-	const [fome, setFome] = useState<ReturnType<
+	const [neighborhoodXML, setNeighborhoodXML] = useState<string | null>(null)
+	const [neighborhood, setNeighborhood] = useState<ReturnType<
 		typeof transformXmlToNeighborhoods
 	> | null>(null)
 	useEffect(() => {
-		if (wea) setFome(transformXmlToNeighborhoods(wea))
-	}, [wea])
+		if (neighborhoodXML)
+			setNeighborhood(transformXmlToNeighborhoods(neighborhoodXML))
+	}, [neighborhoodXML])
 
 	const [stageScale, setStageScale] = useState(1)
 	const [stageX, setStageX] = useState(0)
@@ -45,7 +46,10 @@ export default function Neighborhood() {
 	// And then we have canvas shapes inside the Layer
 	return (
 		<>
-			<input type="file" onChange={(e) => onFileUpload(e, setWea)} />
+			<input
+				type="file"
+				onChange={(e) => onFileUpload(e, setNeighborhoodXML)}
+			/>
 
 			<div style={{ display: "flex", flexDirection: "column" }}>
 				{/*
@@ -72,9 +76,10 @@ export default function Neighborhood() {
 				style={{ border: "solid 1px black" }}
 			>
 				<Layer>
-					{fome && fome.lots.map((block, i) => <Block key={i} lots={block} />)}
-					{fome &&
-						fome.errors.map(({ lines }, i) =>
+					{neighborhood &&
+						neighborhood.lots.map((block, i) => <Block key={i} lots={block} />)}
+					{neighborhood &&
+						neighborhood.errors.map(({ lines }, i) =>
 							lines.map((line, j) => (
 								<ErrorLine
 									key={`${i}-${j}`}
@@ -83,8 +88,8 @@ export default function Neighborhood() {
 								/>
 							))
 						)}
-					{fome &&
-						fome.errors.map((error, i) =>
+					{neighborhood &&
+						neighborhood.errors.map((error, i) =>
 							(error.faulty || []).map((line, j) => (
 								<ErrorLineCulprit
 									key={`${i}-${j}`}
@@ -111,7 +116,18 @@ function Block({ lots }: { lots: Array<Line> }) {
 
 function Lot({ coordinates }: { coordinates: Array<Coordinate> }) {
 	const [hovered, setHovered] = useState(false)
-	const [center] = useState(() => centerOf(coordinates))
+	const textRef = useRef<any>(null)
+	const [center, setCenter] = useState(() => centerOf(coordinates))
+
+	React.useEffect(() => {
+		const width = textRef.current?.width()
+		const height = textRef.current?.height()
+		console.log(width)
+		setCenter({
+			x: center.x - width / 2,
+			y: center.y - height / 2
+		})
+	}, [])
 
 	return (
 		<>
@@ -130,7 +146,7 @@ function Lot({ coordinates }: { coordinates: Array<Coordinate> }) {
 				stroke="black"
 				strokeWidth={0.35}
 			/>
-			<Text x={center.x} y={center.y} text={"o"} fontSize={1} />
+			<Text x={center.x} y={center.y} text={"o"} fontSize={1} ref={textRef} />
 		</>
 	)
 }
