@@ -38,7 +38,6 @@ export const AddForm = ({ collection, data, setData }) => {
 				<Grid item xs={12} sx={{ mt: 2 }}>
 					<TextField
 						label="Nombre"
-						type="text"
 						placeholder="Ej: Juan"
 						fullWidth
 						{...firstname}
@@ -48,7 +47,6 @@ export const AddForm = ({ collection, data, setData }) => {
 				<Grid item xs={12} sx={{ mt: 2 }}>
 					<TextField
 						label="Apellido"
-						type="text"
 						placeholder="Ej: Garcia"
 						fullWidth
 						{...lastname}
@@ -58,7 +56,6 @@ export const AddForm = ({ collection, data, setData }) => {
 				<Grid item xs={12} sx={{ mt: 2 }}>
 					<TextField
 						label="Teléfono"
-						type="text"
 						placeholder="Ej: 1171348080"
 						fullWidth
 						{...phone}
@@ -68,7 +65,6 @@ export const AddForm = ({ collection, data, setData }) => {
 				<Grid item xs={12} sx={{ mt: 2 }}>
 					<TextField
 						label="Email"
-						type="email"
 						placeholder="Ej: JuanGarcia@gmail.com"
 						fullWidth
 						{...email}

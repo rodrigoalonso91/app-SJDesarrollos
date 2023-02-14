@@ -1,3 +1,5 @@
+import { API_PATH_COLLECTIONS } from "../constants/collections";
+
 const updateRowOnDatabase = async (collection, updatedRow) => {
 
     const data = {
@@ -8,7 +10,7 @@ const updateRowOnDatabase = async (collection, updatedRow) => {
         }
     };
 
-    await fetch(`api/${collection}`, data);
+    await fetch(`api/${API_PATH_COLLECTIONS[collection]}`, data);
 }
 
 export default updateRowOnDatabase;
