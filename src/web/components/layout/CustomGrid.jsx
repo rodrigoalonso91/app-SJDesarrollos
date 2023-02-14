@@ -1,8 +1,7 @@
 import { PersonAdd } from "@mui/icons-material"
 import { Typography } from "@mui/material"
 import MaterialReactTable from "material-react-table"
-import { useCallback } from "react"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import deleteRowOnDatabase from "../../api_calls/deleteRowOnDatabase"
 import updateRowOnDatabase from "../../api_calls/updateRowOnDatabase"
@@ -17,7 +16,10 @@ const esCollections = {
 }
 
 export const CustomGrid = ({ collection, columns, data }) => {
-	const [tableData, setTableData] = useState(data)
+
+	const [tableData, setTableData] = useState({});
+	
+	useEffect(() => { setTableData(data) }, [data]);
 
 	const { isFormActivated } = useSelector((state) => state.isActivatedForm)
 
