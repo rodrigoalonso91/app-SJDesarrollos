@@ -7,6 +7,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 
 export default withApiAuthRequired(
 	async (req: NextApiRequest, res: NextApiResponse) => {
+		
 		const session = await getSession(req, res)
 		if (!session) return res.status(401).end()
 

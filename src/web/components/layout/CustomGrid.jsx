@@ -9,15 +9,11 @@ import { displayForm } from "../../store/form"
 import { BasicEditActions } from "../table/BasicEditActions"
 import { CustomModal } from "./CustomModal"
 import { AddForm } from "../AddForm"
-
-const esCollections = {
-	salesmen: "Vendedores",
-	clients: "Clientes"
-}
+import { SPANISH_COLLECTIONS } from "../../constants/collections"
 
 export const CustomGrid = ({ collection, columns, data }) => {
 
-	const [tableData, setTableData] = useState({});
+	const [tableData, setTableData] = useState([]);
 	
 	useEffect(() => { setTableData(data) }, [data]);
 
@@ -85,7 +81,7 @@ export const CustomGrid = ({ collection, columns, data }) => {
 					onEditingRowSave={handleSaveRowEdits}
 					renderTopToolbarCustomActions={() => (
 						<Typography sx={{ ml: 1 }} variant="h5">
-							{esCollections[collection]}
+							{SPANISH_COLLECTIONS[collection]}
 						</Typography>
 					)}
 					renderRowActions={({ row, table }) => (
@@ -99,7 +95,7 @@ export const CustomGrid = ({ collection, columns, data }) => {
 			</div>
 
 			{isFormActivated && (
-				<CustomModal headerText={`Agregar ${esCollections[collection]}`}>
+				<CustomModal headerText={`Agregar ${SPANISH_COLLECTIONS[collection]}`}>
 					<AddForm
 						collection={collection}
 						data={tableData}
