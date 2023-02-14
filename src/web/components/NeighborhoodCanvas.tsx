@@ -1,3 +1,4 @@
+import addNeighborhood from "@web/api_calls/neighborhood/addNeighborhood"
 import transformXmlToNeighborhoods, {
 	BlockError,
 	Neighborhood,
@@ -29,8 +30,8 @@ export default function NeighborhoodCanvas() {
 
 	useEffect(() => {
 		if (selected) {
-			setBlockText(neighborhood![selected.block].name)
-			setLotText(neighborhood![selected.block].lots[selected.lot].name)
+			setBlockText(neighborhood!.blocks[selected.block].name)
+			setLotText(neighborhood!.blocks[selected.block].lots[selected.lot].name)
 		} else {
 			setBlockText("")
 			setLotText("")
@@ -48,20 +49,42 @@ export default function NeighborhoodCanvas() {
 
 	const changeLotName = useCallback(
 		(name: string, block: number, lot: number) => {
-			if (neighborhood === null) return
-			const substituteNeighborhood = JSON.parse(JSON.stringify(neighborhood))
-			substituteNeighborhood[block].lots[lot].name = name
-			setNeighborhood(substituteNeighborhood)
+			setNeighborhood((neighborhood) => {
+				if (neighborhood === null) return null
+				const substituteNeighborhood = JSON.parse(
+					JSON.stringify(neighborhood)
+				) as Neighborhood
+				substituteNeighborhood.blocks[block].lots[lot].name = name
+				return substituteNeighborhood
+			})
 		},
 		[neighborhood]
 	)
 
 	const changeBlockName = useCallback(
 		(name: string, block: number) => {
-			if (neighborhood === null) return
-			const substituteNeighborhood = JSON.parse(JSON.stringify(neighborhood))
-			substituteNeighborhood[block].name = name
-			setNeighborhood(substituteNeighborhood)
+			setNeighborhood((neighborhood) => {
+				if (neighborhood === null) return null
+				const substituteNeighborhood = JSON.parse(
+					JSON.stringify(neighborhood)
+				) as Neighborhood
+				substituteNeighborhood.blocks[block].name = name
+				return substituteNeighborhood
+			})
+		},
+		[neighborhood]
+	)
+
+	const changeNeighborhoodName = useCallback(
+		(name: string) => {
+			setNeighborhood((neighborhood) => {
+				if (neighborhood === null) return null
+				const substituteNeighborhood = JSON.parse(
+					JSON.stringify(neighborhood)
+				) as Neighborhood
+				substituteNeighborhood.name = name
+				return substituteNeighborhood
+			})
 		},
 		[neighborhood]
 	)
@@ -96,15 +119,13 @@ export default function NeighborhoodCanvas() {
 	// Layer is actual canvas element (so you may have several canvases in the stage)
 	// And then we have canvas shapes inside the Layer
 	return (
-		<MasterContext.Provider
-			value={{ changeLotName, changeBlockName, selected, setSelected }}
-		>
+		<MasterContext.Provider value={{ selected, setSelected }}>
 			<input
 				type="file"
 				onChange={(e) => onFileUpload(e, setNeighborhoodXML)}
 			/>
 			<input
-				placeholder="block"
+				placeholder="Manzana"
 				disabled={selected === null}
 				value={blockText}
 				onChange={(e) => {
@@ -112,22 +133,39 @@ export default function NeighborhoodCanvas() {
 				}}
 			/>
 			<input
-				placeholder="lot"
+				placeholder="Lote"
 				disabled={selected === null}
 				value={lotText}
 				onChange={(e) => {
 					setLotText(e.target.value)
 				}}
 			/>
+
 			<button
 				onClick={() => {
-					changeBlockName(lotText, selected?.block!)
+					changeBlockName(blockText, selected?.block!)
 					changeLotName(lotText, selected?.block!, selected?.lot!)
 					setSelected(null)
 				}}
 				disabled={selected === null}
 			>
-				Change Names
+				Confirmar Nombre de Lote y Manzana
+			</button>
+
+			<input
+				placeholder="Barrio"
+				value={neighborhood?.name || ""}
+				onChange={(e) => {
+					changeNeighborhoodName(e.target.value)
+				}}
+			/>
+			<button
+				onClick={() => {
+					addNeighborhood(neighborhood!)
+				}}
+				disabled={!neighborhood?.name}
+			>
+				Guardar Master
 			</button>
 			<Stage
 				width={window.innerWidth}
@@ -142,7 +180,7 @@ export default function NeighborhoodCanvas() {
 			>
 				<Layer>
 					{neighborhood &&
-						neighborhood.map((block, i) => (
+						neighborhood.blocks.map((block, i) => (
 							<Block key={i} {...block} block={i} />
 						))}
 					{errors &&
@@ -324,16 +362,12 @@ const defaultBoundary = ({ x, y }: Coordinate) => ({
 	maxY: y
 })
 
-const MasterContext = React.createContext<Wea>({
-	changeLotName: () => {},
-	changeBlockName: () => {},
+const MasterContext = React.createContext<MasterContextProps>({
 	setSelected: () => {},
 	selected: null
 })
 
-type Wea = {
-	changeLotName: (name: string, block: number, lot: number) => void
-	changeBlockName: (name: string, block: number) => void
+type MasterContextProps = {
 	setSelected: ({}: { block: number; lot: number }) => void
 	selected: { block: number; lot: number } | null
 }

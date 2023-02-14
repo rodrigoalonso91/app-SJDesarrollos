@@ -17,7 +17,7 @@ export default withApiAuthRequired(
 					return res.status(200).json(neighborhoods)
 				case "POST":
 					const creation_time = new Date().toISOString()
-					const id = await createNeighborhood({ name: creation_time })
+					const id = await createNeighborhood(JSON.parse(req.body))
 					return res.status(201).end()
 				default:
 					return res.status(405).end()
