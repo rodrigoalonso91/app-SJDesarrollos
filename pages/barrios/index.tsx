@@ -1,9 +1,7 @@
-import dynamic from "next/dynamic"
-
-const Neighborhoods = dynamic(() => import("@web/components/Neighborhood"), {
-	ssr: false
-})
-
-export default function NeighborhoodsScreen() {
-	return <Neighborhoods />
+export const Neighborhood = () => {
+	return (
+		<h1>Barrios</h1>
+	)
 }
+
+export default Neighborhood

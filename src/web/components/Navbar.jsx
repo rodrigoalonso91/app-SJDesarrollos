@@ -2,18 +2,20 @@ import Link from "next/link"
 import { NavbarItem } from "./index"
 import "bootstrap/dist/css/bootstrap.css"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Backdrop, CircularProgress } from "@mui/material"
 import useUserData from "../hooks/UseUserData"
+import { useRouter } from "next/router"
 
 export const Navbar = () => {
-	const user = useUserData()
 
+	const user = useUserData();
+	const router = useRouter();
 	const [open, setOpen] = useState(false)
 
-	const handleClick = () => {
-		setOpen(!open)
-	}
+	useEffect( () => setOpen(router.isPreview), [router]);
+	
+	const handleClick = () => setOpen(true);
 
 	return (
 		<>
@@ -30,7 +32,7 @@ export const Navbar = () => {
 				<div className="navbar-collapse">
 					<div className="navbar-nav">
 						<NavbarItem
-							href="/Master"
+							href="/master"
 							text="Master"
 							handleOnClick={handleClick}
 						/>
