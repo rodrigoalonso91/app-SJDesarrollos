@@ -1,19 +1,70 @@
-import transformXmlToNeighborhoods from "@web/domain/TransformXmlToNeighborhoods"
+import transformXmlToNeighborhoods, {
+	BlockError,
+	Neighborhood,
+	Block
+} from "@web/domain/TransformXmlToNeighborhoods"
 import { Coordinate } from "@web/domain/types/Coordinate"
-import { Line } from "@web/domain/types/Line"
 import { first } from "@web/domain/utils/LineUtils"
-import React, { ChangeEvent, useEffect, useRef, useState } from "react"
+import React, {
+	ChangeEvent,
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState
+} from "react"
 import { Layer, Shape, Stage, Line as KonvaLine, Text } from "react-konva"
 
-export default function Neighborhood() {
+export default function NeighborhoodCanvas() {
 	const [neighborhoodXML, setNeighborhoodXML] = useState<string | null>(null)
-	const [neighborhood, setNeighborhood] = useState<ReturnType<
-		typeof transformXmlToNeighborhoods
-	> | null>(null)
+	const [neighborhood, setNeighborhood] = useState<Neighborhood | null>(null)
+	const [errors, setErrors] = useState<Array<BlockError> | null>(null)
+	const [selected, setSelected] = useState<{
+		block: number
+		lot: number
+	} | null>(null)
+
+	const [lotText, setLotText] = useState("")
+	const [blockText, setBlockText] = useState("")
+
 	useEffect(() => {
-		if (neighborhoodXML)
-			setNeighborhood(transformXmlToNeighborhoods(neighborhoodXML))
+		if (selected) {
+			setBlockText(neighborhood![selected.block].name)
+			setLotText(neighborhood![selected.block].lots[selected.lot].name)
+		} else {
+			setBlockText("")
+			setLotText("")
+		}
+	}, [selected])
+
+	useEffect(() => {
+		if (neighborhoodXML) {
+			const { neighborhood, errors } =
+				transformXmlToNeighborhoods(neighborhoodXML)
+			setNeighborhood(neighborhood)
+			setErrors(errors)
+		}
 	}, [neighborhoodXML])
+
+	const changeLotName = useCallback(
+		(name: string, block: number, lot: number) => {
+			if (neighborhood === null) return
+			const substituteNeighborhood = JSON.parse(JSON.stringify(neighborhood))
+			substituteNeighborhood[block].lots[lot].name = name
+			setNeighborhood(substituteNeighborhood)
+		},
+		[neighborhood]
+	)
+
+	const changeBlockName = useCallback(
+		(name: string, block: number) => {
+			if (neighborhood === null) return
+			const substituteNeighborhood = JSON.parse(JSON.stringify(neighborhood))
+			substituteNeighborhood[block].name = name
+			setNeighborhood(substituteNeighborhood)
+		},
+		[neighborhood]
+	)
 
 	const [stageScale, setStageScale] = useState(1)
 	const [stageX, setStageX] = useState(0)
@@ -45,25 +96,39 @@ export default function Neighborhood() {
 	// Layer is actual canvas element (so you may have several canvases in the stage)
 	// And then we have canvas shapes inside the Layer
 	return (
-		<>
+		<MasterContext.Provider
+			value={{ changeLotName, changeBlockName, selected, setSelected }}
+		>
 			<input
 				type="file"
 				onChange={(e) => onFileUpload(e, setNeighborhoodXML)}
 			/>
-
-			<div style={{ display: "flex", flexDirection: "column" }}>
-				{/*
-					fome && fome.errors.map(({error}, i) => (
-							<span
-								onMouseEnter={() => setErrorIndex(i)}
-								onMouseLeave={() => setErrorIndex(null)}
-							>
-							{error}
-							</span>
-						)
-					)
-				*/}
-			</div>
+			<input
+				placeholder="block"
+				disabled={selected === null}
+				value={blockText}
+				onChange={(e) => {
+					setBlockText(e.target.value)
+				}}
+			/>
+			<input
+				placeholder="lot"
+				disabled={selected === null}
+				value={lotText}
+				onChange={(e) => {
+					setLotText(e.target.value)
+				}}
+			/>
+			<button
+				onClick={() => {
+					changeBlockName(lotText, selected?.block!)
+					changeLotName(lotText, selected?.block!, selected?.lot!)
+					setSelected(null)
+				}}
+				disabled={selected === null}
+			>
+				Change Names
+			</button>
 			<Stage
 				width={window.innerWidth}
 				height={window.innerHeight}
@@ -77,9 +142,11 @@ export default function Neighborhood() {
 			>
 				<Layer>
 					{neighborhood &&
-						neighborhood.lots.map((block, i) => <Block key={i} lots={block} />)}
-					{neighborhood &&
-						neighborhood.errors.map(({ lines }, i) =>
+						neighborhood.map((block, i) => (
+							<Block key={i} {...block} block={i} />
+						))}
+					{errors &&
+						errors.map(({ lines }, i) =>
 							lines.map((line, j) => (
 								<ErrorLine
 									key={`${i}-${j}`}
@@ -88,8 +155,8 @@ export default function Neighborhood() {
 								/>
 							))
 						)}
-					{neighborhood &&
-						neighborhood.errors.map((error, i) =>
+					{errors &&
+						errors.map((error, i) =>
 							(error.faulty || []).map((line, j) => (
 								<ErrorLineCulprit
 									key={`${i}-${j}`}
@@ -100,38 +167,59 @@ export default function Neighborhood() {
 						)}
 				</Layer>
 			</Stage>
-		</>
+		</MasterContext.Provider>
 	)
 }
 
-function Block({ lots }: { lots: Array<Line> }) {
+function Block({ lots, block }: Block & { block: number }) {
 	return (
 		<>
-			{lots.map((coordinates, i) => (
-				<Lot key={i} coordinates={coordinates} />
+			{lots.map(({ coordinates, name }, i) => (
+				<LotArea
+					key={i}
+					coordinates={coordinates}
+					name={name}
+					block={block}
+					lot={i}
+				/>
 			))}
 		</>
 	)
 }
 
-function Lot({ coordinates }: { coordinates: Array<Coordinate> }) {
+function LotArea({
+	name,
+	coordinates,
+	block,
+	lot
+}: {
+	name: string
+	block: number
+	lot: number
+	coordinates: Array<Coordinate>
+}) {
 	const [hovered, setHovered] = useState(false)
 	const textRef = useRef<any>(null)
 	const [center, setCenter] = useState(() => centerOf(coordinates))
 
+	const { setSelected, selected } = useContext(MasterContext)
+
 	React.useEffect(() => {
 		const width = textRef.current?.width()
 		const height = textRef.current?.height()
-		console.log(width)
-		setCenter({
-			x: center.x - width / 2,
-			y: center.y - height / 2
-		})
+		setCenter({ x: center.x - width / 2, y: center.y - height / 2 })
 	}, [])
+
+	let color = "transparent"
+	if (lot === selected?.lot && block === selected?.block)
+		color = hovered ? "darkblue" : "blue"
+	else if (block === selected?.block) color = hovered ? "darkorange" : "orange"
+	else if (hovered) color = "lightblue"
 
 	return (
 		<>
 			<Shape
+				onClick={() => setSelected({ block, lot })}
 				onMouseEnter={() => setHovered(true)}
 				onMouseLeave={() => setHovered(false)}
 				sceneFunc={(context, shape) => {
@@ -142,11 +230,11 @@ function Lot({ coordinates }: { coordinates: Array<Coordinate> }) {
 					context.closePath()
 					context.fillStrokeShape(shape)
 				}}
-				fill={hovered ? "green" : "lightblue"}
+				fill={color}
 				stroke="black"
 				strokeWidth={0.35}
 			/>
-			<Text x={center.x} y={center.y} text={"o"} fontSize={1} ref={textRef} />
+			<Text x={center.x} y={center.y} text={name} fontSize={1} ref={textRef} />
 		</>
 	)
 }
@@ -235,3 +323,17 @@ const defaultBoundary = ({ x, y }: Coordinate) => ({
 	minY: y,
 	maxY: y
 })
+
+const MasterContext = React.createContext<Wea>({
+	changeLotName: () => {},
+	changeBlockName: () => {},
+	setSelected: () => {},
+	selected: null
+})
+
+type Wea = {
+	changeLotName: (name: string, block: number, lot: number) => void
+	changeBlockName: (name: string, block: number) => void
+	setSelected: ({}: { block: number; lot: number }) => void
+	selected: { block: number; lot: number } | null
+}

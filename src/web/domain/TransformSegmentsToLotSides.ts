@@ -14,10 +14,10 @@ export default function transformSegmentsToLotSides(
 	segments: CategorizedSegments
 ) {
 	try {
-		const blocks = transformExternalsToBlocks(segments.externals)
-		const externals = transformToLotExternalSides(blocks, segments.internals)
+		const block = transformExternalsToBlocks(segments.externals)
+		const externals = transformToLotExternalSides(block, segments.internals)
 		const results = transformToLotSides(externals, [...segments.internals])
-		return { error: null, segments: results }
+		return { error: null, block: { coordinates: block, lots: results } }
 	} catch (e: any) {
 		if (e instanceof MasterBuildingError)
 			return { error: e.message, segments: segments, faulty: e.errors }
@@ -34,17 +34,17 @@ function transformExternalsToBlocks(
 ): Array<Coordinate> {
 	externals = [...externals]
 	const [first, second] = externals.pop()!
-	const perimeter = [first, second]
+	const block = [first, second]
 
 	while (true) {
-		const last = perimeter[perimeter.length - 1]
+		const last = block[block.length - 1]
 		const touching = externals.filter((segment) =>
 			lineTouchesCoordinate(segment, last)
 		)
 		if (touching.length > 1)
 			throw new MasterBuildingError(
 				`block border has more than 2 lines touching.`,
-				[...touching, [penultimate(perimeter), last]]
+				[...touching, [penultimate(block), last]]
 			)
 		if (touching.length === 0)
 			throw new MasterBuildingError(`block did not close`, [[first, last]])
@@ -53,8 +53,8 @@ function transformExternalsToBlocks(
 		const next = getOtherEnd(segment, last)
 
 		//TODO there should be no extra lines
-		if (coordinatesAreRoughlyEqual(next, first)) return perimeter
-		else perimeter.push(next)
+		if (coordinatesAreRoughlyEqual(next, first)) return block
+		else block.push(next)
 	}
 }
 
