@@ -1,9 +1,10 @@
 import dynamic from "next/dynamic"
 
-const Neighborhoods = dynamic(() => import("@web/components/Neighborhood"), {
-	ssr: false
-})
+const NeighborhoodCanvas = dynamic(
+	() => import("@web/components/NeighborhoodCanvas"),
+	{ ssr: false }
+)
 
 export default function NeighborhoodsScreen() {
-	return <Neighborhoods />
+	return <NeighborhoodCanvas />
 }
