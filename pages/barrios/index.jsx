@@ -1,5 +1,5 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
-import { MenuItem, TextField } from "@mui/material"
+import { Button, MenuItem, TextField } from "@mui/material"
 import { Box } from "@mui/system"
 import { getNeighborhoods } from "@server/index"
 import { useEffect, useState } from "react"
@@ -18,7 +18,6 @@ export const Neighborhood = ({ neighborhoods }) => {
 		setNeighborhoodData(data)
 	},
 	[neighborhoods, selectedNeighborhood])
-	
 
 	const handleChange = (event) => {
 		setSelectedNeighborhood(event.target.value);
@@ -34,26 +33,32 @@ export const Neighborhood = ({ neighborhoods }) => {
 				padding: 25
 			}}
 		>
-			<Box width='250px'>
-				<TextField
-					label='Elige un barrio'
-					select
-					value={selectedNeighborhood}
-					onChange={handleChange}
-					fullWidth
-				>
-					{
-						neighborhoods.map(n => 
-							<MenuItem  
-								key={n.id} 
-								value={n.id} 
-							>
-								{n.name}
-							</MenuItem>
-						)
-					}
-				</TextField>
+			<Box sx={{display: 'flex', flexDirection: 'row-reverse', gap: 5}}>
+				<Box width='250px'>
+					<TextField
+						label='Elige un barrio'
+						select
+						value={selectedNeighborhood}
+						onChange={handleChange}
+						fullWidth
+					>
+						{
+							neighborhoods.map(n => 
+								<MenuItem  
+									key={n.id} 
+									value={n.id} 
+								>
+									{n.name}
+								</MenuItem>
+							)
+						}
+					</TextField>
+				</Box>
+				<Button variant="contained">
+					Ver master
+				</Button>
 			</Box>
+
 			<NeighborhoodGrid data={neighborhoodData} />
 		</section>
 	)

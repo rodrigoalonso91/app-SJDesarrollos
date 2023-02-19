@@ -1,5 +1,5 @@
 import { PersonAdd } from "@mui/icons-material"
-import { Typography } from "@mui/material"
+import { Button, Typography } from "@mui/material"
 import MaterialReactTable from "material-react-table"
 import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -10,6 +10,7 @@ import { BasicEditActions } from "../table/BasicEditActions"
 import { CustomModal } from "./CustomModal"
 import { AddForm } from "../AddForm"
 import { SPANISH_COLLECTIONS } from "../../constants/collections"
+import { Box } from "@mui/system"
 
 export const CustomGrid = ({ collection, columns, data }) => {
 
@@ -60,14 +61,26 @@ export const CustomGrid = ({ collection, columns, data }) => {
 
 	return (
 		<>
-			<div className="contairner d-flex flex-row-reverse align-items-center">
-				<button className="btn btn-primary mb-3 me-3" onClick={handleClick}>
-					<PersonAdd sx={{ mr: "10px" }} />
-					Agregar
-				</button>
-			</div>
+			<div style={{ 
+				display: 'flex', 
+				flexDirection: 'column', 
+				gap: 35, 
+				padding: 15
+			}}
+			>
+				<Box sx={{
+					display: 'flex',
+					flexDirection: 'row-reverse',
+				}}>
+					<Button
+						onClick={handleClick}
+						variant="contained"
+					>
+						<PersonAdd sx={{ mr: "10px" }} />
+						Agregar
+					</Button>
+				</Box>
 
-			<div style={{ padding: 15 }}>
 				<MaterialReactTable
 					style={{ boxShadow: "3px 4.5px 9.5px 3.5px #000000" }}
 					columns={columns}
