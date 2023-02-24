@@ -1,11 +1,11 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
 import { getSalesmen } from "../../src/server/domain/salesmen/GetSalesmen"
 import { CustomGrid } from "../../src/web/components/layout"
-import { BASIC_COLUMS } from "../../src/web/constants/colums"
+import { BASIC_COLUMNS } from "../../src/web/constants/columns"
 
 export const Salesmen = ({ salesmen }) => {
 	return (
-		<CustomGrid collection="salesmen" columns={BASIC_COLUMS} data={salesmen} />
+		<CustomGrid collection="salesmen" columns={BASIC_COLUMNS} data={salesmen} />
 	)
 }
 
