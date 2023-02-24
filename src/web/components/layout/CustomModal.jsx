@@ -16,7 +16,7 @@ export const CustomModal = ({ children, headerText }) => {
 			<Overlay>
 				<ModalContainer>
 					<ModalHeader>
-						<Typography variant="h3" sx={{ fontSize: 20, color: "#1660cd" }}>
+						<Typography variant="h3" sx={{ fontSize: 20, color: "#000000" }}>
 							{headerText}
 						</Typography>
 					</ModalHeader>
