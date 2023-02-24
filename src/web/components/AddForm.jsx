@@ -5,6 +5,7 @@ import { displayForm } from "../store/form"
 import addRowInDatabase from "../api_calls/addRowInDatabase"
 
 export const AddForm = ({ collection, data, setData }) => {
+	
 	const firstname = useField({ type: "text" })
 	const lastname = useField({ type: "text" })
 	const phone = useField({ type: "text" })
@@ -73,13 +74,13 @@ export const AddForm = ({ collection, data, setData }) => {
 
 				<Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
 					<Grid item xs={12} sm={6}>
-						<Button variant="contained" fullWidth onClick={handleClickOnAdd}>
+						<Button color="success" variant="contained" fullWidth onClick={handleClickOnAdd}>
 							Crear
 						</Button>
 					</Grid>
 
 					<Grid item xs={12} sm={6}>
-						<Button variant="contained" fullWidth onClick={handleClickOnCancel}>
+						<Button color="error" variant="contained" fullWidth onClick={handleClickOnCancel}>
 							<Typography>Cancelar</Typography>
 						</Button>
 					</Grid>
