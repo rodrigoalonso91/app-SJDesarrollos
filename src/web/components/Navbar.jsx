@@ -9,9 +9,9 @@ import { useBackDrop } from "@web/hooks"
 export const Navbar = () => {
 
 	const user = useUserData();
-	const { isOpen, OpenBackDrop } = useBackDrop(false)
+	const { isOpen, openBackDrop } = useBackDrop(false)
 	
-	const handleClick = () => OpenBackDrop();
+	const handleClick = () => openBackDrop();
 
 	return (
 		<>
