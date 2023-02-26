@@ -36,6 +36,35 @@ export default function KonvaMaster() {
 	const [stageX, setStageX] = useState(0)
 	const [stageY, setStageY] = useState(0)
 
+	useEffect(() => {
+		if (!neighborhood) return
+		if (!errors) return
+		const boundaries = neighborhood.blocks
+			.flatMap((block) => block.lots)
+			.flatMap((lot) => lot.coordinates)
+			.concat(errors.flatMap((error) => error.lines).flatMap((line) => line))
+			.reduce(
+				({ minX, minY, maxX, maxY }, { x, y }) => ({
+					minX: minX === null ? x : Math.min(minX, x),
+					minY: minY === null ? y : Math.min(minY, y),
+					maxX: maxX === null ? y : Math.max(maxX, y),
+					maxY: maxY === null ? y : Math.max(maxY, y)
+				}),
+				{ minX: null, minY: null, maxX: null, maxY: null } as
+					| { minX: null; minY: null; maxX: null; maxY: null }
+					| { minX: number; minY: number; maxX: number; maxY: number }
+			)
+
+		if (boundaries.minX === null) return
+		const height = boundaries.maxY - boundaries.minY
+		if (height > 0) {
+			const scale = window.innerHeight / height
+			setStageScale(scale)
+			setStageX(-boundaries.minX * scale)
+			setStageY(-boundaries.minY * scale)
+		}
+	}, [neighborhood, errors])
+
 	const handleWheel = (e: any) => {
 		e.evt.preventDefault()
 
@@ -58,9 +87,6 @@ export default function KonvaMaster() {
 		)
 	}
 
-	// Stage is a div container
-	// Layer is actual canvas element (so you may have several canvases in the stage)
-	// And then we have canvas shapes inside the Layer
 	return (
 		<MasterContext.Provider value={{ selected, setSelected }}>
 			<input type="file" onChange={onFileUpload} />
