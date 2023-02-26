@@ -19,7 +19,7 @@ export default function useNeighborhood() {
 	}
 
 	const changeLotName = useCallback(
-		(name: string, block: number, lot: number) => {
+		({ name, block, lot }: { name: string; block: number; lot: number }) => {
 			setNeighborhood((neighborhood) => {
 				if (neighborhood === null) return null
 				const substitute = clone(neighborhood)
@@ -31,7 +31,7 @@ export default function useNeighborhood() {
 	)
 
 	const changeBlockName = useCallback(
-		(name: string, block: number) => {
+		({ name, block }: { name: string; block: number }) => {
 			setNeighborhood((neighborhood) => {
 				if (neighborhood === null) return null
 				const substitute = clone(neighborhood)

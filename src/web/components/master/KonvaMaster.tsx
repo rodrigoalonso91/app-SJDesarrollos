@@ -1,4 +1,6 @@
+import styled from "@emotion/styled"
 import addNeighborhood from "@web/api_calls/neighborhood/addNeighborhood"
+import BlockInputs from "@web/components/master/BlockInputs"
 import KonvaBlock from "@web/components/master/KonvaBlock"
 import KonvaErrorLines from "@web/components/master/KonvaErrorLines"
 import MasterContext, {
@@ -18,19 +20,6 @@ export default function KonvaMaster() {
 		changeLotName
 	} = useNeighborhood()
 	const [selected, setSelected] = useState<SelectedLot | null>(null)
-
-	const [lotText, setLotText] = useState("")
-	const [blockText, setBlockText] = useState("")
-
-	useEffect(() => {
-		if (selected && neighborhood) {
-			setBlockText(neighborhood.blocks[selected.block].name)
-			setLotText(neighborhood.blocks[selected.block].lots[selected.lot].name)
-		} else {
-			setBlockText("")
-			setLotText("")
-		}
-	}, [selected, neighborhood])
 
 	const [stageScale, setStageScale] = useState(1)
 	const [stageX, setStageX] = useState(0)
@@ -63,7 +52,7 @@ export default function KonvaMaster() {
 			setStageX(-boundaries.minX * scale)
 			setStageY(-boundaries.minY * scale)
 		}
-	}, [neighborhood, errors])
+	}, [errors])
 
 	const handleWheel = (e: any) => {
 		e.evt.preventDefault()
@@ -88,35 +77,16 @@ export default function KonvaMaster() {
 	}
 
 	return (
-		<MasterContext.Provider value={{ selected, setSelected }}>
+		<MasterContext.Provider
+			value={{
+				selected,
+				setSelected,
+				neighborhood,
+				changeBlockName,
+				changeLotName
+			}}
+		>
 			<input type="file" onChange={onFileUpload} />
-			<input
-				placeholder="Manzana"
-				disabled={selected === null}
-				value={blockText}
-				onChange={(e) => {
-					setBlockText(e.target.value)
-				}}
-			/>
-			<input
-				placeholder="Lote"
-				disabled={selected === null}
-				value={lotText}
-				onChange={(e) => {
-					setLotText(e.target.value)
-				}}
-			/>
-
-			<button
-				onClick={() => {
-					changeBlockName(blockText, selected?.block!)
-					changeLotName(lotText, selected?.block!, selected?.lot!)
-					setSelected(null)
-				}}
-				disabled={selected === null}
-			>
-				Confirmar Nombre de Lote y Manzana
-			</button>
 
 			<input
 				placeholder="Barrio"
@@ -133,25 +103,32 @@ export default function KonvaMaster() {
 			>
 				Guardar Master
 			</button>
-			<Stage
-				width={window.innerWidth}
-				height={window.innerHeight}
-				onWheel={handleWheel}
-				scaleX={stageScale}
-				scaleY={stageScale}
-				x={stageX}
-				y={stageY}
-				draggable={true}
-				style={{ border: "solid 1px black" }}
-			>
-				<Layer>
-					{neighborhood &&
-						neighborhood.blocks.map((block, i) => (
-							<KonvaBlock key={i} {...block} block={i} />
-						))}
-					{errors && <KonvaErrorLines errors={errors} />}
-				</Layer>
-			</Stage>
+			<KonvaContainer>
+				<Stage
+					width={window.innerWidth * 0.7}
+					height={window.innerHeight}
+					onWheel={handleWheel}
+					scaleX={stageScale}
+					scaleY={stageScale}
+					x={stageX}
+					y={stageY}
+					draggable={true}
+				>
+					<Layer>
+						{neighborhood &&
+							neighborhood.blocks.map((block, i) => (
+								<KonvaBlock key={i} {...block} block={i} />
+							))}
+						{errors && <KonvaErrorLines errors={errors} />}
+					</Layer>
+				</Stage>
+				{selected && <BlockInputs />}
+			</KonvaContainer>
 		</MasterContext.Provider>
 	)
 }
+
+const KonvaContainer = styled.div`
+	display: flex;
+	border: 1px solid black;
+`
