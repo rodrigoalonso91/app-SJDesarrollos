@@ -23,10 +23,10 @@ export default function transformXmlToNeighborhoods(xml: string) {
 	const neighborhood: Neighborhood = {
 		name: "",
 		blocks: blocks.map(({ lots, coordinates }) => ({
-			name: "mz00",
+			name: null,
 			coordinates,
 			lots: transformBlockSidesToLots(lots).map((lot) => ({
-				name: "lt00",
+				name: null,
 				coordinates: lot
 			}))
 		}))
@@ -41,13 +41,13 @@ export type Neighborhood = {
 }
 
 export type Block = {
-	name: string
+	name: string | null
 	coordinates: Array<Coordinate>
 	lots: Array<Lot>
 }
 
 export type Lot = {
-	name: string
+	name: string | null
 	coordinates: Array<Coordinate>
 }
 

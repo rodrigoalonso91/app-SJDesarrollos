@@ -13,14 +13,14 @@ export default function BlockInputs() {
 			<span>Manzana</span>
 			<BlockName
 				block={selected.block}
-				name={neighborhood.blocks[selected.block].name}
+				name={neighborhood.blocks[selected.block].name || ""}
 			/>
 			<span>Lotes</span>
 			{neighborhood.blocks[selected.block].lots.map((lot, i) => (
 				<LotName
 					block={selected.block}
 					lot={i}
-					name={neighborhood.blocks[selected.block].lots[i].name}
+					name={neighborhood.blocks[selected.block].lots[i].name || ""}
 				/>
 			))}
 		</ButtonsContainer>
