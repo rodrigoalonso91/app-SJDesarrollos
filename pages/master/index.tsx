@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic"
 
 const NeighborhoodCanvas = dynamic(
-	() => import("@web/components/NeighborhoodCanvas"),
+	() => import("@web/components/master/KonvaMaster"),
 	{ ssr: false }
 )
 
