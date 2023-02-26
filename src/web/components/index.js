@@ -1,6 +1,6 @@
 export { Navbar } from './Navbar'
 export { NavbarItem } from './NavbarItem'
-export { AddForm } from './AddSalesmanForm'
+export { AddSalesmanForm } from './AddSalesmanForm'
 
 export { SalesmenComboBox } from './SalesmenComboBox'
 export { StatusComboBox } from './StatusComboBox'

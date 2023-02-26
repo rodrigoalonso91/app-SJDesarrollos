@@ -6,10 +6,10 @@ import addRowInDatabase from "../api_calls/addRowInDatabase"
 
 export const AddSalesmanForm = ({ collection, data, setData }) => {
 	
-	const firstname = useField({ type: "text" })
-	const lastname = useField({ type: "text" })
-	const phone = useField({ type: "text" })
-	const email = useField({ type: "text" })
+    const firstname = useField({ type: "text", label: 'Nombre', placeholder: 'Ej: Juan' })
+	const lastname = useField({ type: "text" , label: 'Apellido', placeholder: 'Ej: Garcia' })
+	const phone = useField({ type: "text", label: 'Teléfono', placeholder: 'Ej: 1171348080' })
+	const email = useField({ type: "text", label: 'Email', placeholder: 'Ej: JuanGarcia@gmail.com'})
 
 	const inputs = [ firstname, lastname, phone, email ]
 
