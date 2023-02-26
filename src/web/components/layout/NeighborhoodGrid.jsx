@@ -1,11 +1,11 @@
-import { Select } from "@mui/material";
-import { Box } from "@mui/system";
 import MaterialReactTable from "material-react-table"
+import { CustomerComboBox, SalesmenComboBox, StatusComboBox } from '../../components'
+import { Box } from "@mui/system";
 import { useMemo } from "react";
 import { useGridTitle } from '../../hooks/'
-import { SalesmenComboBox } from '../../components'
+import { TextField } from "@mui/material";
 
-const NEIGBORHOOD_COLUMS = [
+const NEIGHBORHOOD_COLUMNS = [
     { 
         header: 'Manzana',
         accessorKey: 'name',
@@ -18,7 +18,8 @@ const NEIGBORHOOD_COLUMS = [
     },
     { 
         header: 'Precio',
-        accessorKey: 'price' 
+        accessorKey: 'price',
+        Edit: ({cell}) => <TextField label='Precio'>{cell.getValue()}</TextField>
     },
     { 
         header: 'Estado',
@@ -42,16 +43,17 @@ const NEIGBORHOOD_COLUMS = [
                 {cell.getValue()}
             </Box>
         ),
-        Edit: ({ cell, column, table }) => <Select />
+        Edit: ({ cell, column, table }) => <StatusComboBox currentValue={cell.getValue()} />
     },
     {
         header: 'Cliente',
-        accessorKey: 'customer'
+        accessorKey: 'customer',
+        Edit: () => <CustomerComboBox />
     },
     {
         header: 'Vendedor',
         accessorKey: 'salesman',
-        Edit: ({ cell }) => <SalesmenComboBox currentValue={cell.getValue()} />
+        Edit: ({ cell }) => <SalesmenComboBox currentValue={() => cell.getValue()} />
     },
 ];
 
@@ -74,9 +76,9 @@ export const NeighborhoodGrid = ({ data }) => {
     }), [blocks])
     
     return (
-        <MaterialReactTable 
+        <MaterialReactTable
             renderTopToolbarCustomActions={getGridTitle}
-            columns={NEIGBORHOOD_COLUMS}
+            columns={NEIGHBORHOOD_COLUMNS}
             data={dataSource}
             enableEditing
             editingMode="modal"

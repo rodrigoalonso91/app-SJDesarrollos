@@ -4,12 +4,14 @@ import { useField } from "../hooks"
 import { displayForm } from "../store/form"
 import addRowInDatabase from "../api_calls/addRowInDatabase"
 
-export const AddForm = ({ collection, data, setData }) => {
+export const AddSalesmanForm = ({ collection, data, setData }) => {
 	
 	const firstname = useField({ type: "text" })
 	const lastname = useField({ type: "text" })
 	const phone = useField({ type: "text" })
 	const email = useField({ type: "text" })
+
+	const inputs = [ firstname, lastname, phone, email ]
 
 	const dispatch = useDispatch()
 
@@ -36,41 +38,16 @@ export const AddForm = ({ collection, data, setData }) => {
 	return (
 		<form>
 			<Grid container>
-				<Grid item xs={12} sx={{ mt: 2 }}>
-					<TextField
-						label="Nombre"
-						placeholder="Ej: Juan"
-						fullWidth
-						{...firstname}
-					/>
-				</Grid>
-
-				<Grid item xs={12} sx={{ mt: 2 }}>
-					<TextField
-						label="Apellido"
-						placeholder="Ej: Garcia"
-						fullWidth
-						{...lastname}
-					/>
-				</Grid>
-
-				<Grid item xs={12} sx={{ mt: 2 }}>
-					<TextField
-						label="Teléfono"
-						placeholder="Ej: 1171348080"
-						fullWidth
-						{...phone}
-					/>
-				</Grid>
-
-				<Grid item xs={12} sx={{ mt: 2 }}>
-					<TextField
-						label="Email"
-						placeholder="Ej: JuanGarcia@gmail.com"
-						fullWidth
-						{...email}
-					/>
-				</Grid>
+				{
+					inputs?.map( input => (
+						<Grid key={input.label} item xs={12} sx={{ mt: 2 }}>
+							<TextField
+								{...input}
+								fullWidth
+							/>
+						</Grid>
+					) )
+				}
 
 				<Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
 					<Grid item xs={12} sm={6}>

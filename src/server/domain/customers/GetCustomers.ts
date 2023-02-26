@@ -11,7 +11,8 @@ export async function getCustomers(): Promise<ReadonlyArray<any>> {
 					firstname: 1,
 					lastname: 1,
 					phone: 1,
-					email: 1
+					email: 1,
+					company: 1
 				}
 			}
 		)
