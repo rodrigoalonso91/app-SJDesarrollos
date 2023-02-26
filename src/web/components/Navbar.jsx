@@ -2,20 +2,16 @@ import Link from "next/link"
 import { NavbarItem } from "./index"
 import "bootstrap/dist/css/bootstrap.css"
 import Image from "next/image"
-import { useEffect, useState } from "react"
 import { Backdrop, CircularProgress } from "@mui/material"
 import useUserData from "../hooks/UseUserData"
-import { useRouter } from "next/router"
+import { useBackDrop } from "@web/hooks"
 
 export const Navbar = () => {
 
 	const user = useUserData();
-	const router = useRouter();
-	const [open, setOpen] = useState(false)
-
-	useEffect( () => setOpen(router.isPreview), [router]);
+	const { isOpen, openBackDrop } = useBackDrop(false)
 	
-	const handleClick = () => setOpen(true);
+	const handleClick = () => openBackDrop();
 
 	return (
 		<>
@@ -67,7 +63,7 @@ export const Navbar = () => {
 				</div>
 			</nav>
 
-			<Backdrop style={{ zIndex: 100 }} open={open}>
+			<Backdrop style={{ zIndex: 100 }} open={isOpen}>
 				<CircularProgress color="inherit" />
 			</Backdrop>
 		</>
