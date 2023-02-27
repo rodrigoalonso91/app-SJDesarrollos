@@ -29,9 +29,9 @@ export default function KonvaLot({
 
 	let color = "transparent"
 	if (lot === selected?.lot && block === selected?.block)
-		color = hovered ? "darkblue" : "blue"
+		color = hovered ? "lightskyblue" : "lightblue"
 	else if (block === selected?.block) color = hovered ? "darkorange" : "orange"
-	else if (hovered) color = "lightblue"
+	else if (hovered) color = "aliceblue"
 
 	return (
 		<>
