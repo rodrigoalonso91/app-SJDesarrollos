@@ -5,5 +5,6 @@ export const SPANISH_COLLECTIONS = {
 
 export const API_PATH_COLLECTIONS = {
     salesmen: "vendedores",
-    clients: "clientes"
+    clients: "clientes",
+    neighborhoods: "barrios"
 }

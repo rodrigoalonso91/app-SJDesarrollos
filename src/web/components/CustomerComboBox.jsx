@@ -5,13 +5,12 @@ export const CustomerComboBox = ({ table, row, column, cell }) => {
 
     const { setEditingCell, setEditingRow } = table
 
-
     const { loading, options } = useCollection({ collection: 'clients' })
 
     const handleOnChange = (event, value) => {
-        
+
         const { fullname } = value
-        setEditingCell(fullname)
+        // setEditingCell(fullname)
         // console.log(customer.fullname)
         // table.setEditingCell(customer)
     }

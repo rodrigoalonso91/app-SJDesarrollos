@@ -64,6 +64,33 @@ const NEIGHBORHOOD_COLUMNS = [
     },
 ];
 
+// const NEIGHBORHOOD_COLUMNS = [
+//     { 
+//         header: 'Manzana',
+//         accessorKey: 'name'
+//     },
+//     { 
+//         header: 'Lote',
+//         accessorKey: 'lot'
+//     },
+//     { 
+//         header: 'Precio',
+//         accessorKey: 'price'
+//     },
+//     { 
+//         header: 'Estado',
+//         accessorKey: 'status'
+//     },
+//     {
+//         header: 'Cliente',
+//         accessorKey: 'customer'
+//     },
+//     {
+//         header: 'Vendedor',
+//         accessorKey: 'salesman'
+//     },
+// ];
+
 export const NeighborhoodGrid = ({ data }) => {
 
     const { name, blocks } = data
@@ -88,8 +115,9 @@ export const NeighborhoodGrid = ({ data }) => {
 
     const { dataSource, updateDataSource } = useDataSource({ data: mappedData })
 
-    const handleOnRowSave = ({ exitEditingMode, row, table }) => {
-        
+    const handleOnRowSave = ({ values, exitEditingMode }) => {
+
+        console.log("🚀 ~ file: NeighborhoodGrid.jsx:119 ~ handleOnRowSave ~ values:", values)
 
         exitEditingMode()
     }

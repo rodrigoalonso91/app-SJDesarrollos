@@ -48,7 +48,6 @@ export const CustomGrid = ({ collection, columns, children, data }) => {
 		const { firstname, lastname, id } = row.original
 
 		const newTableData = [...dataSource]
-		console.log("🚀 ~ file: CustomGrid.jsx:53 ~ handleDeleteRow ~ dataSource:", dataSource)
 
 		if (!confirm(`Desea eliminar a ${firstname} ${lastname}?`)) return
 

@@ -54,13 +54,26 @@ export default function useNeighborhood() {
 		[neighborhood]
 	)
 
+	const changeLotPrice = useCallback(
+		({ price, block, lot }: { price: string; block: number; lot: number }) => {
+			setNeighborhood((neighborhood) => {
+				if (neighborhood === null) return null
+				const substitute = clone(neighborhood)
+				substitute.blocks[block].lots[lot].price = price
+				return substitute
+			})
+		},
+		[neighborhood]
+	)
+
 	return {
 		onFileUpload,
 		neighborhood,
 		errors,
 		changeNeighborhoodName,
 		changeBlockName,
-		changeLotName
+		changeLotName,
+		changeLotPrice
 	}
 }
 
