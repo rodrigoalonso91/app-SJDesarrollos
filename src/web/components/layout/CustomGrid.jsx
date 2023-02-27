@@ -1,7 +1,6 @@
 import { PersonAdd } from "@mui/icons-material"
 import { Button, Typography } from "@mui/material"
 import MaterialReactTable from "material-react-table"
-import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import deleteRowOnDatabase from "../../api_calls/deleteRowOnDatabase"
 import updateRowOnDatabase from "../../api_calls/updateRowOnDatabase"
@@ -24,6 +23,9 @@ export const CustomGrid = ({ collection, columns, children, data }) => {
 	}
 
 	const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
+		
+		exitEditingMode()
+
 		const { id } = row.original
 
 		const record = {
@@ -37,7 +39,6 @@ export const CustomGrid = ({ collection, columns, children, data }) => {
 			data.id === id ? { id, ...values } : data
 		)
 
-		exitEditingMode()
 
 		updateDataSource(data)
 	}
@@ -47,7 +48,8 @@ export const CustomGrid = ({ collection, columns, children, data }) => {
 		const { firstname, lastname, id } = row.original
 
 		const newTableData = [...dataSource]
-		console.log("🚀 ~ file: CustomGrid.jsx:57 ~ handleDeleteRow ~ newTableData:", newTableData)
+		console.log("🚀 ~ file: CustomGrid.jsx:53 ~ handleDeleteRow ~ dataSource:", dataSource)
+
 		if (!confirm(`Desea eliminar a ${firstname} ${lastname}?`)) return
 
 		await deleteRowOnDatabase(collection, id)
@@ -98,9 +100,14 @@ export const CustomGrid = ({ collection, columns, children, data }) => {
 						<BasicEditActions
 							row={row}
 							table={table}
-							handleDeleteRow={() => handleDeleteRow(row)}
+							handleDeleteRow={handleDeleteRow}
 						/>
 					)}
+					displayColumnDefOptions={{
+						'mrt-row-actions': {
+						  header: 'Acciones'
+					}
+					}}
 				/>
 			</div>
 

@@ -1,9 +1,10 @@
 import MaterialReactTable from "material-react-table"
-import { CustomerComboBox, SalesmenComboBox, StatusComboBox } from '../../components'
+import { CustomerComboBox, SalesmenComboBox, StatusComboBox } from '..'
 import { Box } from "@mui/system";
 import { useMemo } from "react";
-import { useGridTitle } from '../../hooks/'
-import { TextField } from "@mui/material";
+import { useCustomers, useDataSource, useGridTitle, useSalesmen } from '../../hooks'
+import { Autocomplete, TextField } from "@mui/material";
+import useCollection from "../../hooks/useCollection";
 
 const NEIGHBORHOOD_COLUMNS = [
     { 
@@ -43,17 +44,23 @@ const NEIGHBORHOOD_COLUMNS = [
                 {cell.getValue()}
             </Box>
         ),
-        Edit: ({ cell, column, table }) => <StatusComboBox currentValue={cell.getValue()} />
+        // Edit: ({ cell, column, table }) => <StatusComboBox currentValue={cell.getValue()} />
     },
     {
         header: 'Cliente',
         accessorKey: 'customer',
-        Edit: () => <CustomerComboBox />
+        // Edit: ({ table, row, cell }) => (
+        //     <Autocomplete
+        //         options={clientsCollection}
+        //         loading={isClientLoading}
+        //         renderInput={(params) => <TextField {...params} label={'Cliente'} />}
+        //     />
+        // )
     },
     {
         header: 'Vendedor',
         accessorKey: 'salesman',
-        Edit: ({ cell }) => <SalesmenComboBox currentValue={() => cell.getValue()} />
+        Edit: ( props ) => <CustomerComboBox {...props} />
     },
 ];
 
@@ -62,7 +69,11 @@ export const NeighborhoodGrid = ({ data }) => {
     const { name, blocks } = data
     const { getGridTitle } = useGridTitle(name)
 
-    const dataSource = useMemo(
+    const { clientsCollection, isClientLoading } = useCustomers()
+    const { salesmenCollection, isSalesmenLoading } = useSalesmen()
+
+    
+    const mappedData = useMemo(
         () => blocks.flatMap( block => {
             return block.lots.map( lt => { 
                 return {
@@ -74,6 +85,17 @@ export const NeighborhoodGrid = ({ data }) => {
                 }
         })
     }), [blocks])
+
+    const { dataSource, updateDataSource } = useDataSource({ data: mappedData })
+
+    const handleOnRowSave = ({ exitEditingMode, row, table }) => {
+        
+
+        exitEditingMode()
+    }
+
+    
+
     
     return (
         <MaterialReactTable
@@ -82,6 +104,12 @@ export const NeighborhoodGrid = ({ data }) => {
             data={dataSource}
             enableEditing
             editingMode="modal"
+            onEditingRowSave={handleOnRowSave}
+            displayColumnDefOptions={{
+                'mrt-row-actions': {
+                  header: 'Acciones'
+            }
+            }}
         />
     )
 }

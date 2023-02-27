@@ -1,31 +1,19 @@
 import { Autocomplete, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
-import getAllOnDatabase from '../api_calls/getAllOnDatabase'
+import useCollection from "@web/hooks/useCollection";
 
-export const CustomerComboBox = ({table, row, cell}) => {
+export const CustomerComboBox = ({ table, row, column, cell }) => {
 
-    const [options, setOptions] = useState([])
-    const loading = options.length === 0;
+    const { setEditingCell, setEditingRow } = table
 
-    useEffect(() => {
 
-        getAllOnDatabase('clients')
-            .then(res => res.json())
-            .then(data => {
-                const customers = data.map( customer => {
-                    return {
-                        id: customer.id,
-                        fullname: `${customer.firstname} ${customer.lastname}`
-                    }
-                })
-                setOptions(customers)
-            })
-    }, [])
+    const { loading, options } = useCollection({ collection: 'clients' })
 
-    const handleOnChange = (event, customer) => {
-        console.log(event)
-        console.log(customer.fullname)
-        table.setEditingCell(customer)
+    const handleOnChange = (event, value) => {
+        
+        const { fullname } = value
+        setEditingCell(fullname)
+        // console.log(customer.fullname)
+        // table.setEditingCell(customer)
     }
 
     return (
