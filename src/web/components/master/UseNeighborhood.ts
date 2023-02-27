@@ -87,4 +87,4 @@ async function encode(file: File): Promise<string> {
 	return await promise
 }
 
-const clone = <T>(obj: T) => JSON.parse(JSON.stringify(obj))
+const clone = <T>(obj: T) : T => JSON.parse(JSON.stringify(obj))
