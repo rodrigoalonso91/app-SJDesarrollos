@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import MasterContext from "@web/components/master/MasterContext"
+import { useField } from "@web/hooks"
 import React, { useContext, useEffect, useRef, useState } from "react"
 
 export default function BlockInputs() {
@@ -104,17 +105,15 @@ function LotPrice({
 	lot: number
 	price: string
 }) {
-	const { changeLotPrice, setSelected, selected } = useContext(MasterContext)
-	const [text, setText] = useState(price)
 
-	useEffect(() => { setText(price) }, [price])
+	const { changeLotPrice, setSelected, selected } = useContext(MasterContext)
+
+	const priceInput = useField({ type: "number", placeholder: 'Precio', label: undefined, text: price })
 
 	return (
 		<NameInput
-			placeholder="Precio"
-			value={text}
-			onChange={(e) => setText(e.target.value)}
-			onBlur={() => changeLotPrice({ price: text, lot, block })}
+			{...priceInput}
+			onBlur={() => changeLotPrice({ price: priceInput.value, lot, block })}
 		/>
 	)
 }
