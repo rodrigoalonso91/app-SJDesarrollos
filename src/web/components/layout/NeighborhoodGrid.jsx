@@ -10,17 +10,17 @@ const NEIGHBORHOOD_COLUMNS = [
     { 
         header: 'Manzana',
         accessorKey: 'name',
-        Edit: ({ cell }) => <h4>{cell.getValue()}</h4> 
+        Edit: ({ cell }) => <h5>{cell.getValue()}</h5> 
     },
     { 
         header: 'Lote',
         accessorKey: 'lot',
-        Edit: ({ cell }) => <h4>{cell.getValue()}</h4> 
+        Edit: ({ cell }) => <h5>{cell.getValue()}</h5> 
     },
     { 
         header: 'Precio',
         accessorKey: 'price',
-        Edit: ({cell}) => <TextField label='Precio'>{cell.getValue()}</TextField>
+        Edit: ({cell}) => <TextField inputMode="numeric" label='Precio'>{cell.getValue()}</TextField>
     },
     { 
         header: 'Estado',
@@ -49,47 +49,14 @@ const NEIGHBORHOOD_COLUMNS = [
     {
         header: 'Cliente',
         accessorKey: 'customer',
-        // Edit: ({ table, row, cell }) => (
-        //     <Autocomplete
-        //         options={clientsCollection}
-        //         loading={isClientLoading}
-        //         renderInput={(params) => <TextField {...params} label={'Cliente'} />}
-        //     />
-        // )
+        Edit: ( props ) => <CustomerComboBox {...props} />
     },
     {
         header: 'Vendedor',
         accessorKey: 'salesman',
-        Edit: ( props ) => <CustomerComboBox {...props} />
+        Edit: ( props ) => <SalesmenComboBox {...props} />
     },
 ];
-
-// const NEIGHBORHOOD_COLUMNS = [
-//     { 
-//         header: 'Manzana',
-//         accessorKey: 'name'
-//     },
-//     { 
-//         header: 'Lote',
-//         accessorKey: 'lot'
-//     },
-//     { 
-//         header: 'Precio',
-//         accessorKey: 'price'
-//     },
-//     { 
-//         header: 'Estado',
-//         accessorKey: 'status'
-//     },
-//     {
-//         header: 'Cliente',
-//         accessorKey: 'customer'
-//     },
-//     {
-//         header: 'Vendedor',
-//         accessorKey: 'salesman'
-//     },
-// ];
 
 export const NeighborhoodGrid = ({ data }) => {
 
@@ -106,7 +73,7 @@ export const NeighborhoodGrid = ({ data }) => {
                 return {
                     name: block.name,
                     lot: lt.name,
-                    price: '$100',
+                    price: lt.price ? `$${lt.price}` : '',
                     status: 'Vendido',
                     customer: lt.customer
                 }
@@ -115,11 +82,18 @@ export const NeighborhoodGrid = ({ data }) => {
 
     const { dataSource, updateDataSource } = useDataSource({ data: mappedData })
 
-    const handleOnRowSave = ({ values, exitEditingMode }) => {
-
-        console.log("🚀 ~ file: NeighborhoodGrid.jsx:119 ~ handleOnRowSave ~ values:", values)
+    const handleOnRowSave = ({ row, values, exitEditingMode }) => {
 
         exitEditingMode()
+        const { index } = row
+
+        // api call to update database...
+        
+        const data = dataSource.map((data, i) => {
+            return i === index ? { ...values } : data
+        })
+
+        updateDataSource(data)
     }
 
     
