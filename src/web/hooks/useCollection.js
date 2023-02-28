@@ -1,14 +1,14 @@
 import getAllOnDatabase from "@web/api_calls/getAllOnDatabase"
 import { useState, useEffect } from "react"
 
-export default function useCollection ({ collection }) {
+export default function useCollection ({ name }) {
 
-    const [options, setOptions] = useState([])
-    const loading = options.length === 0 
+    const [collection, setCollection] = useState([])
+    const isLoading = collection.length === 0 
 
     useEffect(() => {
 
-        getAllOnDatabase(collection)
+        getAllOnDatabase(name)
             .then(res => res.json())
             .then(data => {
                 const customers = data.map( customer => {
@@ -17,12 +17,12 @@ export default function useCollection ({ collection }) {
                         fullname: `${customer.firstname} ${customer.lastname}`
                     }
                 })
-                setOptions(customers)
+                setCollection(customers)
             })
-    }, [collection])
+    }, [name])
 
     return {
-        loading,
-        options
+        isLoading,
+        collection
     }
 }
