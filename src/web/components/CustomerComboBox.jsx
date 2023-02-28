@@ -1,24 +1,38 @@
 import { Autocomplete, TextField } from "@mui/material";
 import useCollection from "@web/hooks/useCollection";
 
-export const CustomerComboBox = ({ table, row, column, cell }) => {
+export const CustomerComboBox = ({ table, row, cell, column }) => {
+    console.log("🚀 ~ file: CustomerComboBox.jsx:5 ~ CustomerComboBox ~ column:", column)
+    
+    const { original } = row
+    const { getState, setEditingRow } = table
+    const { editingRow } = getState()
 
-    const { setEditingCell, setEditingRow } = table
-
-    const { loading, options } = useCollection({ collection: 'clients' })
+    const { isLoading, collection } = useCollection({ name: 'clients' })
 
     const handleOnChange = (event, value) => {
 
+        if (!value) return
+
         const { fullname } = value
-        // setEditingCell(fullname)
-        // console.log(customer.fullname)
-        // table.setEditingCell(customer)
+
+        const newRow = {
+            ...original,
+            customer: fullname
+        }
+        cell.renderValue(column.id)
+
+        setEditingRow({
+            ...editingRow,
+            _valuesCache: {...newRow}
+        })
+
     }
 
     return (
         <Autocomplete
-            loading={loading}
-            options={options}
+            loading={isLoading}
+            options={collection}
             getOptionLabel={(option) => option.fullname}
             renderInput={(params) => <TextField {...params} label={'Cliente'} />}
             onChange={(event, value) => handleOnChange(event, value)}

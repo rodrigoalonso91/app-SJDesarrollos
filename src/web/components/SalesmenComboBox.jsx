@@ -1,35 +1,40 @@
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
-import { useEffect, useState } from 'react'
-import getAllOnDatabase from '../api_calls/getAllOnDatabase'
+import useCollection from '@web/hooks/useCollection'
 
-export const SalesmenComboBox = () => {
+export const SalesmenComboBox = ({ table, row }) => {
 
-    const [options, setOptions] = useState([])
-    const loading = options.length === 0;
+    const { original } = row
+    const { getState, setEditingRow } = table
+    const { editingRow } = getState()
+    console.log("🚀 ~ file: SalesmenComboBox.jsx:10 ~ SalesmenComboBox ~ editingRow:", editingRow)
 
-    useEffect(() => {
+    const { isLoading, collection } = useCollection({ name: 'salesmen' })
 
-        getAllOnDatabase('salesmen')
-            .then(res => res.json())
-            .then(data => {
-                const salesmen = data.map( salesman => {
-                    return {
-                        id: salesman.id,
-                        fullname: `${salesman.firstname} ${salesman.lastname}`
-                    }
-                })
-                setOptions(salesmen)
-            })
+    const handleOnChange = (event, value) => {
 
-    }, [])
+        if (!value) return
+
+        const { fullname } = value
+
+        const newRow = {
+            ...original,
+            salesman: fullname
+        }
+
+        setEditingRow({
+            ...editingRow,
+            _valuesCache: {...newRow}
+        })
+    }
 
     return (
         <Autocomplete
-            loading={loading}
-            options={options}
+            loading={isLoading}
+            options={collection}
             getOptionLabel={(option) => option.fullname}
             renderInput={(params) => <TextField {...params} label={'Vendedor'} />}
+            onChange={(event, value) => handleOnChange(event, value)}
         />
     )
 }
