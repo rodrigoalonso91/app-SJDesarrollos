@@ -25,6 +25,7 @@ const NEIGHBORHOOD_COLUMNS = [
     { 
         header: 'Estado',
         accessorKey: 'status',
+        Edit: (props) => <StatusComboBox {...props} />,
         Cell: ({ cell }) => (
             <Box
                 component='span'
@@ -43,8 +44,7 @@ const NEIGHBORHOOD_COLUMNS = [
             >
                 {cell.getValue()}
             </Box>
-        ),
-        // Edit: ({ cell, column, table }) => <StatusComboBox currentValue={cell.getValue()} />
+        )
     },
     {
         header: 'Cliente',
@@ -62,10 +62,6 @@ export const NeighborhoodGrid = ({ data }) => {
 
     const { name, blocks } = data
     const { getGridTitle } = useGridTitle(name)
-
-    const { clientsCollection, isClientLoading } = useCustomers()
-    const { salesmenCollection, isSalesmenLoading } = useSalesmen()
-
     
     const mappedData = useMemo(
         () => blocks.flatMap( block => {
@@ -83,6 +79,7 @@ export const NeighborhoodGrid = ({ data }) => {
     const { dataSource, updateDataSource } = useDataSource({ data: mappedData })
 
     const handleOnRowSave = ({ row, values, exitEditingMode }) => {
+    console.log("🚀 ~ file: NeighborhoodGrid.jsx:82 ~ handleOnRowSave ~ values:", values)
 
         exitEditingMode()
         const { index } = row
@@ -95,9 +92,6 @@ export const NeighborhoodGrid = ({ data }) => {
 
         updateDataSource(data)
     }
-
-    
-
     
     return (
         <MaterialReactTable
