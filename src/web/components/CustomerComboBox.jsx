@@ -1,10 +1,8 @@
 import { Autocomplete, TextField } from "@mui/material";
 import useCollection from "@web/hooks/useCollection";
 
-export const CustomerComboBox = ({ table, row, cell, column }) => {
-    console.log("🚀 ~ file: CustomerComboBox.jsx:5 ~ CustomerComboBox ~ column:", column)
+export const CustomerComboBox = ({ table, column }) => {
     
-    const { original } = row
     const { getState, setEditingRow } = table
     const { editingRow } = getState()
 
@@ -16,17 +14,10 @@ export const CustomerComboBox = ({ table, row, cell, column }) => {
 
         const { fullname } = value
 
-        const newRow = {
-            ...original,
-            customer: fullname
-        }
-        cell.renderValue(column.id)
-
         setEditingRow({
             ...editingRow,
-            _valuesCache: {...newRow}
+            _valuesCache: {...editingRow._valuesCache, [column.id]: fullname}
         })
-
     }
 
     return (
