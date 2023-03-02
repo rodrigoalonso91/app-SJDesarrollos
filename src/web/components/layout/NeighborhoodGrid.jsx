@@ -79,7 +79,6 @@ export const NeighborhoodGrid = ({ data }) => {
     const { dataSource, updateDataSource } = useDataSource({ data: mappedData })
 
     const handleOnRowSave = ({ row, values, exitEditingMode }) => {
-    console.log("🚀 ~ file: NeighborhoodGrid.jsx:82 ~ handleOnRowSave ~ values:", values)
 
         exitEditingMode()
         const { index } = row
