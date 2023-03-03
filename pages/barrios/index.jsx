@@ -1,8 +1,7 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
-import { useEffect, useState } from "react"
 import { getNeighborhoods } from "@server/index"
 import { Box } from "@mui/system"
-import { Button, MenuItem, TextField, Tooltip } from "@mui/material"
+import { Button, Tooltip } from "@mui/material"
 import TableChartIcon from '@mui/icons-material/TableChart';
 import LayersClearIcon from '@mui/icons-material/LayersClear';
 import { NeighborhoodGrid } from "../../src/web/components/layout/NeighborhoodGrid"

@@ -2,9 +2,8 @@ import MaterialReactTable from "material-react-table"
 import { CustomerComboBox, SalesmenComboBox, StatusComboBox } from '..'
 import { Box } from "@mui/system";
 import { useMemo } from "react";
-import { useCustomers, useDataSource, useGridTitle, useSalesmen } from '../../hooks'
-import { Autocomplete, TextField } from "@mui/material";
-import useCollection from "../../hooks/useCollection";
+import { useDataSource, useGridTitle } from '../../hooks'
+import { TextField } from "@mui/material";
 
 const NEIGHBORHOOD_COLUMNS = [
     { 
