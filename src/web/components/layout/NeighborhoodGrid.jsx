@@ -3,7 +3,7 @@ import { CustomerComboBox, SalesmenComboBox, StatusComboBox } from '..'
 import { Box } from "@mui/system";
 import { useMemo } from "react";
 import { useDataSource, useGridTitle } from '../../hooks'
-import { TextField } from "@mui/material";
+import updateRowOnDatabase from "../../api_calls/updateRowOnDatabase";
 
 const NEIGHBORHOOD_COLUMNS = [
     { 
@@ -61,6 +61,16 @@ const NEIGHBORHOOD_COLUMNS = [
     },
 ];
 
+const updateLot = ({ block, lotName, values }) => {
+
+    const lot = block.lots.find((l) => l.name === lotName);
+
+    if (!lot) return {}
+
+    delete values.lot
+    return { ...lot, ...values }
+}
+
 export const NeighborhoodGrid = ({ data }) => {
 
     const { name, blocks } = data
@@ -72,27 +82,47 @@ export const NeighborhoodGrid = ({ data }) => {
                 return {
                     name: block.name,
                     lot: lt.name,
-                    price: lt.price ? `$${lt.price}` : '',
-                    status: 'Vendido',
-                    customer: lt.customer
+                    price: lt.price ? `${lt.price}` : '',
+                    status: lt.status ? lt.status : 'Disponible',
+                    customer: lt.customer,
+                    salesman: lt.salesman
                 }
         })
     }), [blocks])
 
     const { dataSource, updateDataSource } = useDataSource({ data: mappedData })
 
-    const handleOnRowSave = ({ row, values, exitEditingMode }) => {
+    const handleOnRowSave = async ({ row, values, exitEditingMode }) => {
 
         exitEditingMode()
         const { index } = row
-
-        // api call to update database...
         
-        const data = dataSource.map((data, i) => {
+        const lot = { ...values }
+        delete lot.name
+        const dataToUpdate = { ...data }
+        dataToUpdate.blocks = dataToUpdate.blocks.map( block => {
+
+            if (block.name !== values.name) {
+                return block
+            }
+
+            const newLot = updateLot({ block, lotName: values.lot, values: lot })
+            const lotIndex = block.lots.findIndex( lt => lt.name === newLot.name )
+
+            block.lots[lotIndex] = newLot
+            return {
+                ...block
+            }
+        })
+        console.log({dataToUpdate})
+
+        await updateRowOnDatabase('neighborhoods', dataToUpdate)
+        
+        const newData = dataSource.map((data, i) => {
             return i === index ? { ...values } : data
         })
 
-        updateDataSource(data)
+        updateDataSource(newData)
     }
     
     return (
