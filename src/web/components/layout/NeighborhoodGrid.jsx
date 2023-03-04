@@ -19,7 +19,11 @@ const NEIGHBORHOOD_COLUMNS = [
     { 
         header: 'Precio',
         accessorKey: 'price',
-        Edit: ({cell}) => <TextField inputMode="numeric" label='Precio'>{cell.getValue()}</TextField>
+        muiTableBodyCellEditTextFieldProps: {
+            required: false,
+            type: 'number',
+            variant: 'outlined',
+          },
     },
     { 
         header: 'Estado',
