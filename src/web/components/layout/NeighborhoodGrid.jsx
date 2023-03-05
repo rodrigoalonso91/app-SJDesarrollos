@@ -1,7 +1,7 @@
 import MaterialReactTable from "material-react-table"
 import { CustomerComboBox, SalesmenComboBox, StatusComboBox } from '..'
 import { Box } from "@mui/system";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useDataSource, useGridTitle } from '../../hooks'
 import updateRowOnDatabase from "../../api_calls/updateRowOnDatabase";
 
@@ -75,9 +75,10 @@ export const NeighborhoodGrid = ({ data }) => {
 
     const { name, blocks } = data
     const { getGridTitle } = useGridTitle(name)
+    const [isLoading, setIsLoading] = useState(false)
     
     const mappedData = useMemo(
-        () => blocks.flatMap( block => {
+        () => blocks?.flatMap( block => {
             return block.lots.map( lt => { 
                 return {
                     name: block.name,
@@ -94,11 +95,13 @@ export const NeighborhoodGrid = ({ data }) => {
 
     const handleOnRowSave = async ({ row, values, exitEditingMode }) => {
 
+        setIsLoading(true)
         exitEditingMode()
         const { index } = row
         
         const lot = { ...values }
         delete lot.name
+
         const dataToUpdate = { ...data }
         dataToUpdate.blocks = dataToUpdate.blocks.map( block => {
 
@@ -114,7 +117,6 @@ export const NeighborhoodGrid = ({ data }) => {
                 ...block
             }
         })
-        console.log({dataToUpdate})
 
         await updateRowOnDatabase('neighborhoods', dataToUpdate)
         
@@ -123,13 +125,15 @@ export const NeighborhoodGrid = ({ data }) => {
         })
 
         updateDataSource(newData)
+        setIsLoading(false)
     }
     
     return (
         <MaterialReactTable
+            state={{ isLoading }}
             renderTopToolbarCustomActions={getGridTitle}
             columns={NEIGHBORHOOD_COLUMNS}
-            data={dataSource}
+            data={dataSource ?? []}
             enableEditing
             editingMode="modal"
             onEditingRowSave={handleOnRowSave}

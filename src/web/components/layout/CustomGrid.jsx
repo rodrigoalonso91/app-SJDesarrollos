@@ -10,8 +10,11 @@ import { CustomModal } from "./CustomModal"
 import { SPANISH_COLLECTIONS } from "../../constants/collections"
 import { Box } from "@mui/system"
 import { useDataSource } from "../../hooks"
+import { useState } from "react"
 
 export const CustomGrid = ({ collection, columns, children, data }) => {
+
+	const [isLoading, setIsLoading] = useState(false)
 
 	const { dataSource, updateDataSource } = useDataSource({ data })
 
@@ -23,7 +26,8 @@ export const CustomGrid = ({ collection, columns, children, data }) => {
 	}
 
 	const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
-		
+
+		setIsLoading(true)
 		exitEditingMode()
 
 		const { id } = row.original
@@ -39,12 +43,13 @@ export const CustomGrid = ({ collection, columns, children, data }) => {
 			data.id === id ? { id, ...values } : data
 		)
 
-
 		updateDataSource(data)
+		setIsLoading(false)
 	}
 
 	const handleDeleteRow = async (row) => {
 
+		setIsLoading(true)
 		const { firstname, lastname, id } = row.original
 
 		const newTableData = [...dataSource]
@@ -55,6 +60,7 @@ export const CustomGrid = ({ collection, columns, children, data }) => {
 
 		newTableData.splice(row.index, 1)
 		updateDataSource(newTableData)
+		setIsLoading(false)
 	}
 
 	return (
@@ -80,6 +86,7 @@ export const CustomGrid = ({ collection, columns, children, data }) => {
 				</Box>
 
 				<MaterialReactTable
+					state={{isLoading}}
 					style={{ boxShadow: "3px 4.5px 9.5px 3.5px #000000" }}
 					columns={columns}
 					data={dataSource}

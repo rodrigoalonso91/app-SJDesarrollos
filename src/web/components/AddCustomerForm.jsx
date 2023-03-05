@@ -24,13 +24,13 @@ export function AddCustomerForm ({ collection, data, updateDataSource }) {
 			email: email.value,
             company: company.value
 		}
+		dispatch(displayForm(false))
 
 		await addRowInDatabase(collection, row)
 
 		const updatedData = [...data, { ...row }]
 		updateDataSource(updatedData)
 
-		dispatch(displayForm(false))
 	}
 
 	const handleClickOnCancel = () => {

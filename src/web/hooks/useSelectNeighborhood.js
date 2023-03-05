@@ -24,9 +24,20 @@ export function useSelectNeighborhood({ neighborhoods }) {
         setSelectedNeighborhood(value)
     }
 
+    const clearSelectedNeighborhood = () => {
+
+        const newDbData = neighborhoodsFromDB.filter( n => n.id !== selectedNeighborhood)
+        
+        setSelectedNeighborhood('')
+        setNeighborhoodsFromDB(newDbData)
+        setSelectedNeighborhoodData({name: '', blocks: []})
+    }
+
     return {
         selectedNeighborhoodData,
         updateSelectedNeighborhood,
-        selectedNeighborhood
+        selectedNeighborhood,
+        clearSelectedNeighborhood,
+        neighborhoodsFromDB
     }
 }

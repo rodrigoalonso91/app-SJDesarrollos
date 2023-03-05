@@ -8,21 +8,37 @@ import { NeighborhoodGrid } from "../../src/web/components/layout/NeighborhoodGr
 import styled from "styled-components"
 import { useSelectNeighborhood } from "../../src/web/hooks"
 import { Select } from "../../src/web/components/layout"
+import deleteNeighborhoodById from "../../src/web/api_calls/neighborhood/deleteNeighborhoodById";
 
 export const Neighborhood = ({ neighborhoods }) => {
 	
-	const { selectedNeighborhoodData, updateSelectedNeighborhood, selectedNeighborhood } = useSelectNeighborhood({ neighborhoods })
+	const { 
+		selectedNeighborhoodData, 
+		updateSelectedNeighborhood, 
+		selectedNeighborhood, 
+		clearSelectedNeighborhood,
+		neighborhoodsFromDB
+	} = useSelectNeighborhood({ neighborhoods })
 
 	const handleChange = (event) => {
 		const value = event.target.value
 		updateSelectedNeighborhood({ value });
 	};
+
+	const handleDeleteNeighborhood = async () => {
+		
+		if (!selectedNeighborhood || !selectedNeighborhoodData) return
+		if (!confirm(`Desea eliminar el barrio ${selectedNeighborhoodData.name}?`)) return
+		const id = selectedNeighborhood
+		clearSelectedNeighborhood()
+		await deleteNeighborhoodById(id)
+	}
 	
 	return (
 		<Page>
 			<Box sx={{display: 'flex', flexDirection: 'row-reverse', gap: 5}}>
 				
-				<Select collection={neighborhoods} value={selectedNeighborhood} handleChange={handleChange} />
+				<Select collection={neighborhoodsFromDB} value={selectedNeighborhood} handleChange={handleChange} />
 				
 				<Tooltip title='Ver Master'>
 					<Button color='success' variant="contained">
@@ -31,7 +47,7 @@ export const Neighborhood = ({ neighborhoods }) => {
 				</Tooltip>
 
 				<Tooltip title='Eliminar barrio'>
-					<Button variant="contained" color="error">
+					<Button variant="contained" color="error" onClick={handleDeleteNeighborhood}>
 						<LayersClearIcon/>
 					</Button>
 				</Tooltip>
