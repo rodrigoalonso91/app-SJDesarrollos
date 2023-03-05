@@ -5,12 +5,15 @@ import transformXmlToNeighborhoods, {
 import { ChangeEvent, useCallback, useState } from "react"
 
 export default function useNeighborhood() {
+
 	const [neighborhood, setNeighborhood] = useState<Neighborhood | null>(null)
 	const [errors, setErrors] = useState<Array<BlockError> | null>(null)
+	const [uploadedFile, setUploadedFile] = useState<string>('Ningún archivo selecionado')
 
 	async function onFileUpload(e: ChangeEvent<HTMLInputElement>) {
 		if (!e.target.files) return
 		const file = e.target.files[0]
+		setUploadedFile(file.name)
 		const xml = await encode(file)
 
 		const { neighborhood, errors } = transformXmlToNeighborhoods(xml)
@@ -73,7 +76,8 @@ export default function useNeighborhood() {
 		changeNeighborhoodName,
 		changeBlockName,
 		changeLotName,
-		changeLotPrice
+		changeLotPrice,
+		uploadedFile
 	}
 }
 
