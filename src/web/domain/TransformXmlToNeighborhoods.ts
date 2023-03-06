@@ -20,6 +20,7 @@ export default function transformXmlToNeighborhoods(xml: string) {
 				} as BlockError)
 		)
 	const blocks = results.filter((x) => x.error === null).map((x) => x.block!)
+
 	const neighborhood: Neighborhood = {
 		name: "",
 		blocks: blocks.map(({ lots, coordinates }) => ({
@@ -27,7 +28,8 @@ export default function transformXmlToNeighborhoods(xml: string) {
 			coordinates,
 			lots: transformBlockSidesToLots(lots).map((lot) => ({
 				name: null,
-				coordinates: lot
+				coordinates: lot,
+				status: 'Disponible'
 			}))
 		}))
 	}
@@ -50,9 +52,9 @@ export type Lot = {
 	name: string | null
 	coordinates: Array<Coordinate>
 	price?: string 
+	status: string
 	// salesman: string
 	// customer: string
-	// status: string
 }
 
 export type BlockError = {
