@@ -9,7 +9,7 @@ export default function KonvaBlock({ lots, block }: Block & { block: number }) {
 				<KonvaLot
 					key={i}
 					coordinates={coordinates}
-					name={name}
+					name={name ?? ''}
 					block={block}
 					lot={i}
 				/>
