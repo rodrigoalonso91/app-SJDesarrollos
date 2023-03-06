@@ -69,6 +69,17 @@ export default function useNeighborhood() {
 		[neighborhood]
 	)
 
+	const changeLotStatus = useCallback(
+		({ status, block, lot }: { status: string; block: number; lot: number }) => {
+			setNeighborhood((neighborhood) => {
+				if (neighborhood === null) return null
+				const substitute = clone(neighborhood)
+				substitute.blocks[block].lots[lot].status = status
+				return substitute
+			})
+		}, [neighborhood]
+	)
+
 	return {
 		onFileUpload,
 		neighborhood,
@@ -77,7 +88,8 @@ export default function useNeighborhood() {
 		changeBlockName,
 		changeLotName,
 		changeLotPrice,
-		uploadedFile
+		uploadedFile,
+		changeLotStatus
 	}
 }
 
