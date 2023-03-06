@@ -29,6 +29,7 @@ export const Neighborhood = ({ neighborhoods }) => {
 		
 		if (!selectedNeighborhood || !selectedNeighborhoodData) return
 		if (!confirm(`Desea eliminar el barrio ${selectedNeighborhoodData.name}?`)) return
+
 		const id = selectedNeighborhood
 		clearSelectedNeighborhood()
 		await deleteNeighborhoodById(id)

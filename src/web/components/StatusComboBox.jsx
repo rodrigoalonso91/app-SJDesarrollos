@@ -1,12 +1,7 @@
 import { TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete'
 import { useState } from 'react'
-
-const STATUS_OPTIONS = [
-    'Disponible',
-    'Vendido',
-    'Reservado'
-];
+import { STATUS_OPTIONS } from '../constants/lotStatus'
 
 export const StatusComboBox = ({ table, column, cell }) => {
 
