@@ -36,10 +36,10 @@ export const getServerSideProps = withPageAuthRequired({
 	}
 })
 
-async function createNeighborhood() {
-	await fetch(`/api/barrios`, { method: "POST" })
-}
+// async function createNeighborhood() {
+// 	await fetch(`/api/barrios`, { method: "POST" })
+// }
 
-async function deleteNeighborhoodOfId(id: string) {
-	await fetch(`/api/barrios/${id}`, { method: "DELETE" })
-}
+// async function deleteNeighborhoodOfId(id: string) {
+// 	await fetch(`/api/barrios/${id}`, { method: "DELETE" })
+// }

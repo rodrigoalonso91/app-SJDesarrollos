@@ -1,25 +1,35 @@
 import styled from "@emotion/styled"
+import { Box, Stack, Typography, Button} from "@mui/material"
+import TextField from "@mui/material/TextField"
 import addNeighborhood from "@web/api_calls/neighborhood/addNeighborhood"
 import BlockInputs from "@web/components/master/BlockInputs"
 import KonvaBlock from "@web/components/master/KonvaBlock"
 import KonvaErrorLines from "@web/components/master/KonvaErrorLines"
-import MasterContext, {
-	SelectedLot
-} from "@web/components/master/MasterContext"
+import MasterContext, { SelectedLot } from "@web/components/master/MasterContext"
 import useNeighborhood from "@web/components/master/UseNeighborhood"
 import React, { useEffect, useState } from "react"
 import { Layer, Stage } from "react-konva"
+import SaveIcon from '@mui/icons-material/Save';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import Paper from '@mui/material/Paper';
+import Fab from '@mui/material/Fab';
+import { bottom, right } from "@popperjs/core"
+import { minHeight, minWidth } from "@mui/system"
 
 export default function KonvaMaster() {
+
 	const {
-		onFileUpload,
 		errors,
 		neighborhood,
 		changeNeighborhoodName,
 		changeBlockName,
 		changeLotName,
-		changeLotPrice
+		changeLotPrice,
+		uploadedFile,
+		onFileUpload,
+		changeLotStatus
 	} = useNeighborhood()
+	
 	const [selected, setSelected] = useState<SelectedLot | null>(null)
 
 	const [stageScale, setStageScale] = useState(1)
@@ -85,53 +95,115 @@ export default function KonvaMaster() {
 				neighborhood,
 				changeBlockName,
 				changeLotName,
-				changeLotPrice
+				changeLotPrice,
+				changeLotStatus
 			}}
 		>
-			<input type="file" onChange={onFileUpload} />
-
-			<input
-				placeholder="Barrio"
-				value={neighborhood?.name || ""}
-				onChange={(e) => {
-					changeNeighborhoodName(e.target.value)
+			<Box sx={{ 
+					width: '100%',
+					padding: 2,
+					display: 'flex', 
+					flexDirection: 'column',
+					gap: 2
 				}}
-			/>
-			<button
-				onClick={() => {
-					addNeighborhood(neighborhood!)
-				}}
-				disabled={!neighborhood?.name}
 			>
-				Guardar Master
-			</button>
-			<KonvaContainer>
+
 				{/* Para dibujar los barrios */}
-				<Stage 
-					width={window.innerWidth * 0.7}
-					height={window.innerHeight}
-					onWheel={handleWheel}
-					scaleX={stageScale}
-					scaleY={stageScale}
-					x={stageX}
-					y={stageY}
-					draggable={true}
-				>
-					<Layer>
-						{neighborhood &&
-							neighborhood.blocks.map((block, i) => (
-								<KonvaBlock key={i} {...block} block={i} />
-							))}
-						{errors && <KonvaErrorLines errors={errors} />}
-					</Layer>
-				</Stage>
-				{selected && <BlockInputs />}
-			</KonvaContainer>
+				<KonvaContainer>
+
+					<Paper elevation={3} >
+
+						<ConsoleMasterContainer>
+							<FabContainer>
+								<Fab 
+									disabled={!neighborhood?.name} 
+									onClick={() => addNeighborhood(neighborhood!)} 
+									color='primary'
+								>
+									<SaveIcon/>
+								</Fab>
+							</FabContainer>
+							<UploadContainer>
+								<Typography>{uploadedFile}</Typography>
+								<Button component="label" variant="contained" sx={{gap:1}}>
+									<UploadFileIcon/>
+									Cargar master
+									<input type="file" onChange={onFileUpload} hidden />
+								</Button>
+							</UploadContainer>
+						</ConsoleMasterContainer>
+
+						<Stage 
+							width={window.innerWidth * 0.7}
+							height={window.innerHeight * 0.8492}
+							onWheel={handleWheel}
+							scaleX={stageScale}
+							scaleY={stageScale}
+							x={stageX}
+							y={stageY}
+							draggable={true}
+						>
+							<Layer>
+								{
+									neighborhood &&
+									neighborhood.blocks.map((block, i) => (
+										<KonvaBlock key={i} {...block} block={i} />
+									))
+								}
+								{ errors && <KonvaErrorLines errors={errors} /> }
+							</Layer>
+						</Stage>
+					</Paper>
+
+					<Paper elevation={3}>
+						<Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 460, alignItems: 'center', gap:1 }}>
+							<TextField
+								label="Barrio"
+								size="small"
+								placeholder="Ej: Del Pilar, Perdices" 
+								value={neighborhood?.name || ""}
+								onChange={(e) => {
+									changeNeighborhoodName(e.target.value)
+								}}
+							/>
+							{ selected && <BlockInputs /> }
+
+						</Box>
+					</Paper>
+
+				</KonvaContainer>
+			</Box>
+
 		</MasterContext.Provider>
 	)
 }
 
 const KonvaContainer = styled.div`
 	display: flex;
-	border: 1px solid black;
+	gap: 20px;
+	max-height: ${window.innerHeight * 0.8492}px;
+`
+
+const ConsoleMasterContainer = styled.section`
+	
+	position: absolute;
+	right: 515px;
+	bottom: 35px;
+
+	display: flex;
+	justify-content: 'center';
+	align-items: 'center';
+	gap: 15px;
+	z-index: 800;
+`
+
+const FabContainer = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-top: 10px;
+`
+const UploadContainer = styled.div`
+	display: flex;
+	flex-direction: column;
 `
