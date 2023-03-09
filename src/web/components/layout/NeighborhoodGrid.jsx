@@ -4,6 +4,7 @@ import { Box } from "@mui/system";
 import { useMemo, useState } from "react";
 import { useDataSource, useGridTitle } from '../../hooks'
 import updateRowOnDatabase from "../../api_calls/updateRowOnDatabase";
+import useUserData from "../../hooks/UseUserData";
 
 const NEIGHBORHOOD_COLUMNS = [
     { 
@@ -76,6 +77,7 @@ export const NeighborhoodGrid = ({ data }) => {
     const { name, blocks } = data
     const { getGridTitle } = useGridTitle(name)
     const [isLoading, setIsLoading] = useState(false)
+    const user = useUserData()
     
     const mappedData = useMemo(
         () => blocks?.flatMap( block => {
@@ -94,6 +96,11 @@ export const NeighborhoodGrid = ({ data }) => {
     const { dataSource, updateDataSource } = useDataSource({ data: mappedData })
 
     const handleOnRowSave = async ({ row, values, exitEditingMode }) => {
+
+        if (!user.isAdmin) {
+            exitEditingMode()
+            return
+        }
 
         setIsLoading(true)
         exitEditingMode()

@@ -9,8 +9,11 @@ import styled from "styled-components"
 import { useSelectNeighborhood } from "../../src/web/hooks"
 import { Select } from "../../src/web/components/layout"
 import deleteNeighborhoodById from "../../src/web/api_calls/neighborhood/deleteNeighborhoodById";
+import useUserData from "../../src/web/hooks/UseUserData";
 
 export const Neighborhood = ({ neighborhoods }) => {
+
+	const user = useUserData()
 	
 	const { 
 		selectedNeighborhoodData, 
@@ -47,11 +50,14 @@ export const Neighborhood = ({ neighborhoods }) => {
 					</Button>
 				</Tooltip>
 
-				<Tooltip title='Eliminar barrio'>
-					<Button variant="contained" color="error" onClick={handleDeleteNeighborhood}>
-						<LayersClearIcon/>
-					</Button>
-				</Tooltip>
+				{
+					user.isAdmin &&
+					<Tooltip title='Eliminar barrio'>
+						<Button variant="contained" color="error" onClick={handleDeleteNeighborhood}>
+							<LayersClearIcon/>
+						</Button>
+					</Tooltip>
+				}
 				
 			</Box>
 			<NeighborhoodGrid data={selectedNeighborhoodData} />
