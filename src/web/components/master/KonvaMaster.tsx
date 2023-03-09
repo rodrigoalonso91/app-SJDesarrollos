@@ -17,7 +17,8 @@ export default function KonvaMaster() {
 		neighborhood,
 		changeNeighborhoodName,
 		changeBlockName,
-		changeLotName
+		changeLotName,
+		changeLotPrice
 	} = useNeighborhood()
 	const [selected, setSelected] = useState<SelectedLot | null>(null)
 
@@ -83,7 +84,8 @@ export default function KonvaMaster() {
 				setSelected,
 				neighborhood,
 				changeBlockName,
-				changeLotName
+				changeLotName,
+				changeLotPrice
 			}}
 		>
 			<input type="file" onChange={onFileUpload} />
@@ -104,7 +106,8 @@ export default function KonvaMaster() {
 				Guardar Master
 			</button>
 			<KonvaContainer>
-				<Stage
+				{/* Para dibujar los barrios */}
+				<Stage 
 					width={window.innerWidth * 0.7}
 					height={window.innerHeight}
 					onWheel={handleWheel}

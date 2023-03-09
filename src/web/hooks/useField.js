@@ -1,9 +1,11 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
+export const useField = ({ type, label, placeholder, text }) => {
 
-export const useField = ({ type, label, placeholder }) => {
+    const [value, setValue] = useState(text || '')
 
-    const [value, setValue] = useState('')
+    useEffect(() => { setValue(text || '') }, [text])
+    
 
     const onChange = event => setValue(event.target.value);
 

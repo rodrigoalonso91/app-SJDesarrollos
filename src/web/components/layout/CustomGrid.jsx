@@ -1,22 +1,22 @@
 import { PersonAdd } from "@mui/icons-material"
 import { Button, Typography } from "@mui/material"
 import MaterialReactTable from "material-react-table"
-import { useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import deleteRowOnDatabase from "../../api_calls/deleteRowOnDatabase"
 import updateRowOnDatabase from "../../api_calls/updateRowOnDatabase"
 import { displayForm } from "../../store/form"
 import { BasicEditActions } from "../table/BasicEditActions"
 import { CustomModal } from "./CustomModal"
-import { AddForm } from "../AddForm"
 import { SPANISH_COLLECTIONS } from "../../constants/collections"
 import { Box } from "@mui/system"
+import { useDataSource } from "../../hooks"
+import { useState } from "react"
 
-export const CustomGrid = ({ collection, columns, data }) => {
+export const CustomGrid = ({ collection, columns, children, data }) => {
 
-	const [tableData, setTableData] = useState([]);
-	
-	useEffect(() => { setTableData(data) }, [data]);
+	const [isLoading, setIsLoading] = useState(false)
+
+	const { dataSource, updateDataSource } = useDataSource({ data })
 
 	const { isFormActivated } = useSelector((state) => state.isActivatedForm)
 
@@ -26,6 +26,10 @@ export const CustomGrid = ({ collection, columns, data }) => {
 	}
 
 	const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
+
+		setIsLoading(true)
+		exitEditingMode()
+
 		const { id } = row.original
 
 		const record = {
@@ -35,29 +39,29 @@ export const CustomGrid = ({ collection, columns, data }) => {
 
 		await updateRowOnDatabase(collection, record)
 
-		const data = tableData.map((data) =>
+		const data = dataSource.map((data) =>
 			data.id === id ? { id, ...values } : data
 		)
 
-		exitEditingMode()
-
-		setTableData(data)
+		updateDataSource(data)
+		setIsLoading(false)
 	}
 
-	const handleDeleteRow = useCallback(
-		async (row) => {
-			const { firstname, lastname, id } = row.original
+	const handleDeleteRow = async (row) => {
 
-			if (!confirm(`Desea eliminar a ${firstname} ${lastname}?`)) return
+		setIsLoading(true)
+		const { firstname, lastname, id } = row.original
 
-			await deleteRowOnDatabase(collection, id)
+		const newTableData = [...dataSource]
 
-			const newTableData = [...tableData]
-			newTableData.splice(row.index, 1)
-			setTableData(newTableData)
-		},
-		[tableData, collection]
-	)
+		if (!confirm(`Desea eliminar a ${firstname} ${lastname}?`)) return
+
+		await deleteRowOnDatabase(collection, id)
+
+		newTableData.splice(row.index, 1)
+		updateDataSource(newTableData)
+		setIsLoading(false)
+	}
 
 	return (
 		<>
@@ -82,9 +86,10 @@ export const CustomGrid = ({ collection, columns, data }) => {
 				</Box>
 
 				<MaterialReactTable
+					state={{isLoading}}
 					style={{ boxShadow: "3px 4.5px 9.5px 3.5px #000000" }}
 					columns={columns}
-					data={tableData}
+					data={dataSource}
 					initialState={{ columnVisibility: { id: false } }}
 					enableColumnOrdering={false}
 					enableGlobalFilter={false} //turn off a feature
@@ -104,16 +109,17 @@ export const CustomGrid = ({ collection, columns, data }) => {
 							handleDeleteRow={handleDeleteRow}
 						/>
 					)}
+					displayColumnDefOptions={{
+						'mrt-row-actions': {
+						  header: 'Acciones'
+					}
+					}}
 				/>
 			</div>
 
 			{isFormActivated && (
 				<CustomModal headerText={`Agregar ${SPANISH_COLLECTIONS[collection]}`}>
-					<AddForm
-						collection={collection}
-						data={tableData}
-						setData={setTableData}
-					/>
+					{children}
 				</CustomModal>
 			)}
 		</>

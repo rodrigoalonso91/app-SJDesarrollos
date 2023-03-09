@@ -1,5 +1,6 @@
 import styled from "@emotion/styled"
 import MasterContext from "@web/components/master/MasterContext"
+import { useField } from "@web/hooks"
 import React, { useContext, useEffect, useRef, useState } from "react"
 
 export default function BlockInputs() {
@@ -15,16 +16,25 @@ export default function BlockInputs() {
 				block={selected.block}
 				name={neighborhood.blocks[selected.block].name || ""}
 			/>
+			
 			<span>Lotes</span>
 			{neighborhood.blocks[selected.block].lots.map((lot, i) => (
-				<LotName
-					block={selected.block}
-					lot={i}
-					name={neighborhood.blocks[selected.block].lots[i].name || ""}
-				/>
+				<React.Fragment key={`${selected.block}-${i}`}>
+					<LotName
+						block={selected.block}
+						lot={i}
+						name={neighborhood.blocks[selected.block].lots[i].name || ""}
+					/>
+					<LotPrice
+						price={neighborhood.blocks[selected.block].lots[i].price || ""}
+						block={selected.block}
+						lot={i}
+
+					/>
+				</React.Fragment>
 			))}
 		</ButtonsContainer>
-	)
+	)	
 }
 
 const ButtonsContainer = styled.div`
@@ -82,6 +92,28 @@ function LotName({
 			onChange={(e) => setText(e.target.value)}
 			onBlur={() => changeLotName({ name: text, lot, block })}
 			onFocus={() => setSelected({ block, lot })}
+		/>
+	)
+}
+
+function LotPrice({
+	block,
+	lot,
+	price
+}: {
+	block: number
+	lot: number
+	price: string
+}) {
+
+	const { changeLotPrice, setSelected, selected } = useContext(MasterContext)
+
+	const priceInput = useField({ type: "number", placeholder: 'Precio', label: undefined, text: price })
+
+	return (
+		<NameInput
+			{...priceInput}
+			onBlur={() => changeLotPrice({ price: priceInput.value, lot, block })}
 		/>
 	)
 }

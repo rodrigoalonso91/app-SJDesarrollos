@@ -1,21 +1,23 @@
-import Autocomplete from '@mui/material/Autocomplete'
-import TextField from '@mui/material/TextField'
-import useCollection from '@web/hooks/useCollection'
+import { Autocomplete, TextField } from "@mui/material";
+import useCollection from "@web/hooks/useCollection";
 import { useState } from 'react'
 
-export const SalesmenComboBox = ({ table, column, cell }) => {
+export const CustomerComboBox = ({ table, column, cell }) => {
 
     const [currentValue, setCurrentValue] = useState(cell.getValue())
+
     const { getState, setEditingRow } = table
     const { editingRow } = getState()
 
-    const { isLoading, collection } = useCollection({ name: 'salesmen' })
+    const { isLoading, collection } = useCollection({ name: 'clients' })
 
-    const handleOnChange = (event, value) => {
+    const handleOnChange = (_event, value) => {
 
         if (!value) return
 
         const { fullname } = value
+
+        setCurrentValue(fullname)
 
         setEditingRow({
             ...editingRow,
@@ -30,7 +32,7 @@ export const SalesmenComboBox = ({ table, column, cell }) => {
             loadingText="Cargando clientes..."
             options={collection}
             getOptionLabel={(option) => option.fullname || option}
-            renderInput={(params) => <TextField {...params} label={'Vendedor'} />}
+            renderInput={(params) => <TextField {...params} label={'Cliente'} />}
             onChange={(event, value) => handleOnChange(event, value)}
         />
     )

@@ -5,12 +5,15 @@ import transformXmlToNeighborhoods, {
 import { ChangeEvent, useCallback, useState } from "react"
 
 export default function useNeighborhood() {
+
 	const [neighborhood, setNeighborhood] = useState<Neighborhood | null>(null)
 	const [errors, setErrors] = useState<Array<BlockError> | null>(null)
+	const [uploadedFile, setUploadedFile] = useState<string>('Ningún archivo selecionado')
 
 	async function onFileUpload(e: ChangeEvent<HTMLInputElement>) {
 		if (!e.target.files) return
 		const file = e.target.files[0]
+		setUploadedFile(file.name)
 		const xml = await encode(file)
 
 		const { neighborhood, errors } = transformXmlToNeighborhoods(xml)
@@ -54,13 +57,27 @@ export default function useNeighborhood() {
 		[neighborhood]
 	)
 
+	const changeLotPrice = useCallback(
+		({ price, block, lot }: { price: string; block: number; lot: number }) => {
+			setNeighborhood((neighborhood) => {
+				if (neighborhood === null) return null
+				const substitute = clone(neighborhood)
+				substitute.blocks[block].lots[lot].price = price
+				return substitute
+			})
+		},
+		[neighborhood]
+	)
+
 	return {
 		onFileUpload,
 		neighborhood,
 		errors,
 		changeNeighborhoodName,
 		changeBlockName,
-		changeLotName
+		changeLotName,
+		changeLotPrice,
+		uploadedFile
 	}
 }
 
@@ -74,4 +91,4 @@ async function encode(file: File): Promise<string> {
 	return await promise
 }
 
-const clone = <T>(obj: T) => JSON.parse(JSON.stringify(obj))
+const clone = <T>(obj: T) : T => JSON.parse(JSON.stringify(obj))

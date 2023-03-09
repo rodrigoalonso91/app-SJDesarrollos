@@ -49,6 +49,10 @@ export type Block = {
 export type Lot = {
 	name: string | null
 	coordinates: Array<Coordinate>
+	price?: string 
+	// salesman: string
+	// customer: string
+	// status: string
 }
 
 export type BlockError = {
