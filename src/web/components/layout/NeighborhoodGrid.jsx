@@ -97,11 +97,6 @@ export const NeighborhoodGrid = ({ data }) => {
 
     const handleOnRowSave = async ({ row, values, exitEditingMode }) => {
 
-        if (!user.isAdmin) {
-            exitEditingMode()
-            return
-        }
-
         setIsLoading(true)
         exitEditingMode()
         const { index } = row
@@ -141,7 +136,7 @@ export const NeighborhoodGrid = ({ data }) => {
             renderTopToolbarCustomActions={getGridTitle}
             columns={NEIGHBORHOOD_COLUMNS}
             data={dataSource ?? []}
-            enableEditing
+            enableEditing={user.isAdmin}
             editingMode="modal"
             onEditingRowSave={handleOnRowSave}
             displayColumnDefOptions={{
