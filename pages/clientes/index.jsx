@@ -4,6 +4,7 @@ import { CUSTOMER_COLUMNS } from "../../src/web/constants/columns"
 import { getCustomers } from "../../src/server"
 import { AddCustomerForm } from "../../src/web/components/AddCustomerForm"
 import { useDataSource } from "../../src/web/hooks"
+import getUser from "../../src/server/infrastructure/GetUser"
 
 export const Clients = ({ customers }) => {
 
@@ -22,7 +23,11 @@ export const Clients = ({ customers }) => {
 }
 
 export const getServerSideProps = withPageAuthRequired({
-	getServerSideProps: async () => {
+	getServerSideProps: async ({ res, req }) => {
+
+		const user = await getUser({ res, req })
+		if (!user.isAdmin) return { notFound: true }
+		
 		const customers = await getCustomers()
 		return { props: { customers } }
 	},

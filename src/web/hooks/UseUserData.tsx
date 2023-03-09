@@ -14,7 +14,8 @@ export default function useUserData() {
 		isProprietor, 
 		isLoggedIn: true, 
 		email: user?.email, 
-		nickname: user?.nickname
+		nickname: user?.nickname,
+		roles
 	}
 }
 

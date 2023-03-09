@@ -27,26 +27,36 @@ export const Navbar = () => {
 
 				<div className="navbar-collapse">
 					<div className="navbar-nav">
-						<NavbarItem
-							href="/master"
-							text="Master"
-							handleOnClick={handleClick}
-						/>
+						{
+							user.isAdmin && 
+							<NavbarItem
+								href="/master"
+								text="Master"
+								handleOnClick={handleClick}
+							/>
+						}
+						
 						<NavbarItem
 							href="/barrios"
 							text="Barrios"
 							handleOnClick={handleClick}
 						/>
-						<NavbarItem
-							href="/vendedores"
-							text="Vendedores"
-							handleOnClick={handleClick}
-						/>
-						<NavbarItem
-							href="/clientes"
-							text="Clientes"
-							handleOnClick={handleClick}
-						/>
+						{
+							user.isAdmin && 
+							<NavbarItem
+								href="/vendedores"
+								text="Vendedores"
+								handleOnClick={handleClick}
+							/>
+						}
+						{
+							user.isAdmin && 
+							<NavbarItem
+								href="/clientes"
+								text="Clientes"
+								handleOnClick={handleClick}
+							/>
+						}
 					</div>
 				</div>
 

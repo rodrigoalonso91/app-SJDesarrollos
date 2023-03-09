@@ -1,10 +1,10 @@
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react";
 
-export function useBackDrop (initialState) {
+export function useBackDrop () {
 
     const router = useRouter()
-    const [isOpen, setIsOpen] = useState(initialState)
+    const [isOpen, setIsOpen] = useState(false)
 
     useEffect( () => setIsOpen(router.isPreview), [router]);
 
