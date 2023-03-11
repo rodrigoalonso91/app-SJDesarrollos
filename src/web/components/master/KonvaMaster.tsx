@@ -15,6 +15,7 @@ import Paper from '@mui/material/Paper';
 import Fab from '@mui/material/Fab';
 import { bottom, right } from "@popperjs/core"
 import { minHeight, minWidth } from "@mui/system"
+import getNeighborhoodByName from '../../api_calls/neighborhood/getNeighborhoodByName'
 
 export default function KonvaMaster() {
 
@@ -89,6 +90,13 @@ export default function KonvaMaster() {
 		)
 	}
 
+	const handleSave = async () => {
+
+		const asd = await getNeighborhoodByName(neighborhood?.name)
+		console.log({ asd })
+		// addNeighborhood(neighborhood!)
+	}
+
 	return (
 		<MasterContext.Provider
 			value={{
@@ -121,7 +129,7 @@ export default function KonvaMaster() {
 							<FabContainer>
 								<Fab 
 									disabled={!neighborhood?.name} 
-									onClick={() => addNeighborhood(neighborhood!)} 
+									onClick={handleSave} 
 									color='primary'
 								>
 									<SaveIcon/>
