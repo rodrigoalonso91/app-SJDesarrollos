@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField"
 import MasterContext from "@web/components/master/MasterContext"
 import { STATUS_OPTIONS } from "@web/constants/lotStatus"
 import { useField } from "@web/hooks"
+import useCollection from "@web/hooks/useCollection"
 import React, { useContext, useEffect, useRef, useState } from "react"
 
 export default function BlockInputs () {
@@ -33,16 +34,23 @@ export default function BlockInputs () {
 
 			/>
 
-			{/* TODO: Lot Status */}
 			<LotStatus
 				initialStatus={neighborhood.blocks[selected.block].lots[selected.lot].status || 'Disponible'}
 				block={selected.block}
 				lot={selected.lot}
 			/>
 
-			{/* TODO: Lot Customer */}
+			<LotSalesmen
+				currentSalesman={neighborhood.blocks[selected.block].lots[selected.lot].salesman || ''}
+				block={selected.block}
+				lot={selected.lot}
+			/>
 
-			{/* TODO: Lot Salesman */}
+			<LotCustomer
+				currentCustomer={neighborhood.blocks[selected.block].lots[selected.lot].customer || ''}
+				block={selected.block}
+				lot={selected.lot}
+			/>
 
 		</InputsContainer>
 	)
@@ -132,6 +140,50 @@ function LotStatus ({ block, lot, initialStatus }: { block: number, lot: number,
 			onBlur={() => changeLotStatus({ block, lot, status })}
 			onChange={(e, value) => setStatus(value || 'Disponible')}
 			renderInput={(params) => <TextField {...params} label={'Estado'} />}
+		/>
+	)
+}
+
+function LotSalesmen ({ block, lot, currentSalesman }: { block: number, lot: number, currentSalesman: string }) {
+
+	const [salesman, setSalesman] = useState(currentSalesman)
+	const { collection, isLoading } = useCollection({ name: 'salesmen' })
+	
+	const { changeLotSalesman } = useContext(MasterContext)
+	
+	useEffect(() => { setSalesman(currentSalesman) },[currentSalesman])
+	
+	return (
+		<Autocomplete
+			value={salesman}
+			loading={isLoading}
+			size="small"
+			options={collection.map(c => c['fullname'])}
+			onBlur={() => changeLotSalesman({ block, lot, salesman })}
+			onChange={(e, value) => setSalesman(value || '')}
+			renderInput={(params) => <TextField {...params} label={'Vendedor'} />}
+		/>
+	)
+}
+
+function LotCustomer ({ block, lot, currentCustomer }: { block: number, lot: number, currentCustomer: string }) {
+
+	const [customer, setCustomer] = useState(currentCustomer)
+	const { collection, isLoading } = useCollection({ name: 'clients' })
+	
+	const { changeLotCustomer } = useContext(MasterContext)
+	
+	useEffect(() => { setCustomer(currentCustomer) },[currentCustomer])
+	
+	return (
+		<Autocomplete
+			value={customer}
+			loading={isLoading}
+			size="small"
+			options={collection.map(c => c['fullname'])}
+			onBlur={() => changeLotCustomer({ block, lot, customer })}
+			onChange={(e, value) => setCustomer(value || '')}
+			renderInput={(params) => <TextField {...params} label={'Cliente'} />}
 		/>
 	)
 }

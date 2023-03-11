@@ -8,7 +8,9 @@ const MasterContext = React.createContext<MasterContextProps>({
 	changeBlockName: () => {},
 	changeLotName: () => {},
 	changeLotPrice: () => {},
-	changeLotStatus: () => {}
+	changeLotStatus: () => {},
+	changeLotSalesman: () => {},
+	changeLotCustomer: () => {}
 })
 
 type MasterContextProps = {
@@ -19,6 +21,8 @@ type MasterContextProps = {
 	changeLotName: (_: { name: string; block: number; lot: number }) => void
 	changeLotPrice: (_: { price: string; block: number; lot: number }) => void
 	changeLotStatus: (_: { status: string; block: number; lot: number }) => void
+	changeLotSalesman: (_: { salesman: string; block: number; lot: number }) => void
+	changeLotCustomer: (_: { customer: string; block: number; lot: number }) => void
 }
 
 export default MasterContext

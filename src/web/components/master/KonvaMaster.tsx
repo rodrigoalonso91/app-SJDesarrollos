@@ -27,7 +27,9 @@ export default function KonvaMaster() {
 		changeLotPrice,
 		uploadedFile,
 		onFileUpload,
-		changeLotStatus
+		changeLotStatus,
+		changeLotSalesman,
+		changeLotCustomer
 	} = useNeighborhood()
 	
 	const [selected, setSelected] = useState<SelectedLot | null>(null)
@@ -96,7 +98,9 @@ export default function KonvaMaster() {
 				changeBlockName,
 				changeLotName,
 				changeLotPrice,
-				changeLotStatus
+				changeLotStatus,
+				changeLotSalesman,
+				changeLotCustomer
 			}}
 		>
 			<Box sx={{ 

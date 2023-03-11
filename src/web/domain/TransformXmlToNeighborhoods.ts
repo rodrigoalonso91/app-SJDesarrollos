@@ -29,7 +29,9 @@ export default function transformXmlToNeighborhoods(xml: string) {
 			lots: transformBlockSidesToLots(lots).map((lot) => ({
 				name: null,
 				coordinates: lot,
-				status: 'Disponible'
+				status: 'Disponible',
+				salesman: null,
+				customer: null
 			}))
 		}))
 	}
@@ -53,8 +55,8 @@ export type Lot = {
 	coordinates: Array<Coordinate>
 	price?: string 
 	status: string
-	// salesman: string
-	// customer: string
+	salesman: string | null
+	customer: string | null
 }
 
 export type BlockError = {

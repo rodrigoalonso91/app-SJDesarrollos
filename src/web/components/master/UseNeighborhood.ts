@@ -80,6 +80,28 @@ export default function useNeighborhood() {
 		}, [neighborhood]
 	)
 
+	const changeLotSalesman = useCallback(
+		({ salesman, block, lot }: { salesman: string; block: number; lot: number }) => {
+			setNeighborhood((neighborhood) => {
+				if (neighborhood === null) return null
+				const substitute = clone(neighborhood)
+				substitute.blocks[block].lots[lot].salesman = salesman
+				return substitute
+			})
+		}, [neighborhood]
+	)
+
+	const changeLotCustomer = useCallback(
+		({ customer, block, lot }: { customer: string; block: number; lot: number }) => {
+			setNeighborhood((neighborhood) => {
+				if (neighborhood === null) return null
+				const substitute = clone(neighborhood)
+				substitute.blocks[block].lots[lot].customer = customer
+				return substitute
+			})
+		}, [neighborhood]
+	)
+
 	return {
 		onFileUpload,
 		neighborhood,
@@ -89,7 +111,9 @@ export default function useNeighborhood() {
 		changeLotName,
 		changeLotPrice,
 		uploadedFile,
-		changeLotStatus
+		changeLotStatus,
+		changeLotSalesman,
+		changeLotCustomer
 	}
 }
 
