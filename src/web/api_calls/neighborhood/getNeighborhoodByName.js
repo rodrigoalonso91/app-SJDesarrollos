@@ -11,8 +11,8 @@ const getNeighborhoodByName = async (name) => {
     }
 
     const response = await fetch(`api/barrios/nombre/${name}`, data)
-    console.log("🚀 ~ file: getNeighborhoodByName.js:15 ~ getNeighborhoodByName ~ response:", response)
-    // return JSON.parse(response.body)
+    const result = await response.json()
+    return result
     
 }
 
