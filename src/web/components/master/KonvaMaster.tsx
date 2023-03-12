@@ -19,6 +19,9 @@ import getNeighborhoodByName from '../../api_calls/neighborhood/getNeighborhoodB
 import updateNeighborhoodInDb from "@web/api_calls/neighborhood/updateNeighborhoodInDb"
 import { Neighborhood } from "@web/domain/TransformXmlToNeighborhoods"
 import mergeObjects from '../../domain/utils/MergeObjects'
+import Snackbar from "@mui/material/Snackbar"
+import { CustomSnackbar } from "../CustomSnackbar"
+import { useSnackbar } from "@web/hooks"
 
 export default function KonvaMaster() {
 
@@ -43,9 +46,13 @@ export default function KonvaMaster() {
 	const [open, setOpen] = useState(false)
 	const [neighborhoodToUpdate, setNeighborhoodToUpdate] = useState<Neighborhood | null>(null)
 
+	const { openSnackbar, isSnackbarOpen, closeSnackbar } = useSnackbar()
+
 	useEffect(() => {
+
 		if (!neighborhood) return
 		if (!errors) return
+
 		const boundaries = neighborhood.blocks
 			.flatMap((block) => block.lots)
 			.flatMap((lot) => lot.coordinates)
@@ -103,10 +110,8 @@ export default function KonvaMaster() {
 
 		const updatedNeighborhood = mergeObjects(neighborhoodToUpdate, neighborhood)
 		
-		console.log({new: neighborhood})
-		console.log({db:neighborhoodToUpdate})
-		
 		await updateNeighborhoodInDb(updatedNeighborhood)
+		openSnackbar()
 
 	}
 
@@ -114,7 +119,8 @@ export default function KonvaMaster() {
 
 		const previousNeighborhood = await getNeighborhoodByName(neighborhood?.name)
 		if (!previousNeighborhood ) {
-			addNeighborhood(neighborhood!)
+			await addNeighborhood(neighborhood!)
+			openSnackbar()
 		}
 		else {
 			setNeighborhoodToUpdate(previousNeighborhood)
@@ -136,6 +142,9 @@ export default function KonvaMaster() {
 				changeLotCustomer
 			}}
 		>
+
+			<CustomSnackbar message={'Guardado con exíto'} open={isSnackbarOpen} handleClose={closeSnackbar} />
+
 			<Box sx={{ 
 					width: '100%',
 					padding: 2,
@@ -185,7 +194,7 @@ export default function KonvaMaster() {
 						</ConsoleMasterContainer>
 
 						<Stage 
-							width={window.innerWidth * 0.7}
+							width={window.innerWidth * 0.98}
 							height={window.innerHeight * 0.8492}
 							onWheel={handleWheel}
 							scaleX={stageScale}
@@ -206,21 +215,24 @@ export default function KonvaMaster() {
 						</Stage>
 					</Paper>
 
-					<Paper elevation={3}>
-						<Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 460, alignItems: 'center', gap:1 }}>
-							<TextField
-								label="Barrio"
-								size="small"
-								placeholder="Ej: Del Pilar, Perdices" 
-								value={neighborhood?.name || ""}
-								onChange={(e) => {
-									changeNeighborhoodName(e.target.value)
-								}}
-							/>
-							{ selected && <BlockInputs /> }
-
-						</Box>
-					</Paper>
+					<BlockInputsContainer>
+						
+						{ 
+							selected && 
+							<React.Fragment>
+								<TextField
+									label="Barrio"
+									size="small"
+									placeholder="Ej: Del Pilar, Perdices" 
+									value={neighborhood?.name || ""}
+									onChange={(e) => {
+										changeNeighborhoodName(e.target.value)
+									}}
+								/>
+								<BlockInputs /> 
+							</React.Fragment>
+						}
+					</BlockInputsContainer>
 
 				</KonvaContainer>
 			</Box>
@@ -228,6 +240,20 @@ export default function KonvaMaster() {
 		</MasterContext.Provider>
 	)
 }
+
+const BlockInputsContainer = styled.div`
+	display: flex;
+	gap: 10px;
+	flex-direction: column;
+	max-width: 500px;
+	
+	position: absolute;
+	right: 35px;
+	bottom: 250px;
+	background-color: white;
+	padding: 15px;
+	border: 1px solid red;
+`
 
 const KonvaContainer = styled.div`
 	display: flex;
@@ -238,7 +264,7 @@ const KonvaContainer = styled.div`
 const ConsoleMasterContainer = styled.section`
 	
 	position: absolute;
-	right: 515px;
+	right: 45px;
 	bottom: 35px;
 
 	display: flex;

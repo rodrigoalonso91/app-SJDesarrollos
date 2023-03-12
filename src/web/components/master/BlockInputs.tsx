@@ -18,7 +18,7 @@ export default function BlockInputs () {
 		<InputsContainer>
 			<BlockName
 				block={selected.block}
-				name={neighborhood.blocks[selected.block].name || ""}
+				name={neighborhood.blocks[selected.block]?.name || ""}
 			/>
 
 			<LotName
