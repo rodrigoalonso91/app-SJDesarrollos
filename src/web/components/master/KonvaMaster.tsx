@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { Box, Stack, Typography, Button} from "@mui/material"
+import { Box, Stack, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions} from "@mui/material"
 import TextField from "@mui/material/TextField"
 import addNeighborhood from "@web/api_calls/neighborhood/addNeighborhood"
 import BlockInputs from "@web/components/master/BlockInputs"
@@ -16,6 +16,9 @@ import Fab from '@mui/material/Fab';
 import { bottom, right } from "@popperjs/core"
 import { minHeight, minWidth } from "@mui/system"
 import getNeighborhoodByName from '../../api_calls/neighborhood/getNeighborhoodByName'
+import updateNeighborhoodInDb from "@web/api_calls/neighborhood/updateNeighborhoodInDb"
+import { Neighborhood } from "@web/domain/TransformXmlToNeighborhoods"
+import mergeObjects from '../../domain/utils/MergeObjects'
 
 export default function KonvaMaster() {
 
@@ -34,10 +37,11 @@ export default function KonvaMaster() {
 	} = useNeighborhood()
 	
 	const [selected, setSelected] = useState<SelectedLot | null>(null)
-
 	const [stageScale, setStageScale] = useState(1)
 	const [stageX, setStageX] = useState(0)
 	const [stageY, setStageY] = useState(0)
+	const [open, setOpen] = useState(false)
+	const [neighborhoodToUpdate, setNeighborhoodToUpdate] = useState<Neighborhood | null>(null)
 
 	useEffect(() => {
 		if (!neighborhood) return
@@ -90,11 +94,32 @@ export default function KonvaMaster() {
 		)
 	}
 
+	const handleDialogClose = async (event: any) => {
+
+		setOpen(false)
+
+		const { innerText } = event.target
+		if (innerText.toUpperCase() === 'CANCELAR') return
+
+		const updatedNeighborhood = mergeObjects(neighborhoodToUpdate, neighborhood)
+		
+		console.log({new: neighborhood})
+		console.log({db:neighborhoodToUpdate})
+		
+		await updateNeighborhoodInDb(updatedNeighborhood)
+
+	}
+
 	const handleSave = async () => {
 
-		const asd = await getNeighborhoodByName(neighborhood?.name)
-		console.log({ asd })
-		// addNeighborhood(neighborhood!)
+		const previousNeighborhood = await getNeighborhoodByName(neighborhood?.name)
+		if (!previousNeighborhood ) {
+			addNeighborhood(neighborhood!)
+		}
+		else {
+			setNeighborhoodToUpdate(previousNeighborhood)
+			setOpen(true)
+		}
 	}
 
 	return (
@@ -119,6 +144,20 @@ export default function KonvaMaster() {
 					gap: 2
 				}}
 			>
+				<Dialog open={open}>
+
+					<DialogTitle>Aviso</DialogTitle>
+
+					<DialogContent>
+						El barrio {neighborhood?.name} ya existe. ¿Desea actualizarlo con el archivo actual?
+					</DialogContent>
+
+					<DialogActions>
+						<Button onClick={handleDialogClose}>Cancelar</Button>
+						<Button onClick={handleDialogClose} autoFocus>Ok</Button>
+					</DialogActions>
+
+				</Dialog>
 
 				{/* Para dibujar los barrios */}
 				<KonvaContainer>
