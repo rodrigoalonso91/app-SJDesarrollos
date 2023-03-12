@@ -49,6 +49,14 @@ export default function KonvaMaster() {
 	const { openSnackbar, isSnackbarOpen, closeSnackbar } = useSnackbar()
 
 	useEffect(() => {
+		document.body.style.overflow = "hidden";
+	
+	  return () => {
+		document.body.style.overflow = "scroll"
+	  }
+	}, [])
+
+	useEffect(() => {
 
 		if (!neighborhood) return
 		if (!errors) return
@@ -194,7 +202,7 @@ export default function KonvaMaster() {
 						</ConsoleMasterContainer>
 
 						<Stage 
-							width={window.innerWidth * 0.98}
+							width={window.innerWidth * 0.78}
 							height={window.innerHeight * 0.8492}
 							onWheel={handleWheel}
 							scaleX={stageScale}
@@ -252,7 +260,10 @@ const BlockInputsContainer = styled.div`
 	bottom: 250px;
 	background-color: white;
 	padding: 15px;
-	border: 1px solid red;
+	/* border: 1px solid red; */
+	box-shadow: -10px 8px 15px -12px rgba(0,0,0,0.53);
+	-webkit-box-shadow: -10px 8px 15px -12px rgba(0,0,0,0.53);
+	-moz-box-shadow: -10px 8px 15px -12px rgba(0,0,0,0.53);
 `
 
 const KonvaContainer = styled.div`
