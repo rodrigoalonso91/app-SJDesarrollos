@@ -224,7 +224,6 @@ export default function KonvaMaster() {
 					</Paper>
 
 					<BlockInputsContainer>
-						
 						{ 
 							selected && 
 							<React.Fragment>
@@ -282,7 +281,7 @@ const ConsoleMasterContainer = styled.section`
 	justify-content: 'center';
 	align-items: 'center';
 	gap: 15px;
-	z-index: 800;
+	z-index: 99;
 `
 
 const FabContainer = styled.div`
