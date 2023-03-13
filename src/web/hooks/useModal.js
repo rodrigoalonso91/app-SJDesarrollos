@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
 
 export function useModal ({ initialValue = false }) {
-
-    const [isModalOpen, setIsModalOpen] = useState()
+    const [isModalOpen, setIsModalOpen] = useState(initialValue)
 
     useEffect(() => {
         setIsModalOpen(initialValue)
