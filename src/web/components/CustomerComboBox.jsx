@@ -30,7 +30,7 @@ export const CustomerComboBox = ({ table, column, cell }) => {
             value={currentValue}
             loading={isLoading}
             loadingText="Cargando clientes..."
-            options={collection}
+            options={['- Ninguno -', ...collection]}
             getOptionLabel={(option) => option.fullname || option}
             renderInput={(params) => <TextField {...params} label={'Cliente'} />}
             onChange={(event, value) => handleOnChange(event, value)}

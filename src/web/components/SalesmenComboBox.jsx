@@ -17,6 +17,8 @@ export const SalesmenComboBox = ({ table, column, cell }) => {
 
         const { fullname } = value
 
+        setCurrentValue(fullname)
+
         setEditingRow({
             ...editingRow,
             _valuesCache: {...editingRow._valuesCache, [column.id]: fullname}
@@ -28,7 +30,7 @@ export const SalesmenComboBox = ({ table, column, cell }) => {
             value={currentValue}
             loading={isLoading}
             loadingText="Cargando clientes..."
-            options={collection}
+            options={['- Ninguno -', ...collection]}
             getOptionLabel={(option) => option.fullname || option}
             renderInput={(params) => <TextField {...params} label={'Vendedor'} />}
             onChange={(event, value) => handleOnChange(event, value)}
