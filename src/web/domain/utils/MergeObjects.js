@@ -8,7 +8,7 @@ export default function mergeObjects (sourceObject, targetObject) {
 
     for (const key in sourceObject) {
 
-        if (Object.hasOwnProperty.call(object, key)) {
+        if (Object.hasOwnProperty.call(sourceObject, key)) {
             
             for (const key in sourceObject) {
 
@@ -35,6 +35,17 @@ export default function mergeObjects (sourceObject, targetObject) {
             }
         }
     }
+
+    // for (let key in targetObject) {
+    //     if ( 
+    //         Object.prototype.hasOwnProperty.call(targetObject, key) &&
+    //         !Object.prototype.hasOwnProperty.call(sourceObject, key) 
+    //     ) {
+    //         if (targetObject[key]) {
+    //             merged[key] = targetObject[key];
+    //         }
+    //     }
+    // }
 
     return merged
 }
