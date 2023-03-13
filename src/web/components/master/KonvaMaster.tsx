@@ -38,7 +38,7 @@ export default function KonvaMaster() {
 		changeLotSalesman,
 		changeLotCustomer
 	} = useNeighborhood()
-	
+
 	const [selected, setSelected] = useState<SelectedLot | null>(null)
 	const [stageScale, setStageScale] = useState(1)
 	const [stageX, setStageX] = useState(0)
@@ -50,7 +50,7 @@ export default function KonvaMaster() {
 
 	useEffect(() => {
 		document.body.style.overflow = "hidden";
-	
+
 	  return () => {
 		document.body.style.overflow = "scroll"
 	  }
@@ -117,7 +117,7 @@ export default function KonvaMaster() {
 		if (innerText.toUpperCase() === 'CANCELAR') return
 
 		const updatedNeighborhood = mergeObjects(neighborhoodToUpdate, neighborhood)
-		
+
 		await updateNeighborhoodInDb(updatedNeighborhood)
 		openSnackbar()
 
@@ -153,10 +153,10 @@ export default function KonvaMaster() {
 
 			<CustomSnackbar message={'Guardado con exíto'} open={isSnackbarOpen} handleClose={closeSnackbar} />
 
-			<Box sx={{ 
+			<Box sx={{
 					width: '100%',
 					padding: 2,
-					display: 'flex', 
+					display: 'flex',
 					flexDirection: 'column',
 					gap: 2
 				}}
@@ -183,9 +183,9 @@ export default function KonvaMaster() {
 
 						<ConsoleMasterContainer>
 							<FabContainer>
-								<Fab 
-									disabled={!neighborhood?.name} 
-									onClick={handleSave} 
+								<Fab
+									disabled={!neighborhood?.name}
+									onClick={handleSave}
 									color='primary'
 								>
 									<SaveIcon/>
@@ -201,7 +201,7 @@ export default function KonvaMaster() {
 							</UploadContainer>
 						</ConsoleMasterContainer>
 
-						<Stage 
+						<Stage
 							width={window.innerWidth * 0.78}
 							height={window.innerHeight * 0.8492}
 							onWheel={handleWheel}
@@ -223,23 +223,25 @@ export default function KonvaMaster() {
 						</Stage>
 					</Paper>
 
-					<BlockInputsContainer>
-						{ 
-							selected && 
-							<React.Fragment>
-								<TextField
-									label="Barrio"
-									size="small"
-									placeholder="Ej: Del Pilar, Perdices" 
-									value={neighborhood?.name || ""}
-									onChange={(e) => {
-										changeNeighborhoodName(e.target.value)
-									}}
-								/>
-								<BlockInputs /> 
-							</React.Fragment>
-						}
-					</BlockInputsContainer>
+					<Paper elevation={3} >
+						<BlockInputsContainer>
+							{
+								selected &&
+								<React.Fragment>
+									<TextField
+										label="Barrio"
+										size="medium"
+										placeholder="Ej: Del Pilar, Perdices"
+										value={neighborhood?.name || ""}
+										onChange={(e) => {
+											changeNeighborhoodName(e.target.value)
+										}}
+									/>
+									<BlockInputs />
+								</React.Fragment>
+							}
+						</BlockInputsContainer>
+					</Paper>
 
 				</KonvaContainer>
 			</Box>
@@ -249,20 +251,11 @@ export default function KonvaMaster() {
 }
 
 const BlockInputsContainer = styled.div`
+	width: ${window.innerWidth * 0.19}px;
 	display: flex;
-	gap: 10px;
 	flex-direction: column;
-	max-width: 500px;
-	
-	position: absolute;
-	right: 35px;
-	bottom: 250px;
-	background-color: white;
+	gap: 15px;
 	padding: 15px;
-	/* border: 1px solid red; */
-	box-shadow: -10px 8px 15px -12px rgba(0,0,0,0.53);
-	-webkit-box-shadow: -10px 8px 15px -12px rgba(0,0,0,0.53);
-	-moz-box-shadow: -10px 8px 15px -12px rgba(0,0,0,0.53);
 `
 
 const KonvaContainer = styled.div`
@@ -272,7 +265,7 @@ const KonvaContainer = styled.div`
 `
 
 const ConsoleMasterContainer = styled.section`
-	
+
 	position: absolute;
 	right: 45px;
 	bottom: 35px;

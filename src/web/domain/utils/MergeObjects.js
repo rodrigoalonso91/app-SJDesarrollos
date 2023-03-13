@@ -36,16 +36,16 @@ export default function mergeObjects (sourceObject, targetObject) {
         }
     }
 
-    // for (let key in targetObject) {
-    //     if ( 
-    //         Object.prototype.hasOwnProperty.call(targetObject, key) &&
-    //         !Object.prototype.hasOwnProperty.call(sourceObject, key) 
-    //     ) {
-    //         if (targetObject[key]) {
-    //             merged[key] = targetObject[key];
-    //         }
-    //     }
-    // }
+    for (let key in targetObject) {
+        if ( 
+            Object.prototype.hasOwnProperty.call(targetObject, key) &&
+            !Object.prototype.hasOwnProperty.call(sourceObject, key) 
+        ) {
+            if (targetObject[key]) {
+                merged[key] = targetObject[key];
+            }
+        }
+    }
 
     return merged
 }
