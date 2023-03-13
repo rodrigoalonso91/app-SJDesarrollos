@@ -23,7 +23,7 @@ export default function mergeObjects (sourceObject, targetObject) {
         
                     const mergedArray = targetObject[key].map((currentTarget, index) => {
                         return mergeObjects(sourceObject[key][index], currentTarget)
-                    });
+                    })
                     merged[key] = mergedArray
                 }
                 else if (typeof sourceObject[key] === "object" && typeof targetObject[key] === "object") {
