@@ -11,7 +11,7 @@ export const SalesmenComboBox = ({ table, column, cell }) => {
 
     const { isLoading, collection } = useCollection({ name: 'salesmen' })
 
-    const handleOnChange = (event, value) => {
+    const handleOnChange = (_event, value) => {
 
         if (!value) return
 
