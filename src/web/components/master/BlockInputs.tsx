@@ -59,7 +59,7 @@ export default function BlockInputs () {
 const InputsContainer = styled.div`
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 15px;
 `
 
 function BlockName({ block, name }: { block: number; name: string }) {
@@ -72,7 +72,7 @@ function BlockName({ block, name }: { block: number; name: string }) {
 	return (
 		<TextField
 			required
-			size="small"
+			size="medium"
 			label="Manzana"
 			value={text}
 			onChange={(e) => setText(e.target.value)}
@@ -98,7 +98,7 @@ function LotName({ block, lot, name }: { block: number, lot: number, name: strin
 	return (
 		<TextField
 			required
-			size="small"
+			size="medium"
 			inputRef={ref}
 			label="Lote"
 			value={text}
@@ -117,7 +117,7 @@ function LotPrice({ block, lot, price }: { block: number, lot: number, price: st
 
 	return (
 		<TextField
-			size="small"
+			size="medium"
 			{...priceInput}
 			onBlur={() => changeLotPrice({ price: priceInput.value, lot, block })}
 		/>
@@ -135,7 +135,7 @@ function LotStatus ({ block, lot, initialStatus }: { block: number, lot: number,
 	return (
 		<Autocomplete
 			value={status}
-			size="small"
+			size="medium"
 			options={STATUS_OPTIONS}
 			onBlur={() => changeLotStatus({ block, lot, status })}
 			onChange={(e, value) => setStatus(value || 'Disponible')}
@@ -157,7 +157,7 @@ function LotSalesmen ({ block, lot, currentSalesman }: { block: number, lot: num
 		<Autocomplete
 			value={salesman}
 			loading={isLoading}
-			size="small"
+			size="medium"
 			options={collection.map(c => c['fullname'])}
 			onBlur={() => changeLotSalesman({ block, lot, salesman })}
 			onChange={(e, value) => setSalesman(value || '')}
@@ -179,7 +179,7 @@ function LotCustomer ({ block, lot, currentCustomer }: { block: number, lot: num
 		<Autocomplete
 			value={customer}
 			loading={isLoading}
-			size="small"
+			size="medium"
 			options={collection.map(c => c['fullname'])}
 			onBlur={() => changeLotCustomer({ block, lot, customer })}
 			onChange={(e, value) => setCustomer(value || '')}

@@ -32,7 +32,6 @@ export default function transformXmlToNeighborhoods(xml: string) {
 				status: 'Disponible',
 				salesman: null,
 				customer: null,
-				price: null
 			}))
 		}))
 	}
@@ -54,7 +53,7 @@ export type Block = {
 export type Lot = {
 	name: string | null
 	coordinates: Array<Coordinate>
-	price?: string | null
+	price?: string
 	status: string
 	salesman: string | null
 	customer: string | null
