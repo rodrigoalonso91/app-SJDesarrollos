@@ -51,7 +51,7 @@ export default function KonvaLot({
 				stroke="black"
 				strokeWidth={0.35}
 			/>
-			<Text x={center.x} y={center.y} text={name} fontSize={1} ref={textRef} />
+			<Text x={center.x} y={center.y} text={name} fontSize={2.8} ref={textRef} />
 		</>
 	)
 }
