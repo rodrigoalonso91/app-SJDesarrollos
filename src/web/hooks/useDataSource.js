@@ -7,13 +7,13 @@ export function useDataSource ({ data }) {
     useEffect( () => {
 
         if (data) {
-            setDataSource(data)
+            setDataSource(data.filter( d => d.name && d.lot))
         }
 
     }, [data])
 
     const updateDataSource = (data) => {
-        setDataSource(data)
+        setDataSource(data.filter( d => d.name && d.lot))
     }
 
     return {
