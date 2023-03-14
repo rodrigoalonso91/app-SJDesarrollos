@@ -10,10 +10,11 @@ import deleteNeighborhoodById from "../../../../src/web/api_calls/neighborhood/d
 import useUserData from "../../../../src/web/hooks/UseUserData";
 import { Close } from "@mui/icons-material";
 import { Layer, Stage } from "react-konva";
-import KonvaBlock from "../../components/master/KonvaBlock"
+import NeighborhoodKonvaBlock from "../../components/neighborhood/NeighborhoodKonvaBlock"
 import { useState } from "react";
 
 export default function NeighborhoodScreen({ neighborhoods }) {
+
 	const user = useUserData()
 	const { openModal, closeModal, isModalOpen} = useModal({ initialValue: false })
 
@@ -111,7 +112,7 @@ export default function NeighborhoodScreen({ neighborhoods }) {
               {
                 selectedNeighborhoodData &&
                 selectedNeighborhoodData.blocks.map((block, i) => (
-                  <KonvaBlock key={i} {...block} block={i} />
+                  <NeighborhoodKonvaBlock key={`${block.name}-${i}`} block={block} />
                 ))
               }
               {/* { errors && <KonvaErrorLines errors={errors} /> } */}
@@ -120,9 +121,6 @@ export default function NeighborhoodScreen({ neighborhoods }) {
 
         </DialogContent>
 
-        {/* <DialogActions>
-					<Button onClick={() => closeModal()}>Cerrar</Button>
-				</DialogActions> */}
       </Dialog>
 
       <Box sx={{ display: "flex", flexDirection: "row-reverse", gap: 5 }}>

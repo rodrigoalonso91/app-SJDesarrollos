@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useDataSource, useGridTitle } from '../../hooks'
 import updateRowOnDatabase from "../../api_calls/updateRowOnDatabase";
 import useUserData from "../../hooks/UseUserData";
+import { STATUS_COLORS } from "../../constants/lotStatus";
 
 const NEIGHBORHOOD_COLUMNS = [
     { 
@@ -34,12 +35,7 @@ const NEIGHBORHOOD_COLUMNS = [
             <Box
                 component='span'
                 sx={{
-                    backgroundColor:
-                        cell.getValue().toLowerCase() === 'vendido'
-                        ? '#e42929'
-                        : cell.getValue().toLowerCase() === 'reservado'
-                        ? '#decc00'
-                        : '#0af2a1',
+                    backgroundColor: STATUS_COLORS[cell.getValue()],
                         borderRadius: '0.25rem',
                         color: '#fff',
                         maxWidth: '9ch',
