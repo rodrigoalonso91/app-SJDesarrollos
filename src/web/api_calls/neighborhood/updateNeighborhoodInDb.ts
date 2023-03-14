@@ -4,7 +4,6 @@ export default async function updateNeighborhoodInDb(neighborhood: any) {
     
     const id = neighborhood._id
     delete neighborhood._id
-    console.log({merged: neighborhood})
 
     const data = {
         method: "PUT",

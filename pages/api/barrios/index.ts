@@ -22,7 +22,6 @@ export default withApiAuthRequired(
 					const id = await createNeighborhood(JSON.parse(req.body))
 					return res.status(201).end()
 				case "PUT":
-					console.log(req.body)
 					const response = await updateNeighborhood(req.body.id, req.body)
 					if (response === 1) {
 						return res.status(200).end()
