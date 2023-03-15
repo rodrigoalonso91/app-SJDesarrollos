@@ -176,30 +176,31 @@ export default function KonvaMaster() {
 
 				</Dialog>
 
+				<ConsoleMasterContainer>
+					<FabContainer>
+						<Fab
+							disabled={!neighborhood?.name}
+							onClick={handleSave}
+							color='primary'
+						>
+							<SaveIcon/>
+						</Fab>
+					</FabContainer>
+					<UploadContainer>
+						<Typography>{uploadedFile}</Typography>
+						<Button component="label" variant="contained" sx={{gap:1}}>
+							<UploadFileIcon/>
+							Cargar master
+							<input type="file" onChange={onFileUpload} hidden />
+						</Button>
+					</UploadContainer>
+				</ConsoleMasterContainer>
+
 				{/* Para dibujar los barrios */}
 				<KonvaContainer>
 
 					<Paper elevation={3} >
 
-						<ConsoleMasterContainer>
-							<FabContainer>
-								<Fab
-									disabled={!neighborhood?.name}
-									onClick={handleSave}
-									color='primary'
-								>
-									<SaveIcon/>
-								</Fab>
-							</FabContainer>
-							<UploadContainer>
-								<Typography>{uploadedFile}</Typography>
-								<Button component="label" variant="contained" sx={{gap:1}}>
-									<UploadFileIcon/>
-									Cargar master
-									<input type="file" onChange={onFileUpload} hidden />
-								</Button>
-							</UploadContainer>
-						</ConsoleMasterContainer>
 
 						<Stage
 							width={window.innerWidth * 0.78}
@@ -251,7 +252,7 @@ export default function KonvaMaster() {
 }
 
 const BlockInputsContainer = styled.div`
-	width: ${window.innerWidth * 0.19}px;
+	width: ${window.innerWidth * 0.189}px;
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
@@ -261,13 +262,13 @@ const BlockInputsContainer = styled.div`
 const KonvaContainer = styled.div`
 	display: flex;
 	gap: 20px;
-	max-height: ${window.innerHeight * 0.8492}px;
+	max-height: ${window.innerHeight * 0.835}px;
 `
 
 const ConsoleMasterContainer = styled.section`
 
 	position: absolute;
-	right: 45px;
+	right: 23px;
 	bottom: 35px;
 
 	display: flex;

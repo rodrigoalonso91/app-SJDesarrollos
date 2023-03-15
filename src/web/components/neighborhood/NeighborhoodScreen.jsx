@@ -46,6 +46,7 @@ export default function NeighborhoodScreen({ neighborhoods }) {
 	}
 
 	const handleClick = () => {
+    if (!selectedNeighborhood) return
 		openModal()
 	}
 
