@@ -33,6 +33,7 @@ const Card = styled.div`
     min-height: 200px;
     border-radius: 25px;
     cursor: pointer;
+    max-width: 200px;
 
     &:hover {
 		background: #282b31;

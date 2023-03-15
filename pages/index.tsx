@@ -1,10 +1,11 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
-import { HomeCard, HomeCardContainer } from "@web/components"
+import { HomeCard } from "@web/components"
 import { getNeighborhoods } from "../src/server"
 import { modules } from '../src/web/constants/appModules'
 import { Backdrop, CircularProgress } from "@mui/material"
 import { useBackDrop } from "@web/hooks"
 import getUser from "@server/infrastructure/GetUser"
+import styles from './home.module.css'
 
 export default function Home() {
 
@@ -12,7 +13,7 @@ export default function Home() {
 
 	return (
 		<>
-			<HomeCardContainer>
+			<section className={styles.cardContainer}>
 				{
 					modules.map(module =>(
 						<HomeCard key={module.title} module={module} openBackDrop={openBackDrop} >
@@ -20,7 +21,7 @@ export default function Home() {
 						</HomeCard>
 					))
 				}
-			</HomeCardContainer>
+			</section>
 			<Backdrop style={{ zIndex: 100 }} open={isOpen}>
 				<CircularProgress color="inherit" />
 			</Backdrop>
