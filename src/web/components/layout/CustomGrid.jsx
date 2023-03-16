@@ -9,14 +9,14 @@ import { BasicEditActions } from "../table/BasicEditActions"
 import { CustomModal } from "./CustomModal"
 import { SPANISH_COLLECTIONS } from "../../constants/collections"
 import { Box } from "@mui/system"
-import { useDataSource } from "../../hooks"
+import { usePersonDataSource } from "../../hooks"
 import { useState } from "react"
 
 export const CustomGrid = ({ collection, columns, children, data }) => {
 
 	const [isLoading, setIsLoading] = useState(false)
 
-	const { dataSource, updateDataSource } = useDataSource({ data })
+	const { dataSource, updateDataSource } = usePersonDataSource({ data })
 
 	const { isFormActivated } = useSelector((state) => state.isActivatedForm)
 

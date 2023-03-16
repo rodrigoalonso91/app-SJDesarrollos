@@ -3,12 +3,12 @@ import { CustomGrid } from "../../src/web/components/layout/CustomGrid"
 import { CUSTOMER_COLUMNS } from "../../src/web/constants/columns"
 import { getCustomers } from "../../src/server"
 import { AddCustomerForm } from "../../src/web/components/AddCustomerForm"
-import { useDataSource } from "../../src/web/hooks"
+import { usePersonDataSource } from "../../src/web/hooks"
 import getUser from "../../src/server/infrastructure/GetUser"
 
 export const Clients = ({ customers }) => {
 
-	const { dataSource, updateDataSource } = useDataSource({ data: customers })
+	const { dataSource, updateDataSource } = usePersonDataSource({ data: customers })
 	const collection = 'clients' 
 
 	return (
