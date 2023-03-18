@@ -6,6 +6,7 @@ import { useDataSource, useGridTitle } from '../../hooks'
 import updateRowOnDatabase from "../../api_calls/updateRowOnDatabase";
 import useUserData from "../../hooks/UseUserData";
 import { STATUS_COLORS } from "../../constants/lotStatus";
+import { type } from "os";
 
 const NEIGHBORHOOD_COLUMNS = [
     { 
@@ -26,6 +27,22 @@ const NEIGHBORHOOD_COLUMNS = [
             type: 'number',
             variant: 'outlined',
         },
+        Cell: ({ cell }) => {
+            return cell.getValue()
+            ? <span>US$ <strong>{`${cell.getValue()}`}</strong></span>
+            : null
+        },
+        sortingFn: (rowA, rowB, columnId) => {
+
+            const valueA = +rowA.getValue(columnId)
+            const valueB = +rowB.getValue(columnId)
+            
+            return valueA > valueB 
+                ? -1
+                : valueB > valueA
+                    ? 1
+                    : 0
+        }
     },
     { 
         header: 'Estado',
