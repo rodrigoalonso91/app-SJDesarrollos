@@ -25,7 +25,7 @@ const NEIGHBORHOOD_COLUMNS = [
             required: false,
             type: 'number',
             variant: 'outlined',
-          },
+        },
     },
     { 
         header: 'Estado',
@@ -130,6 +130,7 @@ export const NeighborhoodGrid = ({ data }) => {
         <MaterialReactTable
             state={{ isLoading }}
             renderTopToolbarCustomActions={getGridTitle}
+            initialState={{ columnVisibility: { customer: !user.isSalesman } }}
             columns={NEIGHBORHOOD_COLUMNS}
             data={dataSource ?? []}
             enableEditing={user.isAdmin}
