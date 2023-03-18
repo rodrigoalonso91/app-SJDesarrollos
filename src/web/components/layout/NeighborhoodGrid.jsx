@@ -6,7 +6,6 @@ import { useDataSource, useGridTitle } from '../../hooks'
 import updateRowOnDatabase from "../../api_calls/updateRowOnDatabase";
 import useUserData from "../../hooks/UseUserData";
 import { STATUS_COLORS } from "../../constants/lotStatus";
-import { type } from "os";
 
 const NEIGHBORHOOD_COLUMNS = [
     { 
