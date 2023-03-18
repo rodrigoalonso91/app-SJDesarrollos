@@ -146,8 +146,7 @@ export const NeighborhoodGrid = ({ data }) => {
         <MaterialReactTable
             state={{ isLoading }}
             renderTopToolbarCustomActions={getGridTitle}
-            initialState={{ columnVisibility: { customer: !user.isSalesman } }}
-            columns={NEIGHBORHOOD_COLUMNS}
+            columns={user.isSalesman ? NEIGHBORHOOD_COLUMNS.filter( column => column.accessorKey !== 'customer') : NEIGHBORHOOD_COLUMNS}
             data={dataSource ?? []}
             enableEditing={user.isAdmin}
             editingMode="modal"
