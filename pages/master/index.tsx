@@ -34,10 +34,6 @@ export default function NeighborhoodsScreen() {
     })();
   }, []);
 
-  useEffect(() => {
-    setText("");
-  }, []);
-
   async function onFileUpload(e: ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
@@ -47,6 +43,9 @@ export default function NeighborhoodsScreen() {
     setNeighborhood(neighborhood);
     setErrors(errors);
   }
+
+  const hasErrors = errors.length > 0
+  const hasExistingName = neighborhoods.some(x => x.name === text)
 
   return (
     <Box sx={{
@@ -73,16 +72,18 @@ export default function NeighborhoodsScreen() {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
+              {hasExistingName && <Error>Ya existe un barrio con ese nombre</Error>}
               <Button component="label" variant="contained" sx={{ gap: 1 }}>
                 <UploadFileIcon />
                 Cargar SVG
                 <input type="file" onChange={onFileUpload} hidden />
               </Button>
+              {hasErrors && <Error>El archivo subido tiene errores</Error>}
               <Button
                 component="label"
                 variant="contained"
                 sx={{ gap: 1 }}
-                disabled={text === "" || neighborhood === null || errors.length > 0 || neighborhoods.some(x => x.name === text)}
+                disabled={text === "" || neighborhood === null || hasErrors || hasExistingName}
                 onClick={async () => {
                   const id = await addNeighborhood({...neighborhood!, name: text})
                   await router.push(`/master/${id}`)
@@ -138,4 +139,8 @@ const SideContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+`;
+
+const Error = styled.span`
+  color: red;
 `;
