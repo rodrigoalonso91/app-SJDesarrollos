@@ -19,15 +19,16 @@ export default function KonvaLot({
 }) {
   const [hovered, setHovered] = useState(false);
   const textRef = useRef<any>(null);
-  const [center, setCenter] = useState(() => centerOf(coordinates));
+  const [center] = useState(() => centerOf(coordinates))
+  const [textCoordinates, setTextCoordinates] = useState(() => centerOf(coordinates));
 
   const { setSelected, selected } = useContext(MasterContext);
 
   React.useEffect(() => {
     const width = textRef.current?.width();
     const height = textRef.current?.height();
-    setCenter({ x: center.x - width / 2, y: center.y - height / 2 });
-  }, []);
+    setTextCoordinates({ x: center.x - width / 2, y: center.y - height / 2 });
+  }, [name, center]);
 
   let color = "transparent";
   if (highlight) color = "red"
@@ -53,7 +54,7 @@ export default function KonvaLot({
         stroke="black"
         strokeWidth={0.35}
       />
-      <Text x={center.x} y={center.y} text={name} fontSize={2.8} ref={textRef} />
+      <Text x={textCoordinates.x} y={textCoordinates.y} text={name} fontSize={2.8} ref={textRef} />
     </>
   );
 }
