@@ -1,9 +1,12 @@
 import { Neighborhood } from "@web/domain/TransformXmlToNeighborhoods"
+import { Coordinate } from "@web/domain/types/Coordinate";
 import React from "react"
 
 const MasterContext = React.createContext<MasterContextProps>({
 	setSelected: () => {},
 	selected: null,
+	setHighlighted: () => {},
+	highlighted: [],
 	neighborhood: {} as Neighborhood,
 	changeBlockName: () => {},
 	changeLotName: () => {},
@@ -16,6 +19,8 @@ const MasterContext = React.createContext<MasterContextProps>({
 type MasterContextProps = {
 	setSelected: (_: SelectedLot) => void
 	selected: SelectedLot | null
+	setHighlighted: (_: Array<Terrain>) => void,
+	highlighted: Array<Terrain>,
 	neighborhood: Neighborhood
 	changeBlockName: (_: { name: string; block: number }) => void
 	changeLotName: (_: { name: string; block: number; lot: number }) => void
@@ -28,3 +33,8 @@ type MasterContextProps = {
 export default MasterContext
 
 export type SelectedLot = { block: number; lot: number }
+
+export type Terrain = {
+	name: string | null
+	coordinates: Array<Coordinate>
+}

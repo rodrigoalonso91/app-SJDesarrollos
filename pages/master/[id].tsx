@@ -1,6 +1,7 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import styled from "@emotion/styled";
 import updateNeighborhoodInDb from "@web/api_calls/neighborhood/updateNeighborhoodInDb";
+import { Coordinate } from "@web/domain/types/Coordinate";
 import { useSnackbar } from "@web/hooks";
 import SaveIcon from "@mui/icons-material/Save";
 import { Box, Button } from "@mui/material";
@@ -9,7 +10,7 @@ import { getNeighborhoodById } from "@server/domain/neighborhood/GetNeighborhood
 import getUser from "@server/infrastructure/GetUser";
 import { CustomSnackbar } from "@web/components";
 import BlockInputs from "@web/components/master/BlockInputs";
-import MasterContext, { SelectedLot } from "@web/components/master/MasterContext";
+import MasterContext, { SelectedLot, Terrain } from "@web/components/master/MasterContext";
 import useNeighborhood from "@web/components/master/UseNeighborhood";
 import { Block, Lot, Neighborhood } from "@web/domain/TransformXmlToNeighborhoods";
 import usePreventBodyScroll from "@web/hooks/usePreventBodyScroll";
@@ -34,6 +35,7 @@ export default function NeighborhoodsScreen({ neighborhood: initial }: { neighbo
   } = useNeighborhood(initial);
   const [selected, setSelected] = useState<SelectedLot | null>(null);
   const [remaining, setRemaining] = useState<Remaining>(DEFAULT_REMAINING);
+  const [highlighted, setHighlighted] = useState<Array<Terrain>>([]);
   const { openSnackbar, isSnackbarOpen, closeSnackbar } = useSnackbar();
 
   usePreventBodyScroll();
@@ -55,6 +57,8 @@ export default function NeighborhoodsScreen({ neighborhood: initial }: { neighbo
       value={{
         selected,
         setSelected,
+        highlighted,
+        setHighlighted,
         neighborhood,
         changeBlockName,
         changeLotName,
@@ -85,13 +89,33 @@ export default function NeighborhoodsScreen({ neighborhood: initial }: { neighbo
               <DetailsContainer>
                 <h1>{neighborhood.name}</h1>
                 {remaining.unnamedBlocks.length > 0 &&
-                  <Info>{`Restan nombrar ${remaining.unnamedBlocks.length} manzanas`}</Info>}
+                  <Info
+                    onMouseEnter={() => setHighlighted(remaining.unnamedBlocks)}
+                    onMouseLeave={() => setHighlighted([])}
+                  >
+                    {`Restan nombrar ${remaining.unnamedBlocks.length} manzanas`}
+                  </Info>}
                 {remaining.unnamedLots.length > 0 &&
-                  <Info>{`Restan nombrar ${remaining.unnamedLots.length} lotes`}</Info>}
+                  <Info
+                    onMouseEnter={() => setHighlighted(remaining.unnamedLots)}
+                    onMouseLeave={() => setHighlighted([])}
+                  >
+                    {`Restan nombrar ${remaining.unnamedLots.length} lotes`}
+                  </Info>}
                 {remaining.repeatedBlocks.length > 0 &&
-                  <Error>{`Hay ${remaining.repeatedBlocks.length} manzanas con el mismo nombre`}</Error>}
+                  <Error
+                    onMouseEnter={() => setHighlighted(remaining.repeatedBlocks)}
+                    onMouseLeave={() => setHighlighted([])}
+                  >
+                    {`Hay ${remaining.repeatedBlocks.length} manzanas con el mismo nombre`}
+                  </Error>}
                 {remaining.repeatedLots.length > 0 &&
-                  <Error>{`Hay ${remaining.repeatedLots.length} lotes con el mismo nombre`}</Error>}
+                  <Error
+                    onMouseEnter={() => setHighlighted(remaining.repeatedLots)}
+                    onMouseLeave={() => setHighlighted([])}
+                  >
+                    {`Hay ${remaining.repeatedLots.length} lotes con el mismo nombre`}
+                  </Error>}
               </DetailsContainer>
               <Form>
                 <BlockInputs />
@@ -170,14 +194,26 @@ const Form = styled.form`
 
 const Info = styled.span`
   color: blue;
+  user-select: none;
+  cursor: pointer;
+
+  :hover {
+    text-decoration: underline;
+  }
 `;
 
 const Error = styled.span`
   color: red;
+  user-select: none;
+  cursor: pointer;
+
+  :hover {
+    text-decoration: underline;
+  }
 `;
 
-function hasRepeatedName<T extends { name: string | null }>(itemA: T, i: number, items: Array<T>): boolean {
-  return itemA.name !== null && items.every((itemB, j) => i === j || itemA.name !== itemB.name);
+function hasRepeatedName<T extends Terrain>(itemA: T, i: number, items: Array<T>): boolean {
+  return itemA.name !== null && items.some((itemB, j) => i !== j && itemA.name === itemB.name);
 }
 
 const DEFAULT_REMAINING = {

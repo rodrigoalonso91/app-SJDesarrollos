@@ -11,7 +11,7 @@ export default function KonvaMaster() {
   const [stageY, setStageY] = useState(0);
   const handleWheel = useHandleKonvaWheel({ setStageScale, setStageY, setStageX });
   const boundKonva = useBoundKonva({ setStageScale, setStageY, setStageX });
-  const {neighborhood} = useContext(MasterContext)
+  const {neighborhood, highlighted} = useContext(MasterContext)
 
   useEffect(() => {
     boundKonva({neighborhood, errors: []})
@@ -31,7 +31,7 @@ export default function KonvaMaster() {
       <Layer>
         {
           neighborhood.blocks.map((block, i) => (
-            <KonvaBlock key={i} {...block} block={i} />
+            <KonvaBlock key={i} {...block} block={i} highlight={highlighted.includes(block)}/>
           ))
         }
       </Layer>
