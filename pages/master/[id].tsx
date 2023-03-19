@@ -11,11 +11,11 @@ import { CustomSnackbar } from "@web/components";
 import BlockInputs from "@web/components/master/BlockInputs";
 import MasterContext, { SelectedLot } from "@web/components/master/MasterContext";
 import useNeighborhood from "@web/components/master/UseNeighborhood";
-import { Neighborhood } from "@web/domain/TransformXmlToNeighborhoods";
+import { Block, Lot, Neighborhood } from "@web/domain/TransformXmlToNeighborhoods";
 import usePreventBodyScroll from "@web/hooks/usePreventBodyScroll";
 import { NextApiRequest, NextApiResponse } from "next";
 import dynamic from "next/dynamic";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const KonvaMaster = dynamic(
   () => import("@web/components/master/KonvaMaster"),
@@ -33,9 +33,22 @@ export default function NeighborhoodsScreen({ neighborhood: initial }: { neighbo
     changeLotCustomer
   } = useNeighborhood(initial);
   const [selected, setSelected] = useState<SelectedLot | null>(null);
+  const [remaining, setRemaining] = useState<Remaining>(DEFAULT_REMAINING);
   const { openSnackbar, isSnackbarOpen, closeSnackbar } = useSnackbar();
 
   usePreventBodyScroll();
+
+  useEffect(() => {
+    const blocks = neighborhood.blocks;
+    const lots = blocks.flatMap(block => block.lots);
+    const remaining = {
+      repeatedBlocks: blocks.filter(hasRepeatedName),
+      repeatedLots: lots.filter(hasRepeatedName),
+      unnamedBlocks: blocks.filter(block => block.name === null),
+      unnamedLots: lots.filter(lot => lot.name === null)
+    };
+    setRemaining(remaining);
+  }, [neighborhood]);
 
   return (
     <MasterContext.Provider
@@ -69,18 +82,31 @@ export default function NeighborhoodsScreen({ neighborhood: initial }: { neighbo
 
           <Paper elevation={3}>
             <BlockInputsContainer>
-              <h1>{neighborhood.name}</h1>
+              <DetailsContainer>
+                <h1>{neighborhood.name}</h1>
+                {remaining.unnamedBlocks.length > 0 &&
+                  <Info>{`Restan nombrar ${remaining.unnamedBlocks.length} manzanas`}</Info>}
+                {remaining.unnamedLots.length > 0 &&
+                  <Info>{`Restan nombrar ${remaining.unnamedLots.length} lotes`}</Info>}
+                {remaining.repeatedBlocks.length > 0 &&
+                  <Error>{`Hay ${remaining.repeatedBlocks.length} manzanas con el mismo nombre`}</Error>}
+                {remaining.repeatedLots.length > 0 &&
+                  <Error>{`Hay ${remaining.repeatedLots.length} lotes con el mismo nombre`}</Error>}
+              </DetailsContainer>
               <Form>
                 <BlockInputs />
-
                 <UploadContainer>
                   <Button
                     variant="contained"
                     sx={{ gap: 1 }}
                     onClick={async () => {
-                      await updateNeighborhoodInDb(neighborhood)
-                      openSnackbar()
+                      await updateNeighborhoodInDb(neighborhood);
+                      openSnackbar();
                     }}
+                    disabled={
+                      remaining.repeatedBlocks.length > 0 ||
+                      remaining.repeatedLots.length > 0
+                    }
                   >
                     <SaveIcon />
                     Guardar
@@ -110,10 +136,10 @@ export const getServerSideProps = withPageAuthRequired({
 const BlockInputsContainer = styled.div`
   width: 18.9vw;
   height: 100%;
-  
+
   display: grid;
   grid-template-rows: auto 1fr auto;
-  
+
   gap: 15px;
   padding: 15px;
 `;
@@ -127,8 +153,13 @@ const KonvaContainer = styled.div`
 const UploadContainer = styled.div`
   display: flex;
   flex-direction: column;
-  
+
   justify-self: flex-end;
+`;
+
+const DetailsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const Form = styled.form`
@@ -136,3 +167,29 @@ const Form = styled.form`
   flex-direction: column;
   justify-content: space-between;
 `;
+
+const Info = styled.span`
+  color: blue;
+`;
+
+const Error = styled.span`
+  color: red;
+`;
+
+function hasRepeatedName<T extends { name: string | null }>(itemA: T, i: number, items: Array<T>): boolean {
+  return itemA.name !== null && items.every((itemB, j) => i === j || itemA.name !== itemB.name);
+}
+
+const DEFAULT_REMAINING = {
+  repeatedBlocks: [],
+  repeatedLots: [],
+  unnamedBlocks: [],
+  unnamedLots: []
+};
+
+type Remaining = {
+  repeatedBlocks: Array<Block>,
+  repeatedLots: Array<Lot>,
+  unnamedBlocks: Array<Block>,
+  unnamedLots: Array<Lot>
+};

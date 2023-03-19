@@ -8,7 +8,7 @@ export default function useNeighborhood(initial: Neighborhood) {
 		({ name, block, lot }: { name: string; block: number; lot: number }) => {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
-				substitute.blocks[block].lots[lot].name = name
+				substitute.blocks[block].lots[lot].name = name.length ? name : null
 				return substitute
 			})
 		}, []
@@ -18,7 +18,7 @@ export default function useNeighborhood(initial: Neighborhood) {
 		({ name, block }: { name: string; block: number }) => {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
-				substitute.blocks[block].name = name
+				substitute.blocks[block].name = name.length ? name : null
 				return substitute
 			})
 		}, []
