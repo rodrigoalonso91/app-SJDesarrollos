@@ -3,12 +3,14 @@ import { useCallback, useState } from "react"
 
 export default function useNeighborhood(initial: Neighborhood) {
 	const [neighborhood, setNeighborhood] = useState<Neighborhood>(initial)
+	const [hasChanged, setHasChanged] = useState(false)
 
 	const changeLotName = useCallback(
 		({ name, block, lot }: { name: string; block: number; lot: number }) => {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
 				substitute.blocks[block].lots[lot].name = name.length ? name : null
+				setHasChanged(true)
 				return substitute
 			})
 		}, []
@@ -19,6 +21,7 @@ export default function useNeighborhood(initial: Neighborhood) {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
 				substitute.blocks[block].name = name.length ? name : null
+				setHasChanged(true)
 				return substitute
 			})
 		}, []
@@ -29,6 +32,7 @@ export default function useNeighborhood(initial: Neighborhood) {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
 				substitute.blocks[block].lots[lot].price = price
+				setHasChanged(true)
 				return substitute
 			})
 		}, []
@@ -39,6 +43,7 @@ export default function useNeighborhood(initial: Neighborhood) {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
 				substitute.blocks[block].lots[lot].status = status
+				setHasChanged(true)
 				return substitute
 			})
 		}, []
@@ -49,6 +54,7 @@ export default function useNeighborhood(initial: Neighborhood) {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
 				substitute.blocks[block].lots[lot].salesman = salesman
+				setHasChanged(true)
 				return substitute
 			})
 		}, []
@@ -59,6 +65,7 @@ export default function useNeighborhood(initial: Neighborhood) {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
 				substitute.blocks[block].lots[lot].customer = customer
+				setHasChanged(true)
 				return substitute
 			})
 		}, []
@@ -66,12 +73,16 @@ export default function useNeighborhood(initial: Neighborhood) {
 
 	return {
 		neighborhood,
+
 		changeBlockName,
 		changeLotName,
 		changeLotPrice,
 		changeLotStatus,
 		changeLotSalesman,
-		changeLotCustomer
+		changeLotCustomer,
+
+		hasChanged,
+		setHasChanged
 	}
 }
 

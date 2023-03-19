@@ -36,7 +36,9 @@ export default function NeighborhoodsScreen({
     changeLotPrice,
     changeLotStatus,
     changeLotSalesman,
-    changeLotCustomer
+    changeLotCustomer,
+    hasChanged,
+    setHasChanged
   } = useNeighborhood(initial);
   const [selected, setSelected] = useState<SelectedLot | null>(null);
   const [remaining, setRemaining] = useState<Remaining>(DEFAULT_REMAINING);
@@ -101,37 +103,43 @@ export default function NeighborhoodsScreen({
                     onMouseLeave={() => setHighlighted([])}
                   >
                     {`Restan nombrar ${remaining.unnamedBlocks.length} manzanas`}
-                  </Info>}
+                  </Info>
+                }
                 {remaining.unnamedLots.length > 0 &&
                   <Info
                     onMouseEnter={() => setHighlighted(remaining.unnamedLots)}
                     onMouseLeave={() => setHighlighted([])}
                   >
                     {`Restan nombrar ${remaining.unnamedLots.length} lotes`}
-                  </Info>}
+                  </Info>
+                }
                 {remaining.repeatedBlocks.length > 0 &&
                   <Error
                     onMouseEnter={() => setHighlighted(remaining.repeatedBlocks)}
                     onMouseLeave={() => setHighlighted([])}
                   >
                     {`Hay ${remaining.repeatedBlocks.length} manzanas con el mismo nombre`}
-                  </Error>}
+                  </Error>
+                }
                 {remaining.repeatedLots.length > 0 &&
                   <Error
                     onMouseEnter={() => setHighlighted(remaining.repeatedLots)}
                     onMouseLeave={() => setHighlighted([])}
                   >
                     {`Hay ${remaining.repeatedLots.length} lotes con el mismo nombre`}
-                  </Error>}
+                  </Error>
+                }
               </DetailsContainer>
               <Form>
                 <BlockInputs />
                 <UploadContainer>
+                  {hasChanged && <StaticInfo>Hay cambios sin guardar</StaticInfo>}
                   <Button
                     variant="contained"
                     sx={{ gap: 1 }}
                     onClick={async () => {
                       await updateNeighborhoodInDb(neighborhood);
+                      setHasChanged(false)
                       openSnackbar();
                     }}
                     disabled={
@@ -194,6 +202,7 @@ const KonvaContainer = styled.div`
 const UploadContainer = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 8px;
 
   justify-self: flex-end;
 `;
@@ -217,6 +226,11 @@ const Info = styled.span`
   :hover {
     text-decoration: underline;
   }
+`;
+
+const StaticInfo = styled.span`
+  color: blue;
+  user-select: none;
 `;
 
 const Error = styled.span`

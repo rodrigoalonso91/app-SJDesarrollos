@@ -125,8 +125,6 @@ function LotPrice({ block, lot, price }: { block: number, lot: number, price: st
 }
 
 function LotStatus ({ block, lot, initialStatus }: { block: number, lot: number, initialStatus: string }) {
-
-	
 	const [status, setStatus] = useState(initialStatus)
 	const { changeLotStatus } = useContext(MasterContext)
 	
