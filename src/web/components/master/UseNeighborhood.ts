@@ -1,8 +1,5 @@
-import transformXmlToNeighborhoods, {
-	BlockError,
-	Neighborhood
-} from "@web/domain/TransformXmlToNeighborhoods"
-import { ChangeEvent, useCallback, useState } from "react"
+import { Neighborhood } from "@web/domain/TransformXmlToNeighborhoods"
+import { useCallback, useState } from "react"
 
 export default function useNeighborhood(initial: Neighborhood) {
 	const [neighborhood, setNeighborhood] = useState<Neighborhood>(initial)
