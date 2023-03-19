@@ -8,49 +8,50 @@ import useCollection from "@web/hooks/useCollection"
 import React, { useContext, useEffect, useRef, useState } from "react"
 
 export default function BlockInputs () {
-
 	const { selected, neighborhood } = useContext(MasterContext)
-
-	if (selected === null) return null
-	if (neighborhood === null) return null
 
 	return (
 		<InputsContainer>
-			<BlockName
-				block={selected.block}
-				name={neighborhood.blocks[selected.block]?.name || ""}
-			/>
+			{selected && neighborhood &&
+				<>
+					<BlockName
+						block={selected.block}
+						name={neighborhood.blocks[selected.block]?.name || ""}
+					/>
 
-			<LotName
-				block={selected.block}
-				lot={selected.lot}
-				name={neighborhood.blocks[selected.block].lots[selected.lot].name || ""}
-			/>
+					<LotName
+						block={selected.block}
+						lot={selected.lot}
+						name={neighborhood.blocks[selected.block].lots[selected.lot].name || ""}
+					/>
 
-			<LotPrice
-				price={neighborhood.blocks[selected.block].lots[selected.lot].price || ""}
-				block={selected.block}
-				lot={selected.lot}
+					<LotPrice
+						price={neighborhood.blocks[selected.block].lots[selected.lot].price || ""}
+						block={selected.block}
+						lot={selected.lot}
 
-			/>
+					/>
 
-			<LotStatus
-				initialStatus={neighborhood.blocks[selected.block].lots[selected.lot].status || 'Disponible'}
-				block={selected.block}
-				lot={selected.lot}
-			/>
+					<LotStatus
+						initialStatus={neighborhood.blocks[selected.block].lots[selected.lot].status || 'Disponible'}
+						block={selected.block}
+						lot={selected.lot}
+					/>
 
-			<LotSalesmen
-				currentSalesman={neighborhood.blocks[selected.block].lots[selected.lot].salesman || ''}
-				block={selected.block}
-				lot={selected.lot}
-			/>
+					<LotSalesmen
+						currentSalesman={neighborhood.blocks[selected.block].lots[selected.lot].salesman || ''}
+						block={selected.block}
+						lot={selected.lot}
+					/>
 
-			<LotCustomer
-				currentCustomer={neighborhood.blocks[selected.block].lots[selected.lot].customer || ''}
-				block={selected.block}
-				lot={selected.lot}
-			/>
+					<LotCustomer
+						currentCustomer={neighborhood.blocks[selected.block].lots[selected.lot].customer || ''}
+						block={selected.block}
+						lot={selected.lot}
+					/>
+				</>
+			}
+
 
 		</InputsContainer>
 	)
@@ -64,7 +65,7 @@ const InputsContainer = styled.div`
 
 function BlockName({ block, name }: { block: number; name: string }) {
 
-	const { changeBlockName, setSelected } = useContext(MasterContext)
+	const { changeBlockName } = useContext(MasterContext)
 	const [text, setText] = useState(name)
 
 	useEffect(() => { setText(name) }, [name])

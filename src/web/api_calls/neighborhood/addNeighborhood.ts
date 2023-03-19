@@ -1,6 +1,10 @@
-import { Neighborhood } from "@web/domain/TransformXmlToNeighborhoods"
-import addRowInDatabase from "@web/api_calls/addRowInDatabase"
+import { API_PATH_COLLECTIONS } from "@web/constants/collections";
+import { Neighborhood } from "@web/domain/TransformXmlToNeighborhoods";
 
 export default async function addNeighborhood(neighborhood: Neighborhood) {
-	await addRowInDatabase("neighborhoods", neighborhood)
+  const result = await fetch(`api/${API_PATH_COLLECTIONS["neighborhoods"]}`, {
+    method: "POST", body: JSON.stringify(neighborhood)
+  });
+
+  return await result.json()
 }

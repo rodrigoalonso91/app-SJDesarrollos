@@ -1,9 +1,9 @@
 import { API_PATH_COLLECTIONS } from "@web/constants/collections";
 
 export default async function updateNeighborhoodInDb(neighborhood: any) {
-    
-    const id = neighborhood._id
+    const id = neighborhood._id || neighborhood.id
     delete neighborhood._id
+    delete neighborhood.id
 
     const data = {
         method: "PUT",
@@ -13,5 +13,5 @@ export default async function updateNeighborhoodInDb(neighborhood: any) {
         }
     };
 
-    await fetch(`api/${API_PATH_COLLECTIONS['neighborhoods']}/${id}`, data)
+    await fetch(`/api/${API_PATH_COLLECTIONS['neighborhoods']}/${id}`, data)
 }

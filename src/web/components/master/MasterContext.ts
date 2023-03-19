@@ -4,7 +4,7 @@ import React from "react"
 const MasterContext = React.createContext<MasterContextProps>({
 	setSelected: () => {},
 	selected: null,
-	neighborhood: null,
+	neighborhood: {} as Neighborhood,
 	changeBlockName: () => {},
 	changeLotName: () => {},
 	changeLotPrice: () => {},
@@ -16,7 +16,7 @@ const MasterContext = React.createContext<MasterContextProps>({
 type MasterContextProps = {
 	setSelected: (_: SelectedLot) => void
 	selected: SelectedLot | null
-	neighborhood: Neighborhood | null
+	neighborhood: Neighborhood
 	changeBlockName: (_: { name: string; block: number }) => void
 	changeLotName: (_: { name: string; block: number; lot: number }) => void
 	changeLotPrice: (_: { price: string; block: number; lot: number }) => void

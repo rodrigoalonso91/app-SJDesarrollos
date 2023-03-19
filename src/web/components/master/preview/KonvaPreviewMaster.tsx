@@ -1,21 +1,22 @@
 import KonvaBlock from "@web/components/master/KonvaBlock";
-import MasterContext from "@web/components/master/MasterContext";
+import KonvaPreviewErrors from "@web/components/master/preview/KonvaPreviewErrors";
+import { BlockError, Neighborhood } from "@web/domain/TransformXmlToNeighborhoods";
 import useBoundKonva from "@web/hooks/useBoundKonva";
 import useHandleKonvaWheel from "@web/hooks/useHandleKonvaWheel";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layer, Stage } from "react-konva";
 
-export default function KonvaMaster() {
+export default function KonvaPreviewMaster({ neighborhood, errors }: Props) {
   const [stageScale, setStageScale] = useState(1);
   const [stageX, setStageX] = useState(0);
   const [stageY, setStageY] = useState(0);
   const handleWheel = useHandleKonvaWheel({ setStageScale, setStageY, setStageX });
   const boundKonva = useBoundKonva({ setStageScale, setStageY, setStageX });
-  const {neighborhood} = useContext(MasterContext)
 
   useEffect(() => {
-    boundKonva({neighborhood, errors: []})
-  }, []);
+    if (!neighborhood) return;
+    boundKonva({neighborhood, errors})
+  }, [neighborhood, errors, boundKonva]);
 
   return (
     <Stage
@@ -30,11 +31,18 @@ export default function KonvaMaster() {
     >
       <Layer>
         {
+          neighborhood &&
           neighborhood.blocks.map((block, i) => (
             <KonvaBlock key={i} {...block} block={i} />
           ))
         }
+        {errors && <KonvaPreviewErrors errors={errors} />}
       </Layer>
     </Stage>
   );
+}
+
+type Props = {
+  neighborhood: Neighborhood | null
+  errors: Array<BlockError>
 }

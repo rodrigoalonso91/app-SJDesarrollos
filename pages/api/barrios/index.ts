@@ -10,17 +10,14 @@ export default withApiAuthRequired(
 		const session = await getSession(req, res)
 		if (!session) return res.status(401).end()
 
-		const username = session.user.email
-
 		if (!req.query.path) {
 			switch (req.method) {
 				case "GET":
 					const neighborhoods = await getNeighborhoods()
 					return res.status(200).json(neighborhoods)
 				case "POST":
-					const creation_time = new Date().toISOString()
 					const id = await createNeighborhood(JSON.parse(req.body))
-					return res.status(201).end()
+					return res.status(201).json(id)
 				case "PUT":
 					const response = await updateNeighborhood(req.body.id, req.body)
 					if (response === 1) {

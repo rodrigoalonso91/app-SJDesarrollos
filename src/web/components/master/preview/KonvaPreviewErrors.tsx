@@ -3,7 +3,7 @@ import { Coordinate } from "@web/domain/types/Coordinate"
 import React from "react"
 import { Line as KonvaLine } from "react-konva"
 
-export default function KonvaErrorLines({
+export default function KonvaPreviewErrors({
 	errors
 }: {
 	errors: Array<BlockError>

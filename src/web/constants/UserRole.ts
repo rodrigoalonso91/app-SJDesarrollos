@@ -3,4 +3,4 @@ export const UserRole = {
 	Auditor: "Auditor",
 	Proprietor: "Proprietor",
 	Salesman: "Salesman"
-}
+} as const
