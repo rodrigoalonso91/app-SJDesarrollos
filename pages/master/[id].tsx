@@ -80,7 +80,7 @@ export default function NeighborhoodsScreen({ neighborhood: initial }: { neighbo
       }}
       >
         <KonvaContainer>
-          <Paper elevation={3}>
+          <Paper elevation={3} style={{overflow: "hidden"}}>
             <KonvaMaster />
           </Paper>
 

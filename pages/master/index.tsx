@@ -57,7 +57,7 @@ export default function NeighborhoodsScreen() {
     }}
     >
       <KonvaContainer>
-        <Paper elevation={3}>
+        <Paper elevation={3} style={{overflow: "hidden"}}>
           <KonvaMasterPreview neighborhood={neighborhood} errors={errors} />
         </Paper>
 
