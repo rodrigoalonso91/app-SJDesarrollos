@@ -1,7 +1,8 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import styled from "@emotion/styled";
+import { getCustomers } from "@server/domain/customers/GetCustomers";
+import { getSalesmen } from "@server/domain/salesmen/GetSalesmen";
 import updateNeighborhoodInDb from "@web/api_calls/neighborhood/updateNeighborhoodInDb";
-import { Coordinate } from "@web/domain/types/Coordinate";
 import { useSnackbar } from "@web/hooks";
 import SaveIcon from "@mui/icons-material/Save";
 import { Box, Button } from "@mui/material";
@@ -10,7 +11,7 @@ import { getNeighborhoodById } from "@server/domain/neighborhood/GetNeighborhood
 import getUser from "@server/infrastructure/GetUser";
 import { CustomSnackbar } from "@web/components";
 import BlockInputs from "@web/components/master/BlockInputs";
-import MasterContext, { SelectedLot, Terrain } from "@web/components/master/MasterContext";
+import MasterContext, { Person, SelectedLot, Terrain } from "@web/components/master/MasterContext";
 import useNeighborhood from "@web/components/master/UseNeighborhood";
 import { Block, Lot, Neighborhood } from "@web/domain/TransformXmlToNeighborhoods";
 import usePreventBodyScroll from "@web/hooks/usePreventBodyScroll";
@@ -23,7 +24,11 @@ const KonvaMaster = dynamic(
   { ssr: false }
 );
 
-export default function NeighborhoodsScreen({ neighborhood: initial }: { neighborhood: Neighborhood }) {
+export default function NeighborhoodsScreen({
+                                              neighborhood: initial,
+                                              salesmen,
+                                              customers
+                                            }: { neighborhood: Neighborhood, salesmen: Array<Person>, customers: Array<Person> }) {
   const {
     neighborhood,
     changeBlockName,
@@ -65,7 +70,9 @@ export default function NeighborhoodsScreen({ neighborhood: initial }: { neighbo
         changeLotPrice,
         changeLotStatus,
         changeLotSalesman,
-        changeLotCustomer
+        changeLotCustomer,
+        salesmen,
+        customers
       }}
     >
 
@@ -80,7 +87,7 @@ export default function NeighborhoodsScreen({ neighborhood: initial }: { neighbo
       }}
       >
         <KonvaContainer>
-          <Paper elevation={3} style={{overflow: "hidden"}}>
+          <Paper elevation={3} style={{ overflow: "hidden" }}>
             <KonvaMaster />
           </Paper>
 
@@ -147,13 +154,23 @@ export default function NeighborhoodsScreen({ neighborhood: initial }: { neighbo
 
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async ({ res, req, params }) => {
-    const user = await getUser({ res: res as NextApiResponse, req: req as NextApiRequest });
+
+    const [user, neighborhood, customers, salesmen] = await Promise.all([
+      getUser({ res: res as NextApiResponse, req: req as NextApiRequest }),
+      getNeighborhoodById(params!.id as string),
+      getCustomers(),
+      getSalesmen()
+    ]);
+
     if (!user.isAdmin) return { notFound: true };
-
-    const neighborhood = await getNeighborhoodById(params!.id as string);
     if (!neighborhood) return { notFound: true };
-
-    return { props: { neighborhood } };
+    return {
+      props: {
+        neighborhood,
+        customers: customers.map(x => ({ id: x.id, fullname: `${x.firstname} ${x.lastname}` })),
+        salesmen: salesmen.map(x => ({ id: x.id, fullname: `${x.firstname} ${x.lastname}` }))
+      }
+    };
   }
 });
 

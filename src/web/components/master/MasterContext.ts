@@ -13,7 +13,10 @@ const MasterContext = React.createContext<MasterContextProps>({
 	changeLotPrice: () => {},
 	changeLotStatus: () => {},
 	changeLotSalesman: () => {},
-	changeLotCustomer: () => {}
+	changeLotCustomer: () => {},
+
+	salesmen: [],
+	customers: [],
 })
 
 type MasterContextProps = {
@@ -28,6 +31,9 @@ type MasterContextProps = {
 	changeLotStatus: (_: { status: string; block: number; lot: number }) => void
 	changeLotSalesman: (_: { salesman: string; block: number; lot: number }) => void
 	changeLotCustomer: (_: { customer: string; block: number; lot: number }) => void
+
+	salesmen: Array<Person>
+	customers: Array<Person>
 }
 
 export default MasterContext
@@ -37,4 +43,9 @@ export type SelectedLot = { block: number; lot: number }
 export type Terrain = {
 	name: string | null
 	coordinates: Array<Coordinate>
+}
+
+export type Person = {
+	id: string
+	fullname: string
 }
