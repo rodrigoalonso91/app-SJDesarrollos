@@ -11,7 +11,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Select } from "@web/components/layout/Select";
-import addNeighborhood from "@web/api_calls/neighborhood/addNeighborhood"
+import addNeighborhood from "@web/api_calls/neighborhood/addNeighborhood";
 
 const KonvaMasterPreview = dynamic(
   () => import("@web/components/master/preview/KonvaPreviewMaster"),
@@ -25,7 +25,7 @@ export default function NeighborhoodsScreen() {
   const [errors, setErrors] = useState<Array<BlockError>>([]);
   const [neighborhoods, setNeighborhoods] = useState<Array<{ name: string }>>([]);
 
-	usePreventBodyScroll()
+  usePreventBodyScroll();
 
   useEffect(() => {
     (async () => {
@@ -44,8 +44,8 @@ export default function NeighborhoodsScreen() {
     setErrors(errors);
   }
 
-  const hasErrors = errors.length > 0
-  const hasExistingName = neighborhoods.some(x => x.name === text)
+  const hasErrors = errors.length > 0;
+  const hasExistingName = neighborhoods.some(x => x.name === text);
 
   return (
     <Box sx={{
@@ -57,14 +57,39 @@ export default function NeighborhoodsScreen() {
     }}
     >
       <KonvaContainer>
-        <Paper elevation={3} style={{overflow: "hidden"}}>
+        <Paper elevation={3} style={{ overflow: "hidden", position: "relative" }}>
           <KonvaMasterPreview neighborhood={neighborhood} errors={errors} />
+          {neighborhood === null &&
+            <Instructions>
+              <h2>Instrucciones para cargar un SVG</h2>
+              <ol>
+                <li>Diagramar el barrio en un archivo de AutoCAD (.dwg). El diagrama debe consistir unicamente de las
+                  lineas que delimitan las manzanas y los lotes.
+                </li>
+                <li>Las lineas que delimitan las manzanas deben ser pintadas de Fuchsia (fuchsia).</li>
+                <li>Las lineas internas a las manzanas que delimitan los lotes deben ser pintadas de Rojo (red).</li>
+                <li>Una vez completado el archivo de AutoCAD, usar <a href="https://cloudconvert.com/dwg-to-svg"
+                                                                      target="_blank">esta web</a> para convertirlo a
+                  SVG (.svg).
+                </li>
+                <li>El archivo resultante (.svg) puede ser ingresado en la web de SJDesarrollos presionando el boton
+                  "Cargar SVG".
+                </li>
+                <li>Una vez cargado el archivo, se mostrara un preview del master.</li>
+                <li>En caso de encontrarse errores, estos se mostraran en rojo. Debera de corregirlos en el archivo
+                  AutoCAD y repetir el proceso.
+                </li>
+              </ol>
+              <h3>Ejemplo de como debe verse el .dwg inicial</h3>
+              <img src="/sample_neighborhood.png" style={{ maxHeight: "400px" }} />
+            </Instructions>
+          }
         </Paper>
 
         <Paper elevation={3}>
           <SideContainer>
             <ControlsContainer>
-              Ingrese un nuevo master
+              Ingrese un nuevo Master
               <TextField
                 label="Nombre del Barrio"
                 size="medium"
@@ -85,8 +110,8 @@ export default function NeighborhoodsScreen() {
                 sx={{ gap: 1 }}
                 disabled={text === "" || neighborhood === null || hasErrors || hasExistingName}
                 onClick={async () => {
-                  const id = await addNeighborhood({...neighborhood!, name: text})
-                  await router.push(`/master/${id}`)
+                  const id = await addNeighborhood({ ...neighborhood!, name: text });
+                  await router.push(`/master/${id}`);
                 }}
               >
                 <SaveIcon />
@@ -143,4 +168,10 @@ const SideContainer = styled.div`
 
 const Error = styled.span`
   color: red;
+`;
+
+const Instructions = styled.div`
+  position: absolute;
+  top: 24px;
+  left: 24px;
 `;
