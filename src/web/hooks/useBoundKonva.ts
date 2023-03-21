@@ -27,7 +27,7 @@ export default function useBoundKonva({ setStageScale, setStageX, setStageY }: P
       setStageX(-boundaries.minX * scale);
       setStageY(-boundaries.minY * scale);
     }
-  }, [])
+  }, [setStageScale, setStageX, setStageY])
 }
 
 type Props = {

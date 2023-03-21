@@ -18,7 +18,7 @@ export default function NeighborhoodKonvaLot({ lot }: { lot: Lot }) {
 		const width = textRef.current?.width()
 		const height = textRef.current?.height()
 		setCenter({ x: center.x - width / 2, y: center.y - height / 2 })
-	}, [])
+	}, [center.x, center.y])
 
 	let color = (STATUS_COLORS as Record<string,string>)[lot.status] 
     if (hovered) color = "#FFE6FF"
