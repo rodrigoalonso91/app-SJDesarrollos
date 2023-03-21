@@ -1,4 +1,4 @@
-import KonvaBlock from "@web/components/master/KonvaBlock";
+import KonvaPreviewBlock from "@web/components/master/preview/KonvaPreviewBlock";
 import KonvaPreviewErrors from "@web/components/master/preview/KonvaPreviewErrors";
 import { BlockError, Neighborhood } from "@web/domain/TransformXmlToNeighborhoods";
 import useBoundKonva from "@web/hooks/useBoundKonva";
@@ -33,7 +33,7 @@ export default function KonvaPreviewMaster({ neighborhood, errors }: Props) {
         {
           neighborhood &&
           neighborhood.blocks.map((block, i) => (
-            <KonvaBlock key={i} {...block} block={i} />
+            <KonvaPreviewBlock key={i} {...block} />
           ))
         }
         {errors && <KonvaPreviewErrors errors={errors} />}

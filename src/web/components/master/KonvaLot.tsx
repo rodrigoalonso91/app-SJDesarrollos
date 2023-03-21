@@ -28,7 +28,7 @@ export default function KonvaLot({
     const width = textRef.current?.width();
     const height = textRef.current?.height();
     setTextCoordinates({ x: center.x - width / 2, y: center.y - height / 2 });
-  }, [name, center]);
+  }, [name, center.x, center.y]);
 
   let color = "transparent";
   if (highlight) color = "red"
