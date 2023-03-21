@@ -96,7 +96,7 @@ export default function NeighborhoodsScreen({
           <Paper elevation={3}>
             <BlockInputsContainer>
               <DetailsContainer>
-                <h1>{neighborhood.name}</h1>
+                <h2>{neighborhood.name}</h2>
                 {remaining.unnamedBlocks.length > 0 &&
                   <Info
                     onMouseEnter={() => setHighlighted(remaining.unnamedBlocks)}
