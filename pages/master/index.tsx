@@ -69,11 +69,12 @@ export default function NeighborhoodsScreen() {
                 <li>Las lineas que delimitan las manzanas deben ser pintadas de Fuchsia (fuchsia).</li>
                 <li>Las lineas internas a las manzanas que delimitan los lotes deben ser pintadas de Rojo (red).</li>
                 <li>Una vez completado el archivo de AutoCAD, usar <a href="https://cloudconvert.com/dwg-to-svg"
-                                                                      target="_blank">esta web</a> para convertirlo a
+                                                                      target="_blank" rel="noreferrer">esta web</a> para convertirlo a
                   SVG (.svg).
                 </li>
-                <li>El archivo resultante (.svg) puede ser ingresado en la web de SJDesarrollos presionando el boton
-                  "Cargar SVG".
+                <li>
+                  El archivo resultante (.svg) puede ser ingresado en la web de SJDesarrollos presionando el boton
+                  &quotCargar SVG&quot.
                 </li>
                 <li>Una vez cargado el archivo, se mostrara un preview del master.</li>
                 <li>En caso de encontrarse errores, estos se mostraran en rojo. Debera de corregirlos en el archivo
