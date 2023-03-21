@@ -5,16 +5,7 @@ export async function getCustomers(): Promise<ReadonlyArray<any>> {
 	const result = await client
 		.collection("CLIENTS")
 		.find(
-			{}, //here go the filters
-			{
-				projection: {
-					firstname: 1,
-					lastname: 1,
-					phone: 1,
-					email: 1,
-					company: 1
-				}
-			}
+			{}
 		)
 		.toArray()
 
