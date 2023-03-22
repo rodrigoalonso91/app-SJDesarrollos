@@ -49,12 +49,13 @@ export default function NeighborhoodsScreen({
 
   useEffect(() => {
     const blocks = neighborhood.blocks;
-    const lots = blocks.flatMap(block => block.lots);
+    const flattenedLots = blocks.flatMap(block => block.lots);
+    const lots = blocks.map(block => block.lots);
     const remaining = {
       repeatedBlocks: blocks.filter(hasRepeatedName),
-      repeatedLots: lots.filter(hasRepeatedName),
+      repeatedLots: lots.flatMap(x => x.filter(hasRepeatedName)),
       unnamedBlocks: blocks.filter(block => block.name === null),
-      unnamedLots: lots.filter(lot => lot.name === null)
+      unnamedLots: flattenedLots.filter(lot => lot.name === null)
     };
     setRemaining(remaining);
   }, [neighborhood]);
