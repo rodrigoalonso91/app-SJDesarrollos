@@ -1,0 +1,29 @@
+{
+  "instructions": [
+    {
+      "title": "Instrucciones para cargar un SVG",
+      "steps": [
+        "Diagramar el barrio en un archivo de AutoCAD (.dwg). El diagrama debe consistir unicamente de las líneas que delimitan las manzanas y los lotes.",
+        "Las líneas que delimitan las manzanas deben ser pintadas de Fuchsia (fuchsia).",
+        "Las líneas internas a las manzanas que delimitan los lotes deben ser pintadas de Rojo (red).",
+        "Una vez completado el archivo de AutoCAD, usar <a href='https://cloudconvert.com/dwg-to-svg' target='_blank' rel='noreferrer'>esta web</a> para convertirlo a SVG (.svg).",
+        "El archivo resultante (.svg) puede ser ingresado en la web de SJDesarrollos presionando el botón <strong><code>CARGAR SVG</code></strong>.",
+        "Una vez cargado el archivo, se mostrará una vista previa del master.",
+        "En caso de encontrarse errores, estos se mostraran en rojo. Deberá de corregirlos en el archivo AutoCAD y repetir el proceso."
+      ]
+    }
+  ],
+  "images": [
+    {
+      "title": "Ejemplo de como debe verse el .dwg inicial",
+      "src": "/sample_neighborhood.png",
+      "style": {
+        "maxHeight": "400px"
+      },
+      "width": 625,
+      "height": 400,
+      "priority": true
+    }
+  ]
+}
+  

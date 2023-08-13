@@ -38,7 +38,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/reducers/lotsDataSource.js", "src/context/NeighborhoodGridContext.jsx", "src/web/hooks/useLotsDataSourceReducer.jsx"  ],
   "exclude": [
     "node_modules"
   ]
