@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800.000" height="600.000" viewBox="0.0 0.0 800.000 600.000" version="1.1">
+  <desc>Produce by Acme CAD Converter</desc>
+<path d="M214.51 206.51L246.43 206.51"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M246.43 206.51L246.43 238.43Z"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M246.43 238.43L214.51 238.43"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M214.51 238.43L214.51 206.51Z"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M230.47 206.51L230.47 238.43Z"
+fill="none" stroke="red" stroke-width="0.5"/>
+<path d="M214.51 222.47L246.43 222.47"
+fill="none" stroke="red" stroke-width="0.5"/>
+<path d="M262.49 206.51L294.42 206.51"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M294.42 206.51L294.42 238.43Z"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M294.42 238.43L262.49 238.43"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M262.49 238.43L262.49 206.51Z"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M278.45 206.51L278.45 238.43Z"
+fill="none" stroke="red" stroke-width="0.5"/>
+<path d="M262.49 222.47L294.42 222.47"
+fill="none" stroke="red" stroke-width="0.5"/>
+<path d="M214.51 161.68L246.43 161.68"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M246.43 161.68L246.43 193.6Z"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M246.43 193.6L214.51 193.6"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M214.51 193.6L214.51 161.68Z"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M230.47 161.68L230.47 193.6Z"
+fill="none" stroke="red" stroke-width="0.5"/>
+<path d="M214.51 177.64L246.43 177.64"
+fill="none" stroke="red" stroke-width="0.5"/>
+<path d="M262.49 161.68L294.42 161.68"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M294.42 161.68L294.42 193.6Z"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M294.42 193.6L262.49 193.6"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M262.49 193.6L262.49 161.68Z"
+fill="none" stroke="fuchsia" stroke-width="0.5"/>
+<path d="M278.45 161.68L278.45 193.6Z"
+fill="none" stroke="red" stroke-width="0.5"/>
+<path d="M262.49 177.64L294.42 177.64"
+fill="none" stroke="red" stroke-width="0.5"/>
+</svg>
