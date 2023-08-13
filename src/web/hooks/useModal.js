@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react"
 
-export function useModal ({ initialValue = false }) {
-    const [isModalOpen, setIsModalOpen] = useState(initialValue)
+export function useModal ({ initialValue = false, id = 0}) {
+
+    const [modal, setModal] = useState({ isOpen: initialValue, id })
 
     useEffect(() => {
-        setIsModalOpen(initialValue)
-    }, [initialValue])
+        setModal({ isOpen: initialValue, id })
+    }, [initialValue, id])
 
-    const openModal = () => {
-        setIsModalOpen(true)
+    const openModal = ({ id }) => {
+        setModal({ isOpen: true, id })
     }
 
-    const closeModal = () => {
-        setIsModalOpen(false)
+    const closeModal = ({ id }) => {
+        setModal({ isOpen: false, id })
     }
 
     return {
-        isModalOpen,
+        modal,
         openModal,
         closeModal
     }

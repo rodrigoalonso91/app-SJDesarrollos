@@ -1,12 +1,11 @@
 import Link from 'next/link'
 import { useRouter } from "next/router";
 
-export const NavbarItem = ({text, href, handleOnClick}) => {
+export const NavbarItem = ({text, href, handleClick}) => {
 
     const router = useRouter();
 
     const getClassName = () => {
-
         const isActive = router.asPath === href;
         const content = `nav-item nav-link ${isActive ? 'active' : ''}`
         return content.trim();
@@ -16,7 +15,7 @@ export const NavbarItem = ({text, href, handleOnClick}) => {
         <Link 
             href={href}
             className={getClassName()} 
-            onClick={ router.asPath === href ? undefined : handleOnClick } 
+            onClick={ router.asPath === href ? undefined : handleClick } 
         >
             {text}
         </Link>

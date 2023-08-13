@@ -1,5 +1,6 @@
 import getMongoDBClient from "@server/infrastructure/GetMongoDBClient"
 
+// NOTE: No se usa, solo esta para referencia de codigo.
 export const getCustomerByName = async (name: string) => {
 	const client = await getMongoDBClient()
 	const result = await client
@@ -17,8 +18,12 @@ export const getCustomerByName = async (name: string) => {
 		)
 		.toArray()
 
-	return result.map(({ _id, ...x }) => ({
+	return result.map(({ _id, ...customer }) => ({
 		id: _id.toString(),
-		...x
+		firstname: customer.firstname,
+        lastname: customer.lastname,
+        email: customer.email,
+        phone: customer.phone,
+        company: customer.company
 	}))[0]
 }

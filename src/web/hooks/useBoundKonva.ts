@@ -1,6 +1,14 @@
 import { BlockError, Neighborhood } from "@web/domain/TransformXmlToNeighborhoods";
 import { useCallback } from "react";
 
+/**
+ * Generates a bound Konva custom hook function.
+ *
+ * @param {Props} setStageScale - The function to set the stage scale.
+ * @param {Props} setStageX - The function to set the stage X position.
+ * @param {Props} setStageY - The function to set the stage Y position.
+ * @return {Function} The bound Konva custom hook function.
+ */
 export default function useBoundKonva({ setStageScale, setStageX, setStageY }: Props) {
   return useCallback(({neighborhood, errors = []}: { neighborhood: Neighborhood, errors: Array<BlockError>}) => {
     const boundaries = neighborhood.blocks

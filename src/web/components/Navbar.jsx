@@ -1,17 +1,16 @@
 import Link from "next/link"
-import { NavbarItem } from "./index"
 import "bootstrap/dist/css/bootstrap.css"
 import Image from "next/image"
 import { Backdrop, CircularProgress } from "@mui/material"
 import useUserData from "../hooks/UseUserData"
 import { useBackDrop } from "@web/hooks"
+import NavbarItems from "./NavbarItems"
 
 export const Navbar = () => {
 
-	const user = useUserData();
+    const user = useUserData()
 	const { isOpen, openBackDrop } = useBackDrop(false)
-	
-	const handleClick = () => openBackDrop();
+	const handleClick = () => openBackDrop()
 
 	return (
 		<>
@@ -22,42 +21,13 @@ export const Navbar = () => {
 						alt="SJ Desarrollo"
 						width={150}
 						height={70}
+						priority
+						onClick={handleClick}
 					/>
 				</Link>
 
 				<div className="navbar-collapse">
-					<div className="navbar-nav">
-						{
-							user.isAdmin && 
-							<NavbarItem
-								href="/master"
-								text="Master"
-								handleOnClick={handleClick}
-							/>
-						}
-						
-						<NavbarItem
-							href="/barrios"
-							text="Barrios"
-							handleOnClick={handleClick}
-						/>
-						{
-							user.isAdmin && 
-							<NavbarItem
-								href="/vendedores"
-								text="Vendedores"
-								handleOnClick={handleClick}
-							/>
-						}
-						{
-							user.isAdmin && 
-							<NavbarItem
-								href="/clientes"
-								text="Clientes"
-								handleOnClick={handleClick}
-							/>
-						}
-					</div>
+					<NavbarItems user={user} handleClick={handleClick} />
 				</div>
 
 				<div className="navbar-collapse collapse w-100 order-3 dual-collapse2 d-flex justify-content-end">

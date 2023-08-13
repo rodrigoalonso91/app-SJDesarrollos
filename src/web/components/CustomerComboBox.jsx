@@ -2,7 +2,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import useCollection from "@web/hooks/useCollection";
 import { useState } from 'react'
 
-export const CustomerComboBox = ({ table, column, cell }) => {
+export const CustomerComboBox = ({ table, column, cell, text }) => {
 
     const [currentValue, setCurrentValue] = useState(cell.getValue())
 
@@ -15,13 +15,11 @@ export const CustomerComboBox = ({ table, column, cell }) => {
 
         if (!value) return
 
-        const { fullname } = value
-
-        setCurrentValue(fullname)
+        setCurrentValue(value)
 
         setEditingRow({
             ...editingRow,
-            _valuesCache: {...editingRow._valuesCache, [column.id]: fullname}
+            _valuesCache: {...editingRow._valuesCache, [column.id]: value}
         })
     }
 
@@ -32,7 +30,7 @@ export const CustomerComboBox = ({ table, column, cell }) => {
             loadingText="Cargando clientes..."
             options={['- Ninguno -', ...collection]}
             getOptionLabel={(option) => option.fullname || option}
-            renderInput={(params) => <TextField {...params} label={'Cliente'} />}
+            renderInput={(params) => <TextField {...params} label={ text ? text : 'Cliente' } />}
             onChange={(event, value) => handleOnChange(event, value)}
         />
     )

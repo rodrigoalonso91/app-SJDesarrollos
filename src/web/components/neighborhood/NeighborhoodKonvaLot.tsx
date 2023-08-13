@@ -1,4 +1,3 @@
-import MasterContext from "@web/components/master/MasterContext"
 import { Lot } from "@web/domain/TransformXmlToNeighborhoods"
 import { Coordinate } from "@web/domain/types/Coordinate"
 import { first } from "@web/domain/utils/LineUtils"
@@ -7,22 +6,32 @@ import { Shape, Text } from "react-konva"
 import { STATUS_COLORS } from '../../constants/lotStatus'
 
 
-export default function NeighborhoodKonvaLot({ lot }: { lot: Lot }) {
+export default function NeighborhoodKonvaLot({ lot, administratorView }: { lot: Lot, administratorView: boolean }) {
 
 	const [hovered, setHovered] = useState(false)
 	const textRef = useRef<any>(null)
-	const [center, setCenter] = useState(() => centerOf(lot.coordinates))
 
+	const [center] = useState(() => centerOf(lot.coordinates))
+	const [textCoordinates, setTextCoordinates] = useState(center);
 
 	useEffect(() => {
-		const width = textRef.current?.width()
-		const height = textRef.current?.height()
-		setCenter({ x: center.x - width / 2, y: center.y - height / 2 })
-	}, [center.x, center.y])
+		const width = textRef.current?.width();
+		const height = textRef.current?.height();
+		setTextCoordinates({ x: center.x - width / 2, y: center.y - height / 2 });
+	}, [center.x, center.y]);
 
-	let color = (STATUS_COLORS as Record<string,string>)[lot.status] 
-    if (hovered) color = "#FFE6FF"
+	let color = administratorView
+					? hovered
+						? "#FFE6FF" : lot.administrator?.color
+					: hovered 
+						? "#FFE6FF" : STATUS_COLORS[lot.status.replace(' ', '')]
 
+	let textColor = administratorView
+						? hovered
+							? "#000"
+							:"#e9e9e9"
+						: "#000"
+	
 	return (
 		<>
 			<Shape
@@ -40,7 +49,14 @@ export default function NeighborhoodKonvaLot({ lot }: { lot: Lot }) {
 				stroke="black"
 				strokeWidth={0.35}
 			/>
-			<Text fill={'#273D5F'} x={center.x} y={center.y} text={lot.name || undefined} fontSize={2.8} ref={textRef} />
+			<Text
+				fill={textColor}
+				x={textCoordinates.x}
+				y={textCoordinates.y}
+				text={lot.name || undefined}
+				fontSize={2.8}
+				ref={textRef}
+			/>
 		</>
 	)
 }

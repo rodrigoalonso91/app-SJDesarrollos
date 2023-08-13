@@ -1,12 +1,14 @@
 import { Neighborhood } from "@web/domain/TransformXmlToNeighborhoods"
+import { NewBlockData, NewLotPriceData, NewLotStatusData, NewLotData, NeighborhoodLotSalesman, NeighborhoodLotCustomer, NeighborhoodLotAdministrator, NeighborhoodLotCoCustomer } from "@web/domain/types/types"
 import { useCallback, useState } from "react"
 
 export default function useNeighborhood(initial: Neighborhood) {
+
 	const [neighborhood, setNeighborhood] = useState<Neighborhood>(initial)
 	const [hasChanged, setHasChanged] = useState(false)
 
 	const changeLotName = useCallback(
-		({ name, block, lot }: { name: string; block: number; lot: number }) => {
+		({ name, block, lot }: NewLotData) => {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
 				substitute.blocks[block].lots[lot].name = name.length ? name : null
@@ -17,7 +19,7 @@ export default function useNeighborhood(initial: Neighborhood) {
 	)
 
 	const changeBlockName = useCallback(
-		({ name, block }: { name: string; block: number }) => {
+		({ name, block }: NewBlockData) => {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
 				substitute.blocks[block].name = name.length ? name : null
@@ -28,7 +30,7 @@ export default function useNeighborhood(initial: Neighborhood) {
 	)
 
 	const changeLotPrice = useCallback(
-		({ price, block, lot }: { price: string; block: number; lot: number }) => {
+		({ price, block, lot }: NewLotPriceData) => {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
 				substitute.blocks[block].lots[lot].price = price
@@ -39,7 +41,7 @@ export default function useNeighborhood(initial: Neighborhood) {
 	)
 
 	const changeLotStatus = useCallback(
-		({ status, block, lot }: { status: string; block: number; lot: number }) => {
+		({ status, block, lot }: NewLotStatusData) => {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
 				substitute.blocks[block].lots[lot].status = status
@@ -50,10 +52,10 @@ export default function useNeighborhood(initial: Neighborhood) {
 	)
 
 	const changeLotSalesman = useCallback(
-		({ salesman, block, lot }: { salesman: string; block: number; lot: number }) => {
+		({ person, block, lot }: NeighborhoodLotSalesman) => {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
-				substitute.blocks[block].lots[lot].salesman = salesman
+				substitute.blocks[block].lots[lot].salesman = person
 				setHasChanged(true)
 				return substitute
 			})
@@ -61,10 +63,32 @@ export default function useNeighborhood(initial: Neighborhood) {
 	)
 
 	const changeLotCustomer = useCallback(
-		({ customer, block, lot }: { customer: string; block: number; lot: number }) => {
+		({ person, block, lot }: NeighborhoodLotCustomer) => {
 			setNeighborhood((neighborhood) => {
 				const substitute = clone(neighborhood)
-				substitute.blocks[block].lots[lot].customer = customer
+				substitute.blocks[block].lots[lot].customer = person
+				setHasChanged(true)
+				return substitute
+			})
+		}, []
+	)
+
+	const changeLotCoCustomer = useCallback(
+		({ person, block, lot }: NeighborhoodLotCoCustomer) => {
+			setNeighborhood((neighborhood) => {
+				const substitute = clone(neighborhood)
+				substitute.blocks[block].lots[lot].coCustomer = person
+				setHasChanged(true)
+				return substitute
+			})
+		}, []
+	)
+
+	const changeLotAdministrator = useCallback(
+		({ person, block, lot }: NeighborhoodLotAdministrator) => {
+			setNeighborhood((neighborhood) => {
+				const substitute = clone(neighborhood)
+				substitute.blocks[block].lots[lot].administrator = person
 				setHasChanged(true)
 				return substitute
 			})
@@ -73,14 +97,14 @@ export default function useNeighborhood(initial: Neighborhood) {
 
 	return {
 		neighborhood,
-
 		changeBlockName,
 		changeLotName,
 		changeLotPrice,
 		changeLotStatus,
 		changeLotSalesman,
 		changeLotCustomer,
-
+		changeLotCoCustomer,
+		changeLotAdministrator,
 		hasChanged,
 		setHasChanged
 	}

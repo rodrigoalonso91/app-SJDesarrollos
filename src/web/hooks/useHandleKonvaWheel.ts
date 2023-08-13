@@ -11,7 +11,7 @@ export default function useHandleKonvaWheel ({setStageScale, setStageX, setStage
     };
 
     const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
-
+    
     setStageScale(newScale);
     setStageX(
       -(mousePointTo.x - stage.getPointerPosition().x / newScale) * newScale

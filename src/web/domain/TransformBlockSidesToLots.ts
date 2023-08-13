@@ -1,23 +1,25 @@
-import { Line } from "@web/domain/types/Line"
+import {MasterBuildingError} from "@web/domain/MasterBuildingError"
+import {Line} from "@web/domain/types/Line"
 import {
 	coordinatesAreRoughlyEqual,
 	first,
 	getOtherEnd,
 	last,
 	linesTouchAtTheirEnds,
+	lineToSegments,
 	lineTouchesCoordinate
 } from "@web/domain/utils/LineUtils"
-import { Coordinate } from "@web/domain/types/Coordinate"
+import {Coordinate} from "@web/domain/types/Coordinate"
 
 export default function transformBlockSidesToLots({
-	externals,
-	internals
-}: {
+																										externals,
+																										internals
+																									}: {
 	externals: Array<Line>
 	internals: Array<Line>
 }): Array<Array<Coordinate>> {
 	if (externals.length === 1) return [externals[0]]
-	return transformToLotSides({ externals, internals }).map(linesToShape)
+	return transformToLotSides({externals, internals}).map(linesToShape)
 }
 
 function getLotSides(
@@ -84,7 +86,10 @@ function transformToLotSides(block: {
 			break
 		}
 
-		if (!found) throw `External line not matching ${JSON.stringify(current)}`
+		if (!found) throw new MasterBuildingError(
+			`External line does not match`,
+			lineToSegments(current)
+		)
 	}
 
 	return results
@@ -94,7 +99,7 @@ function linesToShape(lines: Array<Line>) {
 	const results = linesToLine(lines)
 	if (coordinatesAreRoughlyEqual(first(results), last(results)))
 		return results.slice(1)
-	throw Error(`Shape does not close itself ${JSON.stringify(lines)}`)
+	throw new MasterBuildingError(`Shape does not close itself`, lines.flatMap(lineToSegments))
 }
 
 function linesToLine(lines: Array<Line>) {
@@ -107,11 +112,7 @@ function linesToLine(lines: Array<Line>) {
 				return [...results, ...line.slice(1)]
 			if (coordinatesAreRoughlyEqual(last(results), last(line)))
 				return [...results, ...[...line].reverse().slice(1)]
-			throw Error(
-				`Line (${JSON.stringify(
-					line
-				)}) does not touch adjacent lines (${JSON.stringify(lines)})`
-			)
+			throw new MasterBuildingError(`Line does not touch adjacent lines`, lineToSegments(line))
 		},
 		[origin]
 	)
@@ -126,7 +127,5 @@ function getCommonCoordinate(lineA: Line, lineB: Line) {
 	if (coordinatesAreRoughlyEqual(a0, b1)) return a0
 	if (coordinatesAreRoughlyEqual(a1, b0)) return a1
 	if (coordinatesAreRoughlyEqual(a1, b1)) return a1
-	throw Error(
-		`First and Second lines do not touch: ${JSON.stringify([lineA, lineB])}`
-	)
+	throw new MasterBuildingError(`First and Second lines do not touch`, [...lineToSegments(lineA), ...lineToSegments(lineB)])
 }

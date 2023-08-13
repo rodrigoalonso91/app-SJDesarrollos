@@ -40,3 +40,10 @@ export const first = <T>(array: Array<T>): T => array[0]
 export const last = <T>(array: Array<T>): T => array[array.length - 1]
 
 const lineToSimpleLine = (line: Line): Segment => [first(line), last(line)]
+
+export function lineToSegments(line: Line): Array<Segment> {
+	const segments: Array<Segment> = []
+	for (let i = 0; i < line.length - 1; i++)
+		segments.push([line[i], line[i + 1]])
+	return segments
+}

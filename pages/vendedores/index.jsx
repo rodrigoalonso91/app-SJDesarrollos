@@ -1,36 +1,42 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
-import { getSalesmen } from "../../src/server/domain/salesmen/GetSalesmen"
-import { CustomGrid } from "../../src/web/components/layout"
 import { BASIC_COLUMNS } from "../../src/web/constants/columns"
-import { AddSalesmanForm } from "../../src/web/components" 
-import { usePersonDataSource } from "../../src/web/hooks"
+import { AddBasicPersonForm } from "../../src/web/components"
 import getUser from '../../src/server/infrastructure/GetUser'
+import getCollectionFromDatabase from "@web/api_calls/getCollectionFromDatabase"
+import { useEffect, useState } from "react"
+import { PersonGridDataProvider } from "../../src/context/PersonGridContext"
+import PersonTable from "../../src/web/components/layout/PersonTable"
 
-export const Salesmen = ({ salesmen }) => {
+export default function Salesmen () {
 
-	const { dataSource, updateDataSource } = usePersonDataSource({ data: salesmen })
+	const [salesmen, setSalesmen] = useState([])
+	useEffect(() => {
+        getCollectionFromDatabase("salesmen")
+            .then(res => res.json())
+            .then(data => setSalesmen(data))
+    }, [])
+
 	const collection = 'salesmen' 
 
 	return (
-		<CustomGrid collection={collection} columns={BASIC_COLUMNS} data={dataSource}>
-			<AddSalesmanForm
-				collection={collection}
-				data={salesmen}
-				setData={updateDataSource}
-			/>
-		</CustomGrid>
+		<PersonGridDataProvider>
+			<PersonTable collection={collection} columns={BASIC_COLUMNS} data={salesmen}>
+				<AddBasicPersonForm collection={collection} />
+			</PersonTable>
+		</PersonGridDataProvider>
 	)
 }
 
 export const getServerSideProps = withPageAuthRequired({
 	getServerSideProps: async ({ res, req }) => {
 
-		const user = await getUser({ res, req })
+		const [ user ] = await Promise.all([
+			getUser({ res, req }),
+			// getSalesmen()
+		])
 		if (!user.isAdmin) return { notFound: true }
 		
-		const salesmen = await getSalesmen()
-		return { props: { salesmen } }
+		return { props: {  } }
+		
 	}
 })
-
-export default Salesmen

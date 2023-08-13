@@ -29,7 +29,7 @@ const Card = styled.div`
     justify-content: center;
     align-items: center;
     gap: 15px;
-    min-width: 700px;
+    min-width: 441px;
     min-height: 200px;
     border-radius: 25px;
     cursor: pointer;

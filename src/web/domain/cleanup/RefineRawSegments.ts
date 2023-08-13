@@ -5,7 +5,8 @@ import { CategorizedSegments } from "@web/domain/types/CategorizedSegments"
 
 export default function refineRawSegments(segments: CategorizedSegments) {
 	const cleaned = removeExtraSegments(segments)
-	return groupByBlock(cleaned)
+	const split = splitIntersectingSegments(cleaned)
+	return groupByBlock(split)
 		.map(splitIntersectingSegments)
 		.map(removeExtraSegments)
 }

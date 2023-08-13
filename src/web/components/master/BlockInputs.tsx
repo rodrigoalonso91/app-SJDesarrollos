@@ -1,68 +1,108 @@
 import styled from "@emotion/styled"
 import Autocomplete from "@mui/material/Autocomplete"
 import TextField from "@mui/material/TextField"
-import MasterContext from "@web/components/master/MasterContext"
+import MasterContext, { BasicPerson } from "@web/components/master/MasterContext"
 import { STATUS_OPTIONS } from "@web/constants/lotStatus"
+import { 
+	BasicDataAdministrator,
+	BasicDataCustomer,
+	NeighborhoodLotAdministrator, 
+	NeighborhoodLotCoCustomer, 
+	NeighborhoodLotCustomer, 
+	NeighborhoodLotSalesman, 
+	NewBlockData,
+	NewLotData,
+	NewLotPriceData,
+	NewLotStatusData,
+	StatusOption
+} from "@web/domain/types/types"
 import { useField } from "@web/hooks"
 import React, { useContext, useEffect, useRef, useState } from "react"
 
 export default function BlockInputs () {
+
 	const { selected, neighborhood } = useContext(MasterContext)
+	const selectedItem = selected && neighborhood.blocks[selected.block].lots[selected.lot]
 
 	return (
 		<InputsContainer>
 			{selected && neighborhood &&
 				<>
-					<BlockName
-						block={selected.block}
-						name={neighborhood.blocks[selected.block]?.name || ""}
-					/>
+					<LotInformation>
+						<LotName
+							block={selected.block}
+							lot={selected.lot}
+							name={selectedItem?.name || ""}
+						/>
 
-					<LotName
+						<BlockName
+							block={selected.block}
+							name={neighborhood.blocks[selected.block]?.name || ""}
+						/>
+
+						<LotPrice
+							price={selectedItem?.price || ""}
+							block={selected.block}
+							lot={selected.lot}
+						/>
+
+						<LotStatus
+							status={selectedItem?.status as StatusOption || 'Disponible'}
+							block={selected.block}
+							lot={selected.lot}
+						/>
+					</LotInformation>
+
+					<LotAdministrator
+						person={selectedItem?.administrator || { id: '', fullname: '', color: '' }}
 						block={selected.block}
 						lot={selected.lot}
-						name={neighborhood.blocks[selected.block].lots[selected.lot].name || ""}
 					/>
+					
+					<LotInformation>
+						<LotCustomer
+							person={selectedItem?.customer || { id: '', fullname: '' }}
+							block={selected.block}
+							lot={selected.lot}
+						/>
 
-					<LotPrice
-						price={neighborhood.blocks[selected.block].lots[selected.lot].price || ""}
-						block={selected.block}
-						lot={selected.lot}
-
-					/>
-
-					<LotStatus
-						initialStatus={neighborhood.blocks[selected.block].lots[selected.lot].status || 'Disponible'}
-						block={selected.block}
-						lot={selected.lot}
-					/>
-
+						<LotCoCustomer
+							person={selectedItem?.coCustomer || { id: '', fullname: '' }}
+							block={selected.block}
+							lot={selected.lot}
+						/>
+					</LotInformation>
+					
 					<LotSalesmen
-						currentSalesman={neighborhood.blocks[selected.block].lots[selected.lot].salesman || ''}
-						block={selected.block}
-						lot={selected.lot}
-					/>
-
-					<LotCustomer
-						currentCustomer={neighborhood.blocks[selected.block].lots[selected.lot].customer || ''}
+						person={selectedItem?.salesman || { id: '', fullname: '' }}
 						block={selected.block}
 						lot={selected.lot}
 					/>
 				</>
 			}
-
-
 		</InputsContainer>
 	)
 }
 
-const InputsContainer = styled.div`
+const InputsContainer = styled.section`
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
 `
 
-function BlockName({ block, name }: { block: number; name: string }) {
+const LotInformation = styled.div`
+	display: grid;
+	grid-template-columns: repeat(
+      auto-fit,
+      minmax(
+        200px,
+        1fr
+      )
+    );
+    gap: 1rem;
+`
+
+function BlockName({ block, name }: NewBlockData) {
 
 	const { changeBlockName } = useContext(MasterContext)
 	const [text, setText] = useState(name)
@@ -81,7 +121,7 @@ function BlockName({ block, name }: { block: number; name: string }) {
 	)
 }
 
-function LotName({ block, lot, name }: { block: number, lot: number, name: string }) {
+function LotName({ block, lot, name }: NewLotData) {
 	
 	const { changeLotName, setSelected, selected } = useContext(MasterContext)
 	const [text, setText] = useState(name)
@@ -109,7 +149,7 @@ function LotName({ block, lot, name }: { block: number, lot: number, name: strin
 	)
 }
 
-function LotPrice({ block, lot, price }: { block: number, lot: number, price: string }) {
+function LotPrice({ block, lot, price }: NewLotPriceData) {
 
 	const { changeLotPrice } = useContext(MasterContext)
 
@@ -124,59 +164,107 @@ function LotPrice({ block, lot, price }: { block: number, lot: number, price: st
 	)
 }
 
-function LotStatus ({ block, lot, initialStatus }: { block: number, lot: number, initialStatus: string }) {
-	const [status, setStatus] = useState(initialStatus)
+function LotStatus ({ block, lot, status }: NewLotStatusData) {
+	const [updatedStatus, setUpdatedStatus] = useState(status)
 	const { changeLotStatus } = useContext(MasterContext)
 	
-	useEffect(() => { setStatus(initialStatus) },[initialStatus])
+	useEffect(() => { setUpdatedStatus(status) },[status])
 	
 	return (
 		<Autocomplete
-			value={status}
+			value={updatedStatus}
 			size="medium"
 			options={STATUS_OPTIONS}
-			onBlur={() => changeLotStatus({ block, lot, status })}
-			onChange={(e, value) => setStatus(value || 'Disponible')}
+			onBlur={() => changeLotStatus({ block, lot, status: updatedStatus })}
+			onChange={(_e, value) => setUpdatedStatus(value || 'Disponible')}
 			renderInput={(params) => <TextField {...params} label={'Estado'} />}
 		/>
 	)
 }
 
-function LotSalesmen ({ block, lot, currentSalesman }: { block: number, lot: number, currentSalesman: string }) {
-	const [salesman, setSalesman] = useState(currentSalesman)
-	
+function LotAdministrator ({ block, lot, person }: NeighborhoodLotAdministrator) {
+
+	const [administrator, setAdministrator] = useState(person)
+	const { changeLotAdministrator, administrators } = useContext(MasterContext)
+
+	useEffect(() => { setAdministrator(person) },[person])
+
+	const handleOnChange = (value: BasicDataAdministrator | null) => {
+		setAdministrator(value || { id : '', fullname: '', color: '' })
+	}
+
+	return (
+		<Autocomplete
+			size="medium"
+			value={administrator}
+			getOptionLabel={(option) => option.fullname}
+			options={administrators}
+			onBlur={() => changeLotAdministrator({ block, lot, person : administrator })}
+			onChange={(_e, value) => {
+				handleOnChange(value)
+			}}
+			renderInput={(params) => <TextField {...params} label={'Administrador'} />}
+		/>
+	)
+}
+
+function LotSalesmen ({ block, lot, person }: NeighborhoodLotSalesman) {
+
+	const [salesman, setSalesman] = useState(person)
 	const { changeLotSalesman, salesmen } = useContext(MasterContext)
 	
-	useEffect(() => { setSalesman(currentSalesman) },[currentSalesman])
+	useEffect(() => { setSalesman(person) },[person])
 	
 	return (
 		<Autocomplete
-			value={salesman}
 			size="medium"
-			options={salesmen.map(c => c['fullname'])}
-			onBlur={() => changeLotSalesman({ block, lot, salesman })}
-			onChange={(e, value) => setSalesman(value || '')}
+			options={salesmen}
+			getOptionLabel={(option) => option.fullname}
+			value={salesman}
+			onBlur={() => changeLotSalesman({ block, lot, person: salesman })}
+			onChange={(_e, value) => setSalesman(value || { id : '', fullname: '' })}
 			renderInput={(params) => <TextField {...params} label={'Vendedor'} />}
 		/>
 	)
 }
 
-function LotCustomer ({ block, lot, currentCustomer }: { block: number, lot: number, currentCustomer: string }) {
+function LotCustomer ({ block, lot, person }: NeighborhoodLotCustomer) {
 
-	const [customer, setCustomer] = useState(currentCustomer)
-	
+	const [customer, setCustomer] = useState<BasicDataCustomer>(person)
 	const { changeLotCustomer, customers } = useContext(MasterContext)
 	
-	useEffect(() => { setCustomer(currentCustomer) },[currentCustomer])
+	useEffect(() => { setCustomer(person) },[person])
 	
 	return (
 		<Autocomplete
-			value={customer}
 			size="medium"
-			options={customers.map(c => c['fullname'])}
-			onBlur={() => changeLotCustomer({ block, lot, customer })}
-			onChange={(e, value) => setCustomer(value || '')}
-			renderInput={(params) => <TextField {...params} label={'Cliente'} />}
+			options={customers}
+			getOptionLabel={(option) => option.fullname ? option.fullname : ''}
+			value={customer}
+			onBlur={() => changeLotCustomer({ block, lot, person: customer })}
+			onChange={(_e, value) => setCustomer(value || { id: '', fullname: '' })}
+			renderInput={(params) => <TextField {...params} label={'Propietario'} />}
+		/>
+	)
+}
+
+function LotCoCustomer ({ block, lot, person }: NeighborhoodLotCoCustomer) {
+
+	const [coCustomer, setCoCustomer] = useState(person)
+	
+	const { changeLotCoCustomer, customers } = useContext(MasterContext)
+	
+	useEffect(() => { setCoCustomer(person) },[person])
+	
+	return (
+		<Autocomplete
+			size="medium"
+			value={coCustomer}
+			getOptionLabel={(option) => option.fullname ? option.fullname : ''}
+			options={customers}
+			onBlur={() => changeLotCoCustomer({ block, lot, person: coCustomer })}
+			onChange={(_e, value) => setCoCustomer(value || { id: '', fullname: '' })}
+			renderInput={(params) => <TextField {...params} label={'Co-Propietario'} />}
 		/>
 	)
 }

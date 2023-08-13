@@ -7,6 +7,7 @@ const BLOCK_BORDER_COLOR = "fuchsia"
 const LOT_BORDER_COLOR = "red"
 
 export default function transformXmlToLines(xml: string): CategorizedSegments {
+	
 	let offset = 0
 	const lines: CategorizedSegments = { internals: [], externals: [] }
 

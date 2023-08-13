@@ -1,7 +1,8 @@
-import { CategorizedSegments } from "@web/domain/types/CategorizedSegments"
-import { Coordinate } from "@web/domain/types/Coordinate"
-import { Line } from "@web/domain/types/Line"
-import { Segment } from "@web/domain/types/Segment"
+import {MasterBuildingError} from "@web/domain/MasterBuildingError"
+import {CategorizedSegments} from "@web/domain/types/CategorizedSegments"
+import {Coordinate} from "@web/domain/types/Coordinate"
+import {Line} from "@web/domain/types/Line"
+import {Segment} from "@web/domain/types/Segment"
 import {
 	coordinatesAreRoughlyEqual,
 	first,
@@ -17,13 +18,13 @@ export default function transformSegmentsToLotSides(
 		const block = transformExternalsToBlocks(segments.externals)
 		const externals = transformToLotExternalSides(block, segments.internals)
 		const results = transformToLotSides(externals, [...segments.internals])
-		return { error: null, block: { coordinates: block, lots: results } }
+		return {error: null, block: {coordinates: block, lots: results}}
 	} catch (e: any) {
 		if (e instanceof MasterBuildingError)
-			return { error: e.message, segments: segments, faulty: e.errors }
+			return {error: e.message, segments: segments, faulty: e.errors}
 
 		if (e instanceof Error)
-			return { error: e.message, segments: segments, faulty: [] }
+			return {error: e.message, segments: segments, faulty: []}
 
 		throw e
 	}
@@ -99,16 +100,16 @@ function transformToLotSides(externals: Array<Line>, simples: Array<Segment>) {
 	while (origins.length > 0) {
 		const origin = origins.shift()!
 		if (internals.some((long) => lineTouchesCoordinate(long, origin))) continue
-		internals.push(...getLotSides({ line: [origin], internals: simples }))
+		internals.push(...getLotSides({line: [origin], internals: simples}))
 	}
 
-	return { externals, internals: internals.filter((x) => x.length > 1) }
+	return {externals, internals: internals.filter((x) => x.length > 1)}
 }
 
 function getLotSides({
-	line,
-	internals
-}: {
+											 line,
+											 internals
+										 }: {
 	line: Line
 	internals: Array<Segment>
 }): Array<Line> {
@@ -131,18 +132,9 @@ function getLotSides({
 	return [
 		line,
 		...additions.flatMap((addition) =>
-			getLotSides({ line: [current, addition], internals: remaining })
+			getLotSides({line: [current, addition], internals: remaining})
 		)
 	]
-}
-
-class MasterBuildingError extends Error {
-	errors: Array<Segment>
-
-	constructor(message: string, errors: Array<Segment>) {
-		super(message)
-		this.errors = errors
-	}
 }
 
 export const penultimate = <T>(array: Array<T>): T => array[array.length - 2]

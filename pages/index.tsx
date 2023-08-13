@@ -1,6 +1,5 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
 import { HomeCard } from "@web/components"
-import { getNeighborhoods } from "../src/server"
 import { modules } from '../src/web/constants/appModules'
 import { Backdrop, CircularProgress } from "@mui/material"
 import { useBackDrop } from "@web/hooks"
@@ -30,14 +29,13 @@ export default function Home() {
 }
 
 export const getServerSideProps = withPageAuthRequired({
-
-	getServerSideProps: async ({res, req} : any) => {
+	getServerSideProps: async ({ res, req } : any) => {
 
 		const user = await getUser({ res, req })
 
+		if (user.roles.length === 0) return { redirect: { permanent: false, destination: '/noautorizado' } }
 		if (!user.isAdmin) return { redirect: { permanent: false, destination: '/barrios' } }
 
-		const neighborhoods = await getNeighborhoods()
-		return { props: { neighborhoods } }
+		return { props: { } }
 	}
 })

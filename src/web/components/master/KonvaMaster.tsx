@@ -15,7 +15,7 @@ export default function KonvaMaster() {
 
   useEffect(() => {
     boundKonva({neighborhood, errors: []})
-  }, [boundKonva, neighborhood]);
+  }, [neighborhood.name]);
 
   return (
     <Stage

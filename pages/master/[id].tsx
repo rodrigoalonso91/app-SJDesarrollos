@@ -11,24 +11,36 @@ import { getNeighborhoodById } from "@server/domain/neighborhood/GetNeighborhood
 import getUser from "@server/infrastructure/GetUser";
 import { CustomSnackbar } from "@web/components";
 import BlockInputs from "@web/components/master/BlockInputs";
-import MasterContext, { Person, SelectedLot, Terrain } from "@web/components/master/MasterContext";
+import MasterContext, { BasicAdministrator, BasicPerson, SelectedLot, Terrain } from "@web/components/master/MasterContext";
 import useNeighborhood from "@web/components/master/UseNeighborhood";
 import { Block, Lot, Neighborhood } from "@web/domain/TransformXmlToNeighborhoods";
 import usePreventBodyScroll from "@web/hooks/usePreventBodyScroll";
 import { NextApiRequest, NextApiResponse } from "next";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
+import { getAdministrators } from "@server/domain/administrators/GetAdministrators";
+
+// NOTE: Renderiza con lazy loading en el lado del cliente.
 
 const KonvaMaster = dynamic(
   () => import("@web/components/master/KonvaMaster"),
   { ssr: false }
 );
 
+interface Props {
+  neighborhood: Neighborhood,
+  salesmen: Array<BasicPerson>,
+  customers: Array<BasicPerson>,
+  administrators: Array<BasicAdministrator>
+}
+
 export default function NeighborhoodsScreen({
-                                              neighborhood: initial,
-                                              salesmen,
-                                              customers
-                                            }: { neighborhood: Neighborhood, salesmen: Array<Person>, customers: Array<Person> }) {
+  neighborhood: initial,
+  salesmen,
+  customers,
+  administrators
+}: Props ) {
+
   const {
     neighborhood,
     changeBlockName,
@@ -37,24 +49,28 @@ export default function NeighborhoodsScreen({
     changeLotStatus,
     changeLotSalesman,
     changeLotCustomer,
+    changeLotCoCustomer,
+    changeLotAdministrator,
     hasChanged,
     setHasChanged
   } = useNeighborhood(initial);
-  const [selected, setSelected] = useState<SelectedLot | null>(null);
-  const [remaining, setRemaining] = useState<Remaining>(DEFAULT_REMAINING);
-  const [highlighted, setHighlighted] = useState<Array<Terrain>>([]);
+
+  const [ selected, setSelected ] = useState<SelectedLot | null>(null);
+  const [ remaining, setRemaining ] = useState<Remaining>(DEFAULT_REMAINING);
+  const [ highlighted, setHighlighted ] = useState<Array<Terrain>>([]);
   const { openSnackbar, isSnackbarOpen, closeSnackbar } = useSnackbar();
 
   usePreventBodyScroll();
 
   useEffect(() => {
     const blocks = neighborhood.blocks;
-    const lots = blocks.flatMap(block => block.lots);
+    const flattenedLots = blocks.flatMap(block => block.lots);
+    const lots = blocks.map(block => block.lots);
     const remaining = {
       repeatedBlocks: blocks.filter(hasRepeatedName),
-      repeatedLots: lots.filter(hasRepeatedName),
+      repeatedLots: lots.flatMap(x => x.filter(hasRepeatedName)),
       unnamedBlocks: blocks.filter(block => block.name === null),
-      unnamedLots: lots.filter(lot => lot.name === null)
+      unnamedLots: flattenedLots.filter(lot => lot.name === null)
     };
     setRemaining(remaining);
   }, [neighborhood]);
@@ -73,12 +89,19 @@ export default function NeighborhoodsScreen({
         changeLotStatus,
         changeLotSalesman,
         changeLotCustomer,
+        changeLotCoCustomer,
+        changeLotAdministrator,
         salesmen,
-        customers
+        customers,
+        administrators
       }}
     >
 
-      <CustomSnackbar message="Guardado con exíto" open={isSnackbarOpen} handleClose={closeSnackbar} />
+      <CustomSnackbar 
+        message="Guardado con exíto"
+        open={isSnackbarOpen}
+        handleClose={closeSnackbar}
+      />
 
       <Box sx={{
         width: "100%",
@@ -89,11 +112,11 @@ export default function NeighborhoodsScreen({
       }}
       >
         <KonvaContainer>
-          <Paper elevation={3} style={{ overflow: "hidden" }}>
+          <Paper elevation={8} style={{ overflow: "hidden" }}>
             <KonvaMaster />
           </Paper>
 
-          <Paper elevation={3}>
+          <Paper elevation={8}>
             <BlockInputsContainer>
               <DetailsContainer>
                 <h2>{neighborhood.name}</h2>
@@ -163,11 +186,12 @@ export default function NeighborhoodsScreen({
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async ({ res, req, params }) => {
 
-    const [user, neighborhood, customers, salesmen] = await Promise.all([
+    const [user, neighborhood, customers, salesmen, administrators ] = await Promise.all([
       getUser({ res: res as NextApiResponse, req: req as NextApiRequest }),
       getNeighborhoodById(params!.id as string),
       getCustomers(),
-      getSalesmen()
+      getSalesmen(),
+      getAdministrators()
     ]);
 
     if (!user.isAdmin) return { notFound: true };
@@ -176,14 +200,15 @@ export const getServerSideProps = withPageAuthRequired({
       props: {
         neighborhood,
         customers: customers.map(x => ({ id: x.id, fullname: `${x.firstname} ${x.lastname}` })),
-        salesmen: salesmen.map(x => ({ id: x.id, fullname: `${x.firstname} ${x.lastname}` }))
+        salesmen: salesmen.map(x => ({ id: x.id, fullname: `${x.firstname} ${x.lastname}` })),
+        administrators : administrators.map(x => ({ id: x.id, fullname: `${x.firstname} ${x.lastname}`, color: x.color}))
       }
     };
   }
 });
 
 const BlockInputsContainer = styled.div`
-  width: 18.9vw;
+  width: 31.9vw;
   height: 100%;
 
   display: grid;

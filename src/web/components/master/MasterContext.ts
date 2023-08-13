@@ -1,5 +1,6 @@
 import { Neighborhood } from "@web/domain/TransformXmlToNeighborhoods"
 import { Coordinate } from "@web/domain/types/Coordinate";
+import { NeighborhoodLotAdministrator, NeighborhoodLotCoCustomer, NeighborhoodLotCustomer, NeighborhoodLotSalesman, NewBlockData, NewLotData, NewLotPriceData, NewLotStatusData } from "@web/domain/types/types";
 import React from "react"
 
 const MasterContext = React.createContext<MasterContextProps>({
@@ -14,7 +15,9 @@ const MasterContext = React.createContext<MasterContextProps>({
 	changeLotStatus: () => {},
 	changeLotSalesman: () => {},
 	changeLotCustomer: () => {},
-
+	changeLotCoCustomer: () => {},
+	changeLotAdministrator: () => {},
+	administrators: [],
 	salesmen: [],
 	customers: [],
 })
@@ -25,15 +28,17 @@ type MasterContextProps = {
 	setHighlighted: (_: Array<Terrain>) => void,
 	highlighted: Array<Terrain>,
 	neighborhood: Neighborhood
-	changeBlockName: (_: { name: string; block: number }) => void
-	changeLotName: (_: { name: string; block: number; lot: number }) => void
-	changeLotPrice: (_: { price: string; block: number; lot: number }) => void
-	changeLotStatus: (_: { status: string; block: number; lot: number }) => void
-	changeLotSalesman: (_: { salesman: string; block: number; lot: number }) => void
-	changeLotCustomer: (_: { customer: string; block: number; lot: number }) => void
-
-	salesmen: Array<Person>
-	customers: Array<Person>
+	changeBlockName: (_: NewBlockData) => void
+	changeLotName: (_: NewLotData) => void
+	changeLotPrice: (_: NewLotPriceData) => void
+	changeLotStatus: (_: NewLotStatusData) => void
+	changeLotSalesman: (_: NeighborhoodLotSalesman) => void
+	changeLotCustomer: (_: NeighborhoodLotCustomer) => void
+	changeLotCoCustomer: (_: NeighborhoodLotCoCustomer) => void
+	changeLotAdministrator: (_: NeighborhoodLotAdministrator) => void
+	administrators: Array<BasicAdministrator>
+	salesmen: Array<BasicPerson>
+	customers: Array<BasicPerson>
 }
 
 export default MasterContext
@@ -45,7 +50,11 @@ export type Terrain = {
 	coordinates: Array<Coordinate>
 }
 
-export type Person = {
+export type BasicPerson = {
 	id: string
 	fullname: string
+}
+
+export interface BasicAdministrator extends BasicPerson {
+	color: string
 }

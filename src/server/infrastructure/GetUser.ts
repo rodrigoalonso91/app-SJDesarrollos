@@ -3,7 +3,7 @@ import { UserRole } from "@web/constants/UserRole";
 import {NextApiRequest, NextApiResponse} from "next"
 
 export default async function getUser({req, res}: AccessParams): Promise<AccessResult> {
-	const session = await getSession(req, res)
+	const session = getSession(req, res)
 
 	if (!session) return LOGGED_OUT_DATA
 
@@ -13,7 +13,7 @@ export default async function getUser({req, res}: AccessParams): Promise<AccessR
 	const isProprietor = roles.includes(UserRole.Proprietor)
 	const isSalesman = roles.includes(UserRole.Salesman)
 
-	return {isAdmin, isAuditor, isProprietor, isSalesman, isLoggedIn: true, email: session.user.email}
+	return {isAdmin, isAuditor, isProprietor, isSalesman, isLoggedIn: true, email: session.user.email, roles}
 }
 
 const LOGGED_OUT_DATA = {
@@ -22,7 +22,8 @@ const LOGGED_OUT_DATA = {
 	isAuditor: false,
 	isProprietor: false,
 	isSalesman: false,
-	email: ""
+	email: "",
+	roles: []
 }
 
 export type AccessParams = {
@@ -36,7 +37,8 @@ export type AccessResult = {
 	isAuditor: boolean,
 	isProprietor: boolean,
 	isSalesman: boolean,
-	email: string
+	email: string,
+	roles: string[]
 }
 
 const ROLES_PROPERTY_NAME = `${process.env.NEXT_PUBLIC_WEB_DOMAIN}/roles`

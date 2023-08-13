@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
 import SaveIcon from "@mui/icons-material/Save";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { Box, Button } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 import TextField from "@mui/material/TextField";
-import getNeighborhoods from "@web/api_calls/neighborhood/getNeighborhoods";
+import getNeighborhoodNames from "@web/api_calls/neighborhood/getNeighborhoodNames";
 import transformXmlToNeighborhoods, { BlockError, Neighborhood } from "@web/domain/TransformXmlToNeighborhoods";
 import usePreventBodyScroll from "@web/hooks/usePreventBodyScroll";
 import dynamic from "next/dynamic";
@@ -12,25 +14,44 @@ import { useRouter } from "next/router";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Select } from "@web/components/layout/Select";
 import addNeighborhood from "@web/api_calls/neighborhood/addNeighborhood";
+import getUser from "@server/infrastructure/GetUser";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0"
+import Image from "next/image";
+import resources from "../../config/resources.json"
+import { useBackDrop } from "@web/hooks";
 
 const KonvaMasterPreview = dynamic(
   () => import("@web/components/master/preview/KonvaPreviewMaster"),
   { ssr: false }
 );
 
+export const getServerSideProps = withPageAuthRequired({
+	getServerSideProps: async ({ res, req }: any) => {
+
+		const user = await getUser({ res, req })
+		if (!user.isAdmin) return { notFound: true }
+
+    return { props: {} } as any
+	}
+})
+
 export default function NeighborhoodsScreen() {
+
+  const { isOpen, openBackDrop } = useBackDrop();
   const router = useRouter();
   const [text, setText] = useState("");
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState("");
   const [neighborhood, setNeighborhood] = useState<Neighborhood | null>(null);
   const [errors, setErrors] = useState<Array<BlockError>>([]);
-  const [neighborhoods, setNeighborhoods] = useState<Array<{ name: string }>>([]);
+  const [neighborhoodList, setNeighborhoodList] = useState<Array<{ name: string }>>([]);
 
   usePreventBodyScroll();
 
   useEffect(() => {
     (async () => {
-      const neighborhoods = await getNeighborhoods();
-      setNeighborhoods(neighborhoods);
+      const neighborhoodList = await getNeighborhoodNames();
+      setNeighborhoodList(neighborhoodList);
     })();
   }, []);
 
@@ -44,94 +65,158 @@ export default function NeighborhoodsScreen() {
     setErrors(errors);
   }
 
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setSelectedTab(newValue);
+  }
+
   const hasErrors = errors.length > 0;
-  const hasExistingName = neighborhoods.some(x => x.name === text);
+  const hasExistingName = neighborhoodList.some(x => x.name === text);
 
   return (
-    <Box sx={{
-      width: "100%",
-      padding: 2,
-      display: "flex",
-      flexDirection: "column",
-      gap: 2
-    }}
-    >
-      <KonvaContainer>
-        <Paper elevation={3} style={{ overflow: "hidden", position: "relative" }}>
-          <KonvaMasterPreview neighborhood={neighborhood} errors={errors} />
-          {neighborhood === null &&
-            <Instructions>
-              <h2>Instrucciones para cargar un SVG</h2>
-              <ol>
-                <li>Diagramar el barrio en un archivo de AutoCAD (.dwg). El diagrama debe consistir unicamente de las
-                  lineas que delimitan las manzanas y los lotes.
-                </li>
-                <li>Las lineas que delimitan las manzanas deben ser pintadas de Fuchsia (fuchsia).</li>
-                <li>Las lineas internas a las manzanas que delimitan los lotes deben ser pintadas de Rojo (red).</li>
-                <li>Una vez completado el archivo de AutoCAD, usar <a href="https://cloudconvert.com/dwg-to-svg"
-                                                                      target="_blank" rel="noreferrer">esta web</a> para convertirlo a
-                  SVG (.svg).
-                </li>
-                <li>
-                  El archivo resultante (.svg) puede ser ingresado en la web de SJDesarrollos presionando el boton
-                  &quotCargar SVG&quot.
-                </li>
-                <li>Una vez cargado el archivo, se mostrara un preview del master.</li>
-                <li>En caso de encontrarse errores, estos se mostraran en rojo. Debera de corregirlos en el archivo
-                  AutoCAD y repetir el proceso.
-                </li>
-              </ol>
-              <h3>Ejemplo de como debe verse el .dwg inicial</h3>
-              <img src="/sample_neighborhood.png" style={{ maxHeight: "400px" }} />
-            </Instructions>
-          }
-        </Paper>
+    <>
+      <Backdrop style={{ zIndex: 100 }} open={isOpen}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
 
-        <Paper elevation={3}>
-          <SideContainer>
-            <ControlsContainer>
-              Ingrese un nuevo Master
-              <TextField
-                label="Nombre del Barrio"
-                size="medium"
-                placeholder="Ej: Del Pilar, Perdices"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+      <Box sx={{
+        width: "100%",
+        padding: 2,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2
+      }}
+      >
+        <KonvaContainer>
+          <Paper elevation={8} sx={{ overflow: "hidden", position: "relative" }}>
+            <KonvaMasterPreview neighborhood={neighborhood} errors={errors} />
+            {neighborhood === null &&
+            <Instructions>
+              {
+                resources.instructions.map((instruction) => (
+                  <div key={instruction.title}>
+                    <h2>{instruction.title}</h2>
+                    <ol>
+                      {instruction.steps.map((step, index) => (
+                        <li key={index} dangerouslySetInnerHTML={{ __html: step }} />
+                      ))}
+                    </ol>
+                  </div>
+                ))
+              }
+              <h3>{resources.images[0].title}</h3>
+              <Image
+                src={resources.images[0].src}
+                alt={resources.images[0].title}
+                style={resources.images[0].style}
+                width={resources.images[0].width}
+                height={resources.images[0].height}
+                priority={resources.images[0].priority}
               />
-              {hasExistingName && <Error>Ya existe un barrio con ese nombre</Error>}
-              <Button component="label" variant="contained" sx={{ gap: 1 }}>
-                <UploadFileIcon />
-                Cargar SVG
-                <input type="file" onChange={onFileUpload} hidden />
-              </Button>
-              {hasErrors && <Error>El archivo subido tiene errores</Error>}
-              <Button
-                component="label"
-                variant="contained"
-                sx={{ gap: 1 }}
-                disabled={text === "" || neighborhood === null || hasErrors || hasExistingName}
-                onClick={async () => {
-                  const id = await addNeighborhood({ ...neighborhood!, name: text });
-                  await router.push(`/master/${id}`);
-                }}
-              >
-                <SaveIcon />
-                Guardar
-              </Button>
-            </ControlsContainer>
-            <ControlsContainer>
-              Actualice un Master existente
-              <Select
-                collection={neighborhoods}
-                value=""
-                handleChange={(e: any) => router.push(`/master/${e.target.value}`)}
-              />
-            </ControlsContainer>
-          </SideContainer>
-        </Paper>
-      </KonvaContainer>
-    </Box>
+            </Instructions>
+            }
+          </Paper>
+
+
+          <Paper elevation={8}>
+            <SideContainer>
+
+              <Box sx={{ width: '100%' }}>
+
+                <Tabs value={selectedTab} onChange={handleTabChange} >
+                  <Tab label="Subir master" {...getTabPropByIndex(0)} />
+                  <Tab label="Actualizar master" {...getTabPropByIndex(1)} />
+                </Tabs>
+
+                <CustomTabPanel value={selectedTab} index={0}>
+                  <ControlsContainer>
+                    Ingrese un nuevo Master
+                    <TextField
+                      label="Nombre del Barrio"
+                      size="medium"
+                      placeholder="Ej: Del Pilar, Perdices"
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                    />
+                    {hasExistingName && <Error>Ya existe un barrio con ese nombre</Error>}
+                    <Button component="label" variant="contained" sx={{ gap: 1 }}>
+                      <UploadFileIcon />
+                      Cargar SVG
+                      <input type="file" onChange={onFileUpload} hidden />
+                    </Button>
+                    {hasErrors && <Error>El archivo subido tiene errores</Error>}
+                    <Button
+                      component="label"
+                      variant="contained"
+                      sx={{ gap: 1 }}
+                      disabled={text === "" || neighborhood === null || hasErrors || hasExistingName}
+                      onClick={async () => {
+                        openBackDrop();
+                        const id = await addNeighborhood({ ...neighborhood!, name: text });
+                        await router.push(`/master/${id}`);
+                      }}
+                    >
+                      <SaveIcon />
+                      Guardar
+                    </Button>
+                  </ControlsContainer>
+                </CustomTabPanel>
+
+                <CustomTabPanel value={selectedTab} index={1}>
+                  <ControlsContainer>
+                    Actualice un Master existente
+                    <Select
+                      collection={neighborhoodList}
+                      value={selectedNeighborhood}
+                      handleChange={(e: any) => {
+                        openBackDrop();
+                        setSelectedNeighborhood(e.target.value);
+                        router.push(`/master/${e.target.value}`)
+                      }}
+                    />
+                  </ControlsContainer>
+                </CustomTabPanel>
+              </Box>
+
+            </SideContainer>
+          </Paper>
+        </KonvaContainer>
+      </Box>
+    </>
   );
+}
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function CustomTabPanel(props: TabPanelProps) {
+
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function getTabPropByIndex(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
 }
 
 async function encode(file: File): Promise<string> {
@@ -152,7 +237,7 @@ const ControlsContainer = styled.div`
 `;
 
 
-const KonvaContainer = styled.div`
+const KonvaContainer = styled.main`
   display: flex;
   gap: 20px;
   max-height: 83.5vh;
@@ -160,7 +245,7 @@ const KonvaContainer = styled.div`
 
 const SideContainer = styled.div`
   height: 100%;
-  width: 18.9vw;
+  width: 21vw;
 
   display: flex;
   flex-direction: column;

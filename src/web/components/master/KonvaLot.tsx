@@ -5,22 +5,23 @@ import React, { useContext, useRef, useState } from "react";
 import { Shape, Text } from "react-konva";
 
 export default function KonvaLot({
-                                   name,
-                                   coordinates,
-                                   block,
-                                   lot,
-                                   highlight
-                                 }: {
+  name,
+  coordinates,
+  block,
+  lot,
+  highlight
+}: {
   name: string
   block: number
   lot: number
   coordinates: Array<Coordinate>,
   highlight: boolean
 }) {
+  
   const [hovered, setHovered] = useState(false);
   const textRef = useRef<any>(null);
   const [center] = useState(() => centerOf(coordinates))
-  const [textCoordinates, setTextCoordinates] = useState(() => centerOf(coordinates));
+  const [textCoordinates, setTextCoordinates] = useState(center);
 
   const { setSelected, selected } = useContext(MasterContext);
 

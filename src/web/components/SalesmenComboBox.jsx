@@ -15,13 +15,11 @@ export const SalesmenComboBox = ({ table, column, cell }) => {
 
         if (!value) return
 
-        const { fullname } = value
-
-        setCurrentValue(fullname)
+        setCurrentValue(value)
 
         setEditingRow({
             ...editingRow,
-            _valuesCache: {...editingRow._valuesCache, [column.id]: fullname}
+            _valuesCache: {...editingRow._valuesCache, [column.id]: value}
         })
     }
 

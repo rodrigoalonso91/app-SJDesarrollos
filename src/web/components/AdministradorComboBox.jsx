@@ -1,0 +1,37 @@
+import Autocomplete from '@mui/material/Autocomplete'
+import TextField from '@mui/material/TextField'
+import useCollection from '@web/hooks/useCollection'
+import { useState } from 'react'
+
+export const AdministratorComboBox = ({ table, column, cell }) => {
+
+    const [currentValue, setCurrentValue] = useState(cell.getValue())
+    const { getState, setEditingRow } = table
+    const { editingRow } = getState()
+
+    const { isLoading, collection } = useCollection({ name: 'administrators' })
+
+    const handleOnChange = (_event, value) => {
+
+        if (!value) return
+
+        setCurrentValue(value)
+
+        setEditingRow({
+            ...editingRow,
+            _valuesCache: {...editingRow._valuesCache, [column.id]: value}
+        })
+    }
+
+    return (
+        <Autocomplete
+            value={currentValue}
+            loading={isLoading}
+            loadingText="Cargando clientes..."
+            options={['- Ninguno -', ...collection]}
+            getOptionLabel={(option) => option.fullname || option}
+            renderInput={(params) => <TextField {...params} label={'Administrador'} />}
+            onChange={(event, value) => handleOnChange(event, value)}
+        />
+    )
+}

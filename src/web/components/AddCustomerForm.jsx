@@ -1,10 +1,14 @@
-import { Button, Grid, TextField, Typography } from "@mui/material"
+import { Button, Grid, TextField } from "@mui/material"
 import { useDispatch } from "react-redux"
 import { useField } from "../hooks"
 import { displayForm } from "../store/form"
-import addRowInDatabase from "../api_calls/addRowInDatabase"
+import addPersonToDatabase from "../api_calls/addPersonToDatabase"
+import usePersonGrid from "../hooks/usePersonGrid"
 
-export function AddCustomerForm ({ collection, data, updateDataSource }) {
+export function AddCustomerForm ({ collection }) {
+
+	const { addPersonToDataSource, tableLoading } = usePersonGrid()
+	const { enableLoading, disableLoading } = tableLoading
 
     const firstname = useField({ type: "text", label: 'Nombre', placeholder: 'Ej: Juan' })
 	const lastname = useField({ type: "text" , label: 'Apellido', placeholder: 'Ej: Garcia' })
@@ -17,7 +21,7 @@ export function AddCustomerForm ({ collection, data, updateDataSource }) {
     const dispatch = useDispatch()
 
 	const handleClickOnAdd = async () => {
-		const row = {
+		const newCustomer = {
 			firstname: firstname.value,
 			lastname: lastname.value,
 			phone: phone.value,
@@ -26,11 +30,10 @@ export function AddCustomerForm ({ collection, data, updateDataSource }) {
 		}
 		dispatch(displayForm(false))
 
-		await addRowInDatabase(collection, row)
-
-		const updatedData = [...data, { ...row }]
-		updateDataSource(updatedData)
-
+		enableLoading()
+		const { id } = await addPersonToDatabase(collection, newCustomer)
+		addPersonToDataSource({ ...newCustomer, id })
+		disableLoading()
 	}
 
 	const handleClickOnCancel = () => {
